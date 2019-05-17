@@ -1,5 +1,16 @@
 import { Transaction } from "./Transaction";
 import {
+  validate,
+  Contains,
+  IsInt,
+  Length,
+  IsEmail,
+  IsFQDN,
+  IsDate,
+  Min,
+  Max
+} from "class-validator";
+import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -24,26 +35,36 @@ export class User implements IUserDTO {
   public id?: number;
 
   @Column()
+  @Min(3)
+  @Max(30)
   public firstname: string;
 
   @Column()
+  @Min(3)
+  @Max(30)
   public lastname: string;
 
   @Column({
     unique: true
   })
+  @IsEmail()
   public email: string;
 
   @Column()
+  @Min(10)
+  @Max(60)
   public address: string;
 
   @Column()
+  @Max(20)
   public city: string;
 
   @Column()
+  @Max(20)
   public state: string;
 
   @Column()
+  @Max(20)
   public country: string;
 
   @Column({ default: false })

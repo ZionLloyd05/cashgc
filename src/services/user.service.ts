@@ -2,7 +2,9 @@ import { DatabaseProvider } from "./../database/index";
 import { User, IUserDTO } from "../models/User";
 import * as crypto from "crypto";
 import config from "../config";
+import { injectable } from "inversify";
 
+@injectable()
 export class UserService {
   public async create(user: User): Promise<IUserDTO> {
     const db = await DatabaseProvider.getConnection();
