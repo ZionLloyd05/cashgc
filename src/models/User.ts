@@ -1,4 +1,3 @@
-import { UserGiftCode } from "./UserGiftCode";
 import { Transaction } from "./Transaction";
 import {
   Entity,
@@ -8,10 +7,21 @@ import {
   OneToMany
 } from "typeorm";
 
+export interface IUserDTO {
+  id?: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
 @Entity()
-export class User {
+export class User implements IUserDTO {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id?: number;
 
   @Column()
   public firstname: string;
@@ -24,29 +34,33 @@ export class User {
   })
   public email: string;
 
-  //   @Column()
-  //   public address: string;
-
-  //   @Column()
-  //   public country: string;
-
-  //   @Column()
-  //   public isVerfied: boolean;
-
-  //   @Column()
-  //   public resetPasswordToken: string;
-
-  //   @Column()
-  //   public resetPasswordExpiryDate: string;
+  @Column()
+  public address: string;
 
   @Column()
-  @OneToMany(type => UserGiftCode, userGiftCode => userGiftCode.user)
-  public userGiftCodes: UserGiftCode[];
+  public city: string;
 
   @Column()
+  public state: string;
+
+  @Column()
+  public country: string;
+
+  @Column({ default: false })
+  public isVerified?: boolean;
+
+  @Column()
+  public resetPasswordToken?: string;
+
+  @Column()
+  public resetPasswordExpiryDate?: string;
+
+  @Column()
+  public password: string;
+
   @OneToMany(type => Transaction, transaction => transaction.user)
-  public transactions: Transaction[];
+  public transactions?: Transaction[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 }

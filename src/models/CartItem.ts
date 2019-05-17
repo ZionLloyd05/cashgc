@@ -22,11 +22,11 @@ export class CartItem {
   public price: number;
 
   @Column()
-  @OneToOne(type => GiftCode)
-  @JoinColumn()
+  public isInCart: boolean;
+
+  @ManyToOne(type => GiftCode, giftcode => giftcode.cartItems)
   public giftCode: GiftCode;
 
-  @Column()
   @ManyToOne(type => Cart, cart => cart.cartItems)
   public cart: Cart;
 

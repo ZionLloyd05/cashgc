@@ -1,5 +1,5 @@
-import { CartItem } from "./CartItem";
 import { User } from "./User";
+import { TransCartItem } from "./TransCartItem";
 import {
   Entity,
   Column,
@@ -10,6 +10,11 @@ import {
   ManyToOne
 } from "typeorm";
 
+enum Status {
+  Success,
+  Failed
+}
+
 @Entity()
 export class Transaction {
   @PrimaryGeneratedColumn()
@@ -19,12 +24,14 @@ export class Transaction {
   @Generated("uuid")
   public reference: number;
 
-  @Column()
+  @Column("enum", { enum: Status })
+  public status: Status;
+
   @ManyToOne(type => User, user => user.transactions)
   public user: User;
 
-  @OneToMany(type => CartItem, cartItem => cartItem.cart)
-  public cartItems: CartItem[];
+  @OneToMany(type => TransCartItem, transCartItem => transCartItem.transaction)
+  public transCartItems: TransCartItem[];
 
   @CreateDateColumn()
   createdAt: Date;

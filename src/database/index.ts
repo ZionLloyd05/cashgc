@@ -1,10 +1,10 @@
-import { UserGiftCode } from "./../models/UserGiftCode";
-import { Transaction } from "./../models/Transaction";
-import { GiftCode } from "./../models/GiftCode";
-import { CartItem } from "./../models/CartItem";
-import { Cart } from "./../models/Cart";
-import { User } from "./../models/User";
-import { Admin } from "./../models/Admin";
+import { TransCartItem } from "../models/TransCartItem";
+import { Transaction } from "../models/Transaction";
+import { GiftCode } from "../models/GiftCode";
+import { CartItem } from "../models/CartItem";
+import { Cart } from "../models/Cart";
+import { User } from "../models/User";
+import { Admin } from "../models/Admin";
 import { DatabaseConfiguration } from "./index";
 import { Connection, createConnection } from "typeorm";
 
@@ -59,7 +59,7 @@ export class DatabaseProvider {
         CartItem,
         GiftCode,
         Transaction,
-        UserGiftCode
+        TransCartItem
       ],
       synchronize: true
     });

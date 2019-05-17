@@ -1,8 +1,10 @@
+import { CartItem } from "./CartItem";
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn
+  CreateDateColumn,
+  OneToMany
 } from "typeorm";
 
 @Entity()
@@ -24,6 +26,9 @@ export class GiftCode {
 
   @Column()
   public prefix: string;
+
+  @OneToMany(type => CartItem, cartItem => cartItem.giftCode)
+  public cartItems: CartItem[];
 
   @CreateDateColumn()
   createdAt: Date;

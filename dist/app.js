@@ -18,7 +18,7 @@ function startServer() {
          * Database configuration
          */
         index_1.DatabaseProvider.configure({
-            type: config_1.default.type || "mysql",
+            type: "mysql",
             database: config_1.default.database,
             username: config_1.default.username,
             password: config_1.default.password,
@@ -38,6 +38,35 @@ function startServer() {
             console.log(" ( :  Server listening on port: ", config_1.default.port, " : ) ");
             console.log("-------------------------------------------------------");
         });
+        // try {
+        //   await DatabaseProvider.getConnection();
+        //   console.log("Database connected");
+        // } catch (error) {
+        //   console.log("error");
+        //   console.log(error);
+        // }
+        // const userService = new UserService();
+        // let nuser = new User();
+        // nuser = {
+        //   id: 3,
+        //   firstname: "lisha",
+        //   lastname: "davids",
+        //   email: "davlisha@gmail.com",
+        //   address: "las vegas",
+        //   city: "broklyn",
+        //   state: "new york",
+        //   country: "america",
+        //   password: "lisha123"
+        // };
+        // // nuser = { ...req };
+        // try {
+        //   //await userService.update(nuser);
+        //   userService.getById(2).then(user => {
+        //     console.log(user);
+        //   });
+        // } catch (error) {
+        //   console.log(error);
+        // }
     });
 }
 startServer();

@@ -31,7 +31,7 @@ export default {
   /**
    * Database username
    */
-  username: process.env.USERNAME,
+  username: process.env.UNAME,
 
   /**
    * Database password
@@ -42,6 +42,11 @@ export default {
    * Database title
    */
   database: process.env.DATABASE,
+
+  /**
+   * Cipher Key
+   */
+  key: process.env.KEY,
 
   /**
    * Routes Config
