@@ -1,11 +1,20 @@
+import { ISubject } from "./../interfaces/ISubject";
+import { UserController } from "./../controllers/user.ctrl";
 import { User } from "./../models/User";
 import { IUserObserver } from "./../interfaces/IObserver";
 import { DatabaseProvider } from "./../database/index";
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import { Cart } from "../models/Cart";
 
 @injectable()
 export class CartService implements IUserObserver {
+  private subject: ISubject;
+
+  constructor(@inject(UserController) user: ISubject) {
+    this.subject = user;
+    user.registerObserver(this);
+  }
+
   private async create(cart: Cart): Promise<Cart> {
     const db = await DatabaseProvider.getConnection();
 
@@ -15,10 +24,14 @@ export class CartService implements IUserObserver {
     return await db.getRepository(Cart).save(newCart);
   }
 
+  public Observe(user: ISubject) {
+    console.log("i'm observing");
+    // new CartService(user);
+  }
+
   /**
    * On new user creation
    */
-
   async userCreated(user: User) {
     console.log("new user have been created, let set up a cart");
     let cart = new Cart();

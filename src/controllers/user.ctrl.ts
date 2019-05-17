@@ -1,3 +1,4 @@
+import { CartService } from "./../services/cart.service";
 import { IUserObserver } from "./../interfaces/IObserver";
 import { ISubject } from "./../interfaces/ISubject";
 import { User, IUserDTO } from "./../models/User";
@@ -7,6 +8,9 @@ import { injectable, inject } from "inversify";
 @injectable()
 export class UserController implements ISubject {
   private _userService: UserService;
+
+  @inject(CartService)
+  private _cartService: CartService;
   //   private newUserId: number;
   private user: User;
   private observers: IUserObserver[] = [];
@@ -23,6 +27,7 @@ export class UserController implements ISubject {
       // create user logic
       const newUser = await this._userService.create(user);
       this.user = newUser;
+      this._cartService.Observe(this);
       this.notifyObserver();
     }
   }

@@ -46,28 +46,6 @@ function startServer() {
             console.log("error");
             console.log(error);
         }
-        // const userCtr = new UserController();
-        // let nuser = new User();
-        // nuser = {
-        //   id: 3,
-        //   firstname: "Ralph",
-        //   lastname: "Woods",
-        //   email: "ralphwoods@gmail.com",
-        //   address: "las vegas",
-        //   city: "broklyn",
-        //   state: "new york",
-        //   country: "London",
-        //   password: "lisha123"
-        // };
-        // // nuser = { ...req };
-        // try {
-        //   //await userService.update(nuser);
-        //   userController.saveUser(nuser).then(user => {
-        //     console.log(user);
-        //   });
-        // } catch (error) {
-        //   console.log(error);
-        // }
     });
 }
 startServer();
