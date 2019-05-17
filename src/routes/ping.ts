@@ -11,34 +11,35 @@ export class PingRoute implements IRoute {
   >(UserController);
 
   initialize(router: Router): void {
-    router.get("/", this.home.bind(this));
+    router.get("/", this.ping.bind(this));
   }
 
   /**
    * Router Functions
    */
-  private home(req: Request, res: Response) {
-    let nuser = new User();
-    nuser = {
-      firstname: "Toba",
-      lastname: "Leke",
-      email: "tobalee@gmail.com",
-      address: "las vegas",
-      city: "juventus",
-      state: "spain",
-      country: "america",
-      password: "lisha123"
-    };
+  private ping(req: Request, res: Response) {
+    res.json("GET:  Ok 200");
+    // let nuser = new User();
+    // nuser = {
+    //   firstname: "shilo",
+    //   lastname: "Leke",
+    //   email: "shilolee@gmail.com",
+    //   address: "las vegas",
+    //   city: "juventus",
+    //   state: "spain",
+    //   country: "america",
+    //   password: "lisha123"
+    // };
 
-    // nuser = { ...req };
-    try {
-      //await userService.update(nuser);
+    // // nuser = { ...req };
+    // try {
+    //   //await userService.update(nuser);
 
-      this._userController.saveUser(nuser).then(user => {
-        res.json(user);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    //   this._userController.saveUser(nuser).then(user => {
+    //     res.json(user);
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 }

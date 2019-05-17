@@ -4,19 +4,29 @@ import { ISubject } from "./../interfaces/ISubject";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
 import { injectable, inject } from "inversify";
+import { EventEmitter } from "events";
 
 @injectable()
-export class UserController implements ISubject {
+export class UserController {
   private _userService: UserService;
-
-  @inject(CartService)
+  private userEvent: EventEmitter;
   private _cartService: CartService;
-  //   private newUserId: number;
-  private user: User;
-  private observers: IUserObserver[] = [];
 
-  constructor(@inject(UserService) userService: UserService) {
+  constructor(
+    @inject(UserService) userService: UserService,
+    @inject(CartService) cartService: CartService
+  ) {
+    /**
+     * Declaring DIs */
+
     this._userService = userService;
+    this._cartService = cartService;
+
+    /**
+     * Defining Events, on user creation
+     */
+    this.userEvent = new EventEmitter();
+    this.userEvent.on("new user", user => this.setUpNewCart(user));
   }
 
   public async saveUser(user: User): Promise<IUserDTO> {
@@ -26,9 +36,8 @@ export class UserController implements ISubject {
     } else {
       // create user logic
       const newUser = await this._userService.create(user);
-      this.user = newUser;
-      this._cartService.Observe(this);
-      this.notifyObserver();
+      this.userEvent.emit("new user", newUser);
+      return newUser;
     }
   }
 
@@ -40,19 +49,7 @@ export class UserController implements ISubject {
     return await this._userService.getAll();
   }
 
-  /**
-   * Observers Preparation
-   */
-  registerObserver(o: IUserObserver) {
-    this.observers.push(o);
-  }
-  removeObserver(o: IUserObserver) {
-    let index = this.observers.indexOf(o);
-    this.observers.splice(index, 1);
-  }
-  notifyObserver() {
-    for (let observer of this.observers) {
-      observer.userCreated(this.user);
-    }
+  private setUpNewCart(user) {
+    this._cartService.createCart(user);
   }
 }

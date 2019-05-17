@@ -7,41 +7,14 @@ import { injectable, inject } from "inversify";
 import { Cart } from "../models/Cart";
 
 @injectable()
-export class CartService implements IUserObserver {
-  private subject: ISubject;
-
-  constructor(@inject(UserController) user: ISubject) {
-    this.subject = user;
-    user.registerObserver(this);
-  }
-
-  private async create(cart: Cart): Promise<Cart> {
+export class CartService {
+  public async createCart(user: User): Promise<Cart> {
+    console.log("setting up a cart for " + user.firstname);
     const db = await DatabaseProvider.getConnection();
 
     let newCart = new Cart();
-    newCart = { ...cart };
+    newCart.user = user;
 
     return await db.getRepository(Cart).save(newCart);
-  }
-
-  public Observe(user: ISubject) {
-    console.log("i'm observing");
-    // new CartService(user);
-  }
-
-  /**
-   * On new user creation
-   */
-  async userCreated(user: User) {
-    console.log("new user have been created, let set up a cart");
-    let cart = new Cart();
-    cart.user = user;
-    this.create(cart)
-      .then(cart => {
-        console.log("Cart " + cart.id + " created for User " + cart.user.id);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   }
 }
