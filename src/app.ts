@@ -4,6 +4,8 @@ import "reflect-metadata";
 import { DatabaseProvider } from "./database/index";
 import config from "./config";
 import * as express from "express";
+import * as path from "path";
+import * as expressHbs from "express-handlebars";
 
 async function startServer() {
   /**
@@ -19,8 +21,19 @@ async function startServer() {
   });
 
   const app = express();
-
   await require("./server").default({ app });
+
+  // view engine setup
+  app.engine(
+    ".hbs",
+    expressHbs({
+      defaultLayout: "layout",
+      extname: ".hbs"
+    })
+  );
+  app.set("view engine", "hbs");
+  app.set("views", path.join(__dirname, "../views"));
+  app.use(express.static(path.join(__dirname, "public")));
 
   app.listen(config.port, err => {
     if (err) {

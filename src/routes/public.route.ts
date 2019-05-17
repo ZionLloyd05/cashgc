@@ -9,7 +9,7 @@ export class PublicRoute implements IRoute {
   }
 
   private serveHomeView(req: Request, res: Response) {
-    res.send("home view");
+    res.render("index", { title: "Home" });
     // res.render({})
   }
 

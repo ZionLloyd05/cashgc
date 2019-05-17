@@ -12,6 +12,8 @@ require("reflect-metadata");
 const index_1 = require("./database/index");
 const config_1 = require("./config");
 const express = require("express");
+const path = require("path");
+const expressHbs = require("express-handlebars");
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         /**
@@ -27,6 +29,14 @@ function startServer() {
         });
         const app = express();
         yield require("./server").default({ app });
+        // view engine setup
+        app.engine(".hbs", expressHbs({
+            defaultLayout: "layout",
+            extname: ".hbs"
+        }));
+        app.set("view engine", "hbs");
+        app.set("views", path.join(__dirname, "../views"));
+        app.use(express.static(path.join(__dirname, "public")));
         app.listen(config_1.default.port, err => {
             if (err) {
                 console.log("got an error");

@@ -2,7 +2,6 @@ import * as express from "express";
 import { Request, Response } from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import config from "../config";
 import * as morgan from "morgan";
 import { ROUTERS } from "../routes";
 
