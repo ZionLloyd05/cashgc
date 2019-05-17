@@ -1,12 +1,10 @@
 import { Cart } from "./Cart";
-import { GiftCode } from "./GiftCode";
+import { GiftCodeCategory } from "./GiftCodeCategory";
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToOne,
-  JoinColumn,
   ManyToOne
 } from "typeorm";
 
@@ -21,11 +19,11 @@ export class CartItem {
   @Column("double")
   public price: number;
 
-  @Column()
-  public isInCart: boolean;
-
-  @ManyToOne(type => GiftCode, giftcode => giftcode.cartItems)
-  public giftCode: GiftCode;
+  @ManyToOne(
+    type => GiftCodeCategory,
+    giftCodeCategory => giftCodeCategory.cartItems
+  )
+  public giftCodeCategory: GiftCodeCategory;
 
   @ManyToOne(type => Cart, cart => cart.cartItems)
   public cart: Cart;

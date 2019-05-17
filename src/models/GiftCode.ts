@@ -1,10 +1,12 @@
-import { CartItem } from "./CartItem";
+import { GiftCodeCategory } from "./GiftCodeCategory";
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToMany
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  Column
 } from "typeorm";
 
 @Entity()
@@ -13,22 +15,19 @@ export class GiftCode {
   public id: number;
 
   @Column()
-  public title: string;
+  public code: string;
+
+  @Column({ default: false })
+  public isUsed: boolean;
 
   @Column()
-  public imageUrl: string;
+  public dateUsed?: Date;
 
-  @Column("double")
-  public sellingPrice: number;
-
-  @Column("double")
-  public buyingPrice: number;
-
-  @Column()
-  public prefix: string;
-
-  @OneToMany(type => CartItem, cartItem => cartItem.giftCode)
-  public cartItems: CartItem[];
+  @ManyToOne(
+    type => GiftCodeCategory,
+    giftCodeCategory => giftCodeCategory.giftCodes
+  )
+  public giftCodeCategory: GiftCodeCategory;
 
   @CreateDateColumn()
   createdAt: Date;

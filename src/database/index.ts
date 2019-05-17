@@ -1,5 +1,5 @@
-import { TransCartItem } from "../models/TransCartItem";
 import { Transaction } from "../models/Transaction";
+import { GiftCodeCategory } from "../models/GiftCodeCategory";
 import { GiftCode } from "../models/GiftCode";
 import { CartItem } from "../models/CartItem";
 import { Cart } from "../models/Cart";
@@ -59,7 +59,7 @@ export class DatabaseProvider {
         CartItem,
         GiftCode,
         Transaction,
-        TransCartItem
+        GiftCodeCategory
       ],
       synchronize: true
     });

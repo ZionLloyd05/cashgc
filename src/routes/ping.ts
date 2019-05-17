@@ -11,7 +11,7 @@ export class PingRoute implements IRoute {
   >(UserController);
 
   initialize(router: Router): void {
-    router.get("/", this.ping.bind(this));
+    router.get("/ping", this.ping.bind(this));
   }
 
   /**

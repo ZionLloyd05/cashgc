@@ -47,8 +47,9 @@ export class UserService {
     return await db.getRepository(User).find();
   }
 
-  /**
-   * Helper functions
+  /**   *
+   * This is an helper function used for data encryption, password in this use case.
+   * @param data: string | number;
    */
   private hashPassword(password: string): string {
     const algorithm = "aes256";

@@ -1,6 +1,4 @@
 import { CartService } from "./../services/cart.service";
-import { IUserObserver } from "./../interfaces/IObserver";
-import { ISubject } from "./../interfaces/ISubject";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
 import { injectable, inject } from "inversify";

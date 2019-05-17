@@ -1,18 +1,24 @@
 import { User } from "./User";
-import { TransCartItem } from "./TransCartItem";
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToMany,
   Generated,
-  ManyToOne
+  ManyToOne,
+  ManyToMany,
+  JoinTable
 } from "typeorm";
+import { GiftCode } from "./GiftCode";
 
 enum Status {
   Success,
   Failed
+}
+
+enum Type {
+  Buy,
+  Sell
 }
 
 @Entity()
@@ -30,8 +36,12 @@ export class Transaction {
   @ManyToOne(type => User, user => user.transactions)
   public user: User;
 
-  @OneToMany(type => TransCartItem, transCartItem => transCartItem.transaction)
-  public transCartItems: TransCartItem[];
+  @Column("enum", { enum: Type })
+  public type: Type;
+
+  @ManyToMany(type => GiftCode)
+  @JoinTable()
+  public giftCodes: GiftCode[];
 
   @CreateDateColumn()
   createdAt: Date;
