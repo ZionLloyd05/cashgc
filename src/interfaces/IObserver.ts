@@ -1,3 +1,4 @@
-export interface IObserver {
-  update<T>(arg: T);
+import { User } from "./../models/User";
+export interface IUserObserver {
+  userCreated(user: User): void;
 }

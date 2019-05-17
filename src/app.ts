@@ -35,24 +35,25 @@ async function startServer() {
     console.log("-------------------------------------------------------");
   });
 
-  // try {
-  //   await DatabaseProvider.getConnection();
-  //   console.log("Database connected");
-  // } catch (error) {
-  //   console.log("error");
-  //   console.log(error);
-  // }
-  // const userService = new UserService();
+  try {
+    await DatabaseProvider.getConnection();
+    console.log("Database connected");
+  } catch (error) {
+    console.log("error");
+    console.log(error);
+  }
+
+  // const userCtr = new UserController();
   // let nuser = new User();
   // nuser = {
   //   id: 3,
-  //   firstname: "lisha",
-  //   lastname: "davids",
-  //   email: "davlisha@gmail.com",
+  //   firstname: "Ralph",
+  //   lastname: "Woods",
+  //   email: "ralphwoods@gmail.com",
   //   address: "las vegas",
   //   city: "broklyn",
   //   state: "new york",
-  //   country: "america",
+  //   country: "London",
   //   password: "lisha123"
   // };
 
@@ -60,7 +61,7 @@ async function startServer() {
   // try {
   //   //await userService.update(nuser);
 
-  //   userService.getById(2).then(user => {
+  //   userController.saveUser(nuser).then(user => {
   //     console.log(user);
   //   });
   // } catch (error) {

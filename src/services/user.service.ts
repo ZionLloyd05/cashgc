@@ -6,7 +6,7 @@ import { injectable } from "inversify";
 
 @injectable()
 export class UserService {
-  public async create(user: User): Promise<IUserDTO> {
+  public async create(user: User): Promise<User> {
     const db = await DatabaseProvider.getConnection();
 
     let newUser = new User();

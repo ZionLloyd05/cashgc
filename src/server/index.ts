@@ -2,9 +2,9 @@ import * as express from "express";
 import { Request, Response } from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import routes from "../routes";
 import config from "../config";
 import * as morgan from "morgan";
+import { ROUTERS } from "../routes";
 
 export default async ({ app }: { app: express.Application }) => {
   /**
@@ -26,7 +26,10 @@ export default async ({ app }: { app: express.Application }) => {
   app.use(bodyParser.json());
 
   // Load routes
-  app.use(config.route.prefix, routes);
+  ROUTERS.forEach(router => {
+    router.initialize(app);
+  });
+  // app.use(config.route.prefix, routes);
 
   /// catch 404 and forward to error handler
   app.use((req: Request, res: Response, next: any) => {

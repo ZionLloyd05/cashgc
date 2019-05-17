@@ -1,7 +1,7 @@
-import { IObserver } from "./IObserver";
+import { IUserObserver } from "./IObserver";
 
 export interface ISubject {
-  registerObserver(o: IObserver);
-  removeObserver(o: IObserver);
+  registerObserver(o: IUserObserver);
+  removeObserver(o: IUserObserver);
   notifyObserver();
 }

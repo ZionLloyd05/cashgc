@@ -1,4 +1,4 @@
-import { IObserver } from "./../interfaces/IObserver";
+import { IUserObserver } from "./../interfaces/IObserver";
 import { ISubject } from "./../interfaces/ISubject";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
@@ -7,8 +7,9 @@ import { injectable, inject } from "inversify";
 @injectable()
 export class UserController implements ISubject {
   private _userService: UserService;
-  private newUserId: number;
-  private observers: IObserver[] = [];
+  //   private newUserId: number;
+  private user: User;
+  private observers: IUserObserver[] = [];
 
   constructor(@inject(UserService) userService: UserService) {
     this._userService = userService;
@@ -21,7 +22,7 @@ export class UserController implements ISubject {
     } else {
       // create user logic
       const newUser = await this._userService.create(user);
-      this.newUserId = newUser.id;
+      this.user = newUser;
       this.notifyObserver();
     }
   }
@@ -37,16 +38,16 @@ export class UserController implements ISubject {
   /**
    * Observers Preparation
    */
-  registerObserver(o: IObserver) {
+  registerObserver(o: IUserObserver) {
     this.observers.push(o);
   }
-  removeObserver(o: IObserver) {
+  removeObserver(o: IUserObserver) {
     let index = this.observers.indexOf(o);
     this.observers.splice(index, 1);
   }
   notifyObserver() {
     for (let observer of this.observers) {
-      observer.update(this.newUserId);
+      observer.userCreated(this.user);
     }
   }
 }
