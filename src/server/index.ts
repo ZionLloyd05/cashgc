@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as morgan from "morgan";
+import * as path from "path";
 import { ROUTERS } from "../routes";
 
 export default async ({ app }: { app: express.Application }) => {
