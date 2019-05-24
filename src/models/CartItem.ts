@@ -1,4 +1,4 @@
-import { Cart } from "./Cart";
+import { User } from "./User";
 import { GiftCodeCategory } from "./GiftCodeCategory";
 import {
   Entity,
@@ -11,13 +11,13 @@ import {
 @Entity()
 export class CartItem {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id?: number;
 
   @Column()
   public quantity: number;
 
   @Column("double")
-  public price: number;
+  public total: number;
 
   @ManyToOne(
     type => GiftCodeCategory,
@@ -25,9 +25,9 @@ export class CartItem {
   )
   public giftCodeCategory: GiftCodeCategory;
 
-  @ManyToOne(type => Cart, cart => cart.cartItems)
-  public cart: Cart;
+  @ManyToOne(type => User, user => user.cartItems)
+  public user: User;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 }

@@ -1,3 +1,4 @@
+import { CartItem } from "./CartItem";
 import { Transaction } from "./Transaction";
 import {
   validate,
@@ -77,7 +78,10 @@ export class User implements IUserDTO {
   public resetPasswordExpiryDate?: string;
 
   @Column()
-  public password: string;
+  public password?: string;
+
+  @OneToMany(type => CartItem, cartItem => cartItem.user)
+  public cartItems?: CartItem[];
 
   @OneToMany(type => Transaction, transaction => transaction.user)
   public transactions?: Transaction[];

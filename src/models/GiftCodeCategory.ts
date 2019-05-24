@@ -11,7 +11,7 @@ import {
 @Entity()
 export class GiftCodeCategory {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id?: number;
 
   @Column()
   public title: string;
@@ -28,8 +28,11 @@ export class GiftCodeCategory {
   @Column()
   public prefix?: string;
 
+  @Column({ default: true })
+  public isAvailable?: boolean;
+
   @OneToMany(type => GiftCode, giftCode => giftCode.giftCodeCategory)
-  public giftCodes: GiftCode[];
+  public giftCodes?: GiftCode[];
 
   @OneToMany(type => CartItem, cartItem => cartItem.giftCodeCategory)
   public cartItems?: CartItem[];

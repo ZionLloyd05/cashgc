@@ -2,7 +2,6 @@ import { Transaction } from "../models/Transaction";
 import { GiftCodeCategory } from "../models/GiftCodeCategory";
 import { GiftCode } from "../models/GiftCode";
 import { CartItem } from "../models/CartItem";
-import { Cart } from "../models/Cart";
 import { User } from "../models/User";
 import { Admin } from "../models/Admin";
 import { DatabaseConfiguration } from "./index";
@@ -55,7 +54,6 @@ export class DatabaseProvider {
       entities: [
         Admin,
         User,
-        Cart,
         CartItem,
         GiftCode,
         Transaction,

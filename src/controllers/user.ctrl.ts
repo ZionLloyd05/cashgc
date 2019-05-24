@@ -1,30 +1,24 @@
-import { CartService } from "./../services/cart.service";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
 import { injectable, inject } from "inversify";
-import { EventEmitter } from "events";
+// import { EventEmitter } from "events";
 
 @injectable()
 export class UserController {
   private _userService: UserService;
-  private userEvent: EventEmitter;
-  private _cartService: CartService;
+  // private userEvent: EventEmitter;
 
-  constructor(
-    @inject(UserService) userService: UserService,
-    @inject(CartService) cartService: CartService
-  ) {
+  constructor(@inject(UserService) userService: UserService) {
     /**
      * Declaring DIs */
 
     this._userService = userService;
-    this._cartService = cartService;
 
     /**
      * Defining Events, on user creation
      */
-    this.userEvent = new EventEmitter();
-    this.userEvent.on("new user", user => this.setUpNewCart(user));
+    // this.userEvent = new EventEmitter();
+    // this.userEvent.on("new user", user => this.setUpNewCart(user));
   }
 
   public async saveUser(user: User): Promise<IUserDTO> {
@@ -34,7 +28,7 @@ export class UserController {
     } else {
       // create user logic
       const newUser = await this._userService.create(user);
-      this.userEvent.emit("new user", newUser);
+      // this.userEvent.emit("new user", newUser);
       return newUser;
     }
   }
@@ -45,9 +39,5 @@ export class UserController {
 
   public async getAllUsers(): Promise<IUserDTO[]> {
     return await this._userService.getAll();
-  }
-
-  private setUpNewCart(user) {
-    this._cartService.createCart(user);
   }
 }

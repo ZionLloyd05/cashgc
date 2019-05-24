@@ -39,4 +39,12 @@ export class GCCService {
     const db = await DatabaseProvider.getConnection();
     return await db.getRepository(GiftCodeCategory).find();
   }
+
+  public async deactivateById(id: number): Promise<GiftCodeCategory> {
+    const db = await DatabaseProvider.getConnection();
+    let gccInDb = await this.getById(id);
+    gccInDb.isAvailable = false;
+
+    return await db.getRepository(GiftCodeCategory).save(gccInDb);
+  }
 }

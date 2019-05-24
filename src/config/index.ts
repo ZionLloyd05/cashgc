@@ -49,6 +49,11 @@ export default {
   key: process.env.KEY,
 
   /**
+   * Secret Key
+   */
+  secret: process.env.SECRET,
+
+  /**
    * Routes Config
    */
   route: {

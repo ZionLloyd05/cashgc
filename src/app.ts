@@ -16,6 +16,14 @@ async function startServer() {
     port: config.dbport
   });
 
+  try {
+    await DatabaseProvider.getConnection();
+    console.log("Database connected");
+  } catch (error) {
+    console.log("error");
+    console.log(error);
+  }
+
   const app = require("./config/viewsetup").default();
   await require("./server").default({ app });
 
@@ -31,14 +39,6 @@ async function startServer() {
     console.log(" ( :  Server listening on port: ", config.port, " : ) ");
     console.log("-------------------------------------------------------");
   });
-
-  try {
-    await DatabaseProvider.getConnection();
-    console.log("Database connected");
-  } catch (error) {
-    console.log("error");
-    console.log(error);
-  }
 }
 
 startServer();
