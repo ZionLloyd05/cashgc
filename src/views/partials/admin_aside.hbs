@@ -21,18 +21,23 @@
             {{log isStore}} --}}
             <ul class="kt-menu__nav ">
                 <li class="kt-menu__item  kt-menu__item--submenu {{#if isDashboard}} kt-menu__item--open {{/if}}">
-                    <a href="/user" class="kt-menu__link kt-menu__toggle"><i
+                    <a href="/admin" class="kt-menu__link kt-menu__toggle"><i
                             class="kt-menu__link-icon flaticon2-graphic"></i><span
                             class="kt-menu__link-text">Dashboard</span></a>
                 </li>
                 <li class="kt-menu__section ">
-                    <h4 class="kt-menu__section-text">Store</h4>
+                    <h4 class="kt-menu__section-text">Gift Code</h4>
                     <i class="kt-menu__section-icon flaticon-more-v2"></i>
+                </li>
+                <li class="kt-menu__item  kt-menu__item--submenu {{#if isCategory}} kt-menu__item--open {{/if}} "><a
+                        href="/admin/gc/categories" class="kt-menu__link kt-menu__toggle"><i
+                            class="kt-menu__link-icon flaticon-cart"></i><span
+                            class="kt-menu__link-text">Categories</span></a>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu {{#if isStore}} kt-menu__item--open {{/if}} "><a
                         href="/user/store" class="kt-menu__link kt-menu__toggle"><i
-                            class="kt-menu__link-icon flaticon-cart"></i><span class="kt-menu__link-text">Gift Code
-                            Store</span></a>
+                            class="kt-menu__link-icon flaticon-cart"></i><span
+                            class="kt-menu__link-text">Codes</span></a>
                 </li>
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Operations</h4>
