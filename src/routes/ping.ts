@@ -54,7 +54,6 @@ export class PingRoute implements IRoute {
     // };
     // let user = await this._userController.getUserById(1);
     // let gccc = await this._gccService.getById(1);
-
     // let newCartItem = new CartItem();
     // newCartItem = {
     //   quantity: 1,
@@ -62,11 +61,9 @@ export class PingRoute implements IRoute {
     //   giftCodeCategory: gccc,
     //   user: user
     // };
-
     // nuser = { ...req };
     // try {
     //   // await userService.update(nuser);
-
     // this._userService
     //   .create(nuser)
     //   .then(user => res.send(user))
@@ -88,10 +85,10 @@ export class PingRoute implements IRoute {
     // } catch (error) {
     //   console.log(error);
     // }
-    // res.render("admin/index", {
-    //   title: "Dashboard",
-    //   layout: "adminLayout"
-    // });
+    res.render("admin/index", {
+      title: "Dashboard",
+      layout: "adminLayout"
+    });
     // let email = "shilolee@gmail.com";
     // let pwd = "lisha1";
     // this._userService

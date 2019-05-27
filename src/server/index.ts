@@ -13,6 +13,7 @@ import * as expressMySQLSession from "express-mysql-session";
 import * as flash from "connect-flash";
 import { ROUTERS } from "../routes";
 import config from "../config";
+import * as validator from "express-validator";
 
 export default async ({ app }: { app: express.Application }) => {
   /**
@@ -25,12 +26,12 @@ export default async ({ app }: { app: express.Application }) => {
     res.status(200).end();
   });
 
+  app.use(validator());
+
   // Enable Cross Origin Resource Sharing to all origins by default
   app.use(cors());
 
   app.use(morgan("dev"));
-
-  app.use(flash());
 
   app.use(cookieParser());
 
@@ -40,6 +41,7 @@ export default async ({ app }: { app: express.Application }) => {
   // User query string parser
   app.use(bodyParser.urlencoded({ extended: true }));
 
+  // Setting up session store for express
   const MySQLStore = expressMySQLSession(session);
 
   var options = {
@@ -66,6 +68,26 @@ export default async ({ app }: { app: express.Application }) => {
   PassportConfig.bootstrap(passport);
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
+  // This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
+  app.use((req, res, next) => {
+    if (req.cookies.connect_dd && !req.user) {
+      res.clearCookie("connect-dd");
+    }
+    next();
+  });
+
+  // // The flash middleware let's us use req.flash('error', 'Shit!'), which will then pass that message to the next page the user requests
+  app.use(flash());
+
+  // pass variables to our templates + all requests
+  app.use((req, res, next) => {
+    // res.locals.flashes = req.flash();
+    res.locals.user = req.user || null;
+    res.locals.isLoggedIn = req.isAuthenticated();
+    next();
+  });
 
   // Load routes
   ROUTERS.forEach(router => {

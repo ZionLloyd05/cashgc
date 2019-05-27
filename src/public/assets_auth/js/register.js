@@ -1,4 +1,19 @@
 "use strict";
+$(document).ready(function () {
+    $('#phoneCode').on('change', function () {
+        var code = $(this).val();
+        $.ajax({
+            url: "https://restcountries.eu/rest/v2/callingcode/" + code,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+
+                console.log(data[0].name)
+                $('#country').val(data[0].name);
+            }
+        })
+    })
+})
 $("#signup").validate({
     rules: {
         firstname: {
@@ -13,7 +28,7 @@ $("#signup").validate({
             required: true,
             email: true
         },
-        phone: {
+        telephone: {
             required: true,
             digits: true,
             maxlength: 12
@@ -40,10 +55,9 @@ $("#signup").validate({
             required: "Email is required",
             email: "Invalid Email"
         },
-        phone: {
+        telephone: {
             required: "Phone number is required",
-            digits: "Phone must be digits",
-            maxlength: "Invalid Phone number"
+            digits: "Phone must be digits"
         },
         password: {
             required: "Password is required",

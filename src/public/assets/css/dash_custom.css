@@ -1,0 +1,16 @@
+.width__100 {
+    width: 100% !important;
+}
+
+.kt-portlet--sticky>.kt-portlet__head--lg {
+    left: 285px;
+    right: 25px;
+}
+
+.cart table tr {
+    font-size: 14px !important;
+}
+
+.cart .fa {
+    font-size: 16px !important;
+}

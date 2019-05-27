@@ -1,3 +1,4 @@
+import { AuthService } from "./../services/auth.service";
 import { CartItemService } from "./../services/cartItem.service";
 import { UserController } from "./../controllers/user.ctrl";
 import { UserService } from "./../services/user.service";
@@ -16,5 +17,6 @@ DIContainer.bind<UserService>(UserService).toSelf();
 DIContainer.bind<UserController>(UserController).toSelf();
 DIContainer.bind<GCCService>(GCCService).toSelf();
 DIContainer.bind<CartItemService>(CartItemService).toSelf();
+DIContainer.bind<AuthService>(AuthService).toSelf();
 
 export default DIContainer;

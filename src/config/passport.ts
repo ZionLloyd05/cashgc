@@ -43,15 +43,24 @@ export class PassportConfig {
           .isExist(username)
           .then(async isExist => {
             if (isExist) {
-              return done("Email already exist");
+              return done(
+                null,
+                false,
+                req.flash("error", "Email already exist")
+              );
             } else {
               let newUser = new User();
+              let newPhone = req.body.phoneCode + "" + req.body.phone;
+              req.body.phone = newPhone;
               newUser = {
                 ...req.body
               };
+              console.log(newUser);
               await PassportConfig._userService
                 .create(newUser)
-                .then(user => done(null, user))
+                .then(async user => {
+                  done(null, user);
+                })
                 .catch(error => done(error, null));
             }
           });
@@ -60,20 +69,25 @@ export class PassportConfig {
 
     let verifySignIn: VerifyFunction = (
       req: Request,
-      user: string,
+      email: string,
       password: string,
       done
     ) => {
       process.nextTick(async () => {
-        console.log("hey bro");
         await PassportConfig._userService
-          .authenticate(user, password)
+          .authenticate(email, password)
           .then(user => {
-            console.log(user);
             if (user) return done(null, user);
-            else return done(null, null);
+            else {
+              return done(
+                null,
+                null,
+                req.flash("error", "Incorrect Credentials")
+              );
+            }
           })
           .catch(err => {
+            console.log(err);
             return done(null, err);
           });
       });

@@ -264,6 +264,7 @@ body {
         padding: 1.5rem 2rem
     }
 
+
     .kt-login-v2 .kt-login-v2__head .kt-login-v2__logo {
         margin-bottom: 2rem
     }
@@ -354,14 +355,28 @@ body {
     }
 }
 
+@media (min-width: 992px) {
+    .alert {
+        font-size: 16px;
+        width: 40%;
+        margin: 0 auto !important;
+        font-weight: 500;
+    }
+}
+
 /* Custom */
+
+.alert {
+    font-size: 16px;
+    font-weight: 500;
+}
 
 .form-group {
     padding-right: 8px !important;
     padding-left: 8px !important;
 }
 
-.form-group > .form-control {
+.form-group>.form-control {
     font-size: 1.2rem !important;
     width: 90% !important;
 }

@@ -64,13 +64,37 @@
                         <!-- End Testimonials -->
 
                         <!-- Button -->
+                        {{#if isLoggedIn}}
+                        <!-- Account Signin -->
+                        <li class="nav-item u-header__navbar-icon">
+                            <!-- Account Sidebar Toggle Button -->
+                            <a id="sidebarNavToggler" class="btn btn-sm btn-primary" href="javascript:;" role="button"
+                                aria-controls="sidebarContent" aria-haspopup="true" aria-expanded="false"
+                                data-unfold-event="click" data-unfold-hide-on-scroll="false"
+                                data-unfold-target="#sidebarContent" data-unfold-type="css-animation"
+                                data-unfold-animation-in="fadeInRight" data-unfold-animation-out="fadeOutRight"
+                                data-unfold-duration="500">{{user.firstname}} {{user.lastname}} &nbsp;&nbsp; <i
+                                    class="fas fa-bars mr-1"></i>
+                            </a>
+                            <!-- End Account Sidebar Toggle Button -->
+                        </li>
+                        <!-- End Account Signin -->
+                        {{else}}
                         <li class="nav-item u-header__nav-item-btn">
-                            <a class="btn btn-sm btn-primary" href="#signupModal" role="button"
+                            <a class="btn btn-sm btn-primary" href="/signup" role="button"
                                 data-modal-target="#signupModal" data-overlay-color="#151b26">
                                 <span class="fa fa-user-circle mr-1"></span>
-                                Signin
+                                Sign Up
                             </a>
                         </li>
+                        <li class="nav-item u-header__nav-item-btn">
+                            <a class="btn btn-sm btn-primary" href="/signin" role="button"
+                                data-modal-target="#signupModal" data-overlay-color="#151b26">
+                                <span class="fas fa-sign-in-alt mr-1"></span>
+                                Sign In
+                            </a>
+                        </li>
+                        {{/if}}
                         <!-- End Button -->
 
                         <!-- Search -->
@@ -123,20 +147,7 @@
                     </li>
                     <!-- End Shopping Cart -->
 
-                    <!-- Account Signin -->
-                    <li class="nav-item u-header__navbar-icon">
-                        <!-- Account Sidebar Toggle Button -->
-                        <a id="sidebarNavToggler" class="btn btn-xs btn-icon btn-text-dark" href="javascript:;"
-                            role="button" aria-controls="sidebarContent" aria-haspopup="true" aria-expanded="false"
-                            data-unfold-event="click" data-unfold-hide-on-scroll="false"
-                            data-unfold-target="#sidebarContent" data-unfold-type="css-animation"
-                            data-unfold-animation-in="fadeInRight" data-unfold-animation-out="fadeOutRight"
-                            data-unfold-duration="500">
-                            <span class="fa fa-bars btn-icon__inner font-size-13"></span>
-                        </a>
-                        <!-- End Account Sidebar Toggle Button -->
-                    </li>
-                    <!-- End Account Signin -->
+
                 </ul>
             </nav>
             <!-- End Nav -->
@@ -775,7 +786,7 @@
             <div class="u-sidebar--panel__footer-offset">
                 <!-- Toggle Button -->
                 <div class="d-flex align-items-center border-bottom py-4 px-5">
-                    <h4 class="h5 mb-0">Account</h4>
+                    <h4 class="h5 mb-0">Morning, {{user.lastname}}</h4>
 
                     <button type="button" class="close u-sidebar__close ml-auto" aria-controls="sidebarContent"
                         aria-haspopup="true" aria-expanded="false" data-unfold-event="click"
@@ -792,7 +803,7 @@
                     <div class="u-sidebar__content py-5">
                         <!-- Title -->
                         <div class="py-2 px-5">
-                            <h4 class="text-uppercase text-muted font-size-13 mb-0">Menu label</h4>
+                            <h4 class="text-uppercase text-muted font-size-13 mb-0">Quick Action</h4>
                         </div>
                         <!-- End Title -->
 
@@ -812,7 +823,7 @@
                                     <img class="max-width-4 mr-3" src="assets_home/svg/components/touch-dark-icon.svg"
                                         alt="Image Description">
                                     <div class="media-body">
-                                        <span>Activity</span>
+                                        <span>Notifications</span>
                                     </div>
                                 </a>
                             </li>
@@ -821,7 +832,7 @@
                                     <img class="max-width-4 mr-3" src="assets_home/svg/components/team-dark-icon.svg"
                                         alt="Image Description">
                                     <div class="media-body">
-                                        <span>Team</span>
+                                        <span>Transaction</span>
                                     </div>
                                 </a>
                             </li>
@@ -846,43 +857,7 @@
                         </ul>
                         <!-- End List -->
 
-                        <!-- Title -->
-                        <div class="py-2 px-5">
-                            <h4 class="text-uppercase text-muted font-size-13 mb-0">Sub level</h4>
-                        </div>
-                        <!-- End Title -->
 
-                        <!-- List -->
-                        <ul class="list-unstyled font-size-14 mb-0">
-                            <li>
-                                <a class="media align-items-center u-sidebar--panel__link py-2 px-5" href="#">
-                                    <img class="max-width-4 mr-3"
-                                        src="assets_home/svg/components/calendar-dark-icon.svg" alt="Image Description">
-                                    <div class="media-body">
-                                        <span>Calendar</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="media align-items-center u-sidebar--panel__link py-2 px-5" href="#">
-                                    <img class="max-width-4 mr-3" src="assets_home/svg/components/cog-dark-icon.svg"
-                                        alt="Image Description">
-                                    <div class="media-body">
-                                        <span>Tools</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="media align-items-center u-sidebar--panel__link py-2 px-5" href="#">
-                                    <img class="max-width-4 mr-3" src="assets_home/svg/components/archive-dark-icon.svg"
-                                        alt="Image Description">
-                                    <div class="media-body">
-                                        <span>Archive</span>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- End List -->
                     </div>
                 </div>
                 <!-- End Content -->
@@ -899,8 +874,8 @@
                         <a class="u-sidebar--panel__link px-2" href="pages/terms.html">Terms</a>
                     </li>
                     <li class="list-inline-item">
-                        <a class="u-sidebar--panel__link pl-2" href="pages/help.html">
-                            <i class="fa fa-info-circle"></i>
+                        <a class="u-sidebar--panel__link px-2" href="/logout">
+                            <i class=" fas fa-power-off"></i>&nbsp;Log Out
                         </a>
                     </li>
                 </ul>
@@ -912,219 +887,6 @@
 </aside>
 <!-- End Panel Sidebar Navigation -->
 
-<!-- Signup Modal Window -->
-<div id="signupModal" class="js-signup-modal u-modal-window" style="width: 500px;">
-    <!-- Modal Close Button -->
-    <button class="btn btn-sm btn-icon btn-text-secondary u-modal-window__close" type="button"
-        onclick="Custombox.modal.close();">
-        <span class="fas fa-times"></span>
-    </button>
-    <!-- End Modal Close Button -->
-
-    <!-- Content -->
-    <div class="p-5">
-        <form class="js-validate">
-            <!-- Signin -->
-            <div id="signin" data-target-group="idForm">
-                <!-- Title -->
-                <header class="text-center mb-5">
-                    <h2 class="h4 mb-0">Please sign in</h2>
-                    <p>Signin to manage your account.</p>
-                </header>
-                <!-- End Title -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-user form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="email" class="form-control form__input" name="email" required placeholder="Email"
-                            aria-label="Email" data-msg="Please enter a valid email address."
-                            data-error-class="u-has-error" data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-lock form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="password" class="form-control form__input" name="password" required
-                            placeholder="Password" aria-label="Password"
-                            data-msg="Your password is invalid. Please try again." data-error-class="u-has-error"
-                            data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <div class="row mb-3">
-                    <div class="col-6">
-                        <!-- Checkbox -->
-                        <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
-                            <input type="checkbox" class="custom-control-input" id="rememberMeCheckbox">
-                            <label class="custom-control-label" for="rememberMeCheckbox">
-                                Remember Me
-                            </label>
-                        </div>
-                        <!-- End Checkbox -->
-                    </div>
-
-                    <div class="col-6 text-right">
-                        <a class="js-animation-link float-right" href="javascript:;" data-target="#forgotPassword"
-                            data-link-group="idForm" data-animation-in="fadeIn">Forgot Password?</a>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-block btn-primary">Signin</button>
-                </div>
-
-                <!-- Divider -->
-                <div class="text-center u-divider-wrapper my-3">
-                    <span class="u-divider u-divider--xs u-divider--text">OR</span>
-                </div>
-                <!-- End Divider -->
-
-                <div class="text-center mb-3">
-                    <p class="text-muted">
-                        Do not have an account?
-                        <a class="js-animation-link" href="javascript:;" data-target="#signup" data-link-group="idForm"
-                            data-animation-in="fadeIn">Signup
-                        </a>
-                    </p>
-                </div>
-
-            </div>
-            <!-- End Signin -->
-
-            <!-- Signup -->
-            <div id="signup" style="display: none; opacity: 0;" data-target-group="idForm">
-                <!-- Title -->
-                <header class="text-center mb-5">
-                    <h2 class="h4 mb-0">Please sign up</h2>
-                    <p>Fill out the form to get started.</p>
-                </header>
-                <!-- End Title -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-user form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="email" class="form-control form__input" name="email" required placeholder="Email"
-                            aria-label="Email" data-msg="Please enter a valid email address."
-                            data-error-class="u-has-error" data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-lock form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="password" class="form-control form__input" name="password" id="password" required
-                            placeholder="Password" aria-label="Password"
-                            data-msg="Your password is invalid. Please try again." data-error-class="u-has-error"
-                            data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-key form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="password" class="form-control form__input" name="confirmPassword" required
-                            placeholder="Confirm Password" aria-label="Confirm Password"
-                            data-msg="Password does not match the confirm password." data-error-class="u-has-error"
-                            data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-block btn-primary">Signup</button>
-                </div>
-
-                <!-- Divider -->
-                <div class="text-center u-divider-wrapper my-3">
-                    <span class="u-divider u-divider--xs u-divider--text">OR</span>
-                </div>
-                <!-- End Divider -->
-
-                <div class="text-center mb-3">
-                    <p class="text-muted">
-                        Have an account?
-                        <a class="js-animation-link" href="javascript:;" data-target="#signin" data-link-group="idForm"
-                            data-animation-in="fadeIn">Signin
-                        </a>
-                    </p>
-                </div>
-
-            </div>
-            <!-- End Signup -->
-
-            <!-- Forgot Password -->
-            <div id="forgotPassword" style="display: none; opacity: 0;" data-target-group="idForm">
-                <!-- Title -->
-                <header class="text-center mb-5">
-                    <h2 class="h4 mb-0">Recover account</h2>
-                    <p>Enter your email address and an email with instructions will be sent to you.</p>
-                </header>
-                <!-- End Title -->
-
-                <!-- Input -->
-                <div class="js-form-message mb-3">
-                    <div class="js-focus-state input-group form">
-                        <div class="input-group-prepend form__prepend">
-                            <span class="input-group-text form__text">
-                                <span class="fa fa-user form__text-inner"></span>
-                            </span>
-                        </div>
-                        <input type="email" class="form-control form__input" name="email" required placeholder="Email"
-                            aria-label="Email" data-msg="Please enter a valid email address."
-                            data-error-class="u-has-error" data-success-class="u-has-success">
-                    </div>
-                </div>
-                <!-- End Input -->
-
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-block btn-primary">Recover Account</button>
-                </div>
-
-                <div class="text-center mb-3">
-                    <p class="text-muted">
-                        Have an account?
-                        <a class="js-animation-link" href="javascript:;" data-target="#signin" data-link-group="idForm"
-                            data-animation-in="fadeIn">Signin
-                        </a>
-                    </p>
-                </div>
-            </div>
-            <!-- End Forgot Password -->
-        </form>
-    </div>
-    <!-- End Content -->
-</div>
-<!-- End Signup Modal Window -->
 <!-- ========== END SECONDARY CONTENTS ========== -->
 
 <!-- Go to Top -->
