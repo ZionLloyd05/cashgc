@@ -92,8 +92,6 @@ export class PassportConfig {
 						if (user) {
 							let userDto: IUserDTO;
               userDto = { ...user };
-              console.log("userdto from passport signin")
-              console.log(userDto)
 							return done(null, userDto);
 						} else {
 							return done(

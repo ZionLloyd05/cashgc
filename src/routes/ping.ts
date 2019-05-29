@@ -32,12 +32,13 @@ export class PingRoute implements IRoute {
 	 * Router Functions
 	 */
 	private async ping(req: Request, res: Response) {
-		let user = new User();
-		user.id = 2;
-		this._userService
-			.confirmAdmin(user)
-			.then(data => res.send(data))
-			.catch(err => console.log(err));
+		console.log(req.originalUrl);
+		// let user = new User();
+		// user.id = 2;
+		// this._userService
+		// 	.confirmAdmin(user)
+		// 	.then(data => res.send(data))
+		// 	.catch(err => console.log(err));
 		// res.json("GET:  Ok 200");
 		// let nuser = new User();
 		// nuser = {

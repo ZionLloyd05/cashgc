@@ -1,3 +1,4 @@
+import { UserService } from "./../services/user.service";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
 import { Router, Request, Response, NextFunction } from "express";
@@ -10,6 +11,7 @@ export class UserRoute implements IRoute {
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
 		AuthService
 	);
+
 	private _gcController: GccController = DIContainer.resolve<GccController>(
 		GccController
 	);
@@ -19,8 +21,9 @@ export class UserRoute implements IRoute {
 		router.use(csrfProtection);
 
 		router.all("/user/*", this._authService.mustBeLoggedIn);
+		router.all("/user/*", this._authService.routeGaurd);
 
-		router.get("/user", this.serveDashboardView.bind(this));
+		router.get("/user", this._authService.mustBeLoggedIn, this._authService.routeGaurd, this.serveDashboardView.bind(this));
 
 		router.get("/user/store", this.serveStoreView.bind(this));
 

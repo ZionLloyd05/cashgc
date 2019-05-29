@@ -44,8 +44,10 @@ export class AdminRoute implements IRoute {
 		router.use(csrfProtection);
 
 		router.all("/admin/*", this._authService.mustBeLoggedIn);
+		
+		router.all("/admin/*", this._authService.routeGaurd);
 
-		router.get("/admin", this.serveDashboardView.bind(this));
+		router.get("/admin", this._authService.mustBeLoggedIn, this._authService.routeGaurd, this.serveDashboardView.bind(this));
 
 		router.get("/admin/gc/categories", this.serveCategoryView.bind(this));
 
