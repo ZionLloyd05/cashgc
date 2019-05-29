@@ -3,14 +3,20 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn
+  CreateDateColumn,
+  OneToOne,
+  JoinColumn
 } from "typeorm";
 
 @Entity()
-export class Admin extends User {
+export class Admin {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
   public role: string;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  public user: User;
 }

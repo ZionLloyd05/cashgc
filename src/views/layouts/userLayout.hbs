@@ -37,7 +37,11 @@ License: You must have a valid license purchased only from https://themes.getboo
     <!--begin::Page Vendors Styles(used by this page) -->
     {{!-- <link href="/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" /> --}}
     <!--end::Page Vendors Styles -->
-
+    
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
 
     <!--begin::Global Theme Styles(used by all pages) -->
     <link href="/assets/vendors/global/vendors.bundle.css" rel="stylesheet" type="text/css" />
@@ -434,10 +438,10 @@ License: You must have a valid license purchased only from https://themes.getboo
                         <!--end: User Bar -->
                         <!--begin:: Quick Panel Toggler -->
                         <div class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
-                            <span class="kt-header__topbar-icon" id="kt_quick_panel_toggler_btn">
+                            <a class="kt-header__topbar-icon" href="/logout">
                                 <i class="flaticon2-power"></i>
 
-                            </span>
+                            </a>
                         </div>
                         <!--end:: Quick Panel Toggler -->
                     </div>

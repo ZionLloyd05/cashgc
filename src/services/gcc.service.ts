@@ -1,50 +1,116 @@
 import { GiftCodeCategory } from "../models/GiftCodeCategory";
 import { injectable } from "inversify";
 import { DatabaseProvider } from "../database/index";
+import * as cloudinary from "cloudinary";
+import config from "../config";
 
 @injectable()
 export class GCCService {
-  public async create(gcCategory: GiftCodeCategory): Promise<GiftCodeCategory> {
-    const db = await DatabaseProvider.getConnection();
+	private cloudinary: any;
 
-    let newGCCategory = new GiftCodeCategory();
-    newGCCategory = { ...gcCategory };
+	/**
+	 *
+	 */
+	constructor() {
+		this.cloudinary = cloudinary.config({
+			cloud_name: config.cloudName,
+			api_key: config.apiKey,
+			api_secret: config.apiSecret
+		});
+	}
+	public async create(
+		gcCategory: GiftCodeCategory,
+		filePath: any
+	): Promise<GiftCodeCategory> {
+		console.log("creating from service");
+		const db = await DatabaseProvider.getConnection();
 
-    return await db.getRepository(GiftCodeCategory).save(newGCCategory);
-  }
+		let newGCCategory = new GiftCodeCategory();
 
-  public async update(gcCategory: GiftCodeCategory): Promise<GiftCodeCategory> {
-    const db = await DatabaseProvider.getConnection();
-    const gccRepository = db.getRepository(GiftCodeCategory);
-    let gccInDb = await gccRepository.findOne(gcCategory.id);
+		if (filePath != null) {
+			const imageUrl = await this.uploadImage(filePath);
+			gcCategory.imageUrl = imageUrl;
 
-    const { title, imageUrl, sellingPrice, buyingPrice, prefix } = gcCategory;
-    gccInDb.title = title;
-    gccInDb.imageUrl = imageUrl;
-    gccInDb.sellingPrice = sellingPrice;
-    gccInDb.buyingPrice = buyingPrice;
-    gccInDb.prefix = prefix;
+			newGCCategory = { ...gcCategory };
+		} else {
+			newGCCategory = { ...gcCategory };
+		}
 
-    return await gccRepository.save(gccInDb);
-  }
+		return await db.getRepository(GiftCodeCategory).save(newGCCategory);
+	}
 
-  public async getById(id: number): Promise<GiftCodeCategory> {
-    const db = await DatabaseProvider.getConnection();
+	public async update(
+		gcCategory: any,
+		filePath: any
+	): Promise<GiftCodeCategory> {
+		const db = await DatabaseProvider.getConnection();
+		const gccRepository = db.getRepository(GiftCodeCategory);
+		let gccInDb = await gccRepository.findOne(gcCategory.id);
 
-    const gccRepository = await db.getRepository(GiftCodeCategory);
-    return gccRepository.findOne(id);
-  }
+		let {
+			title,
+			imageUrl,
+			sellingPrice,
+			buyingPrice,
+			prefix,
+			isAvailable
+		} = gcCategory;
+		// console.log(gcCategory.isAvailable);
+		// console.log(gcCategory.isAvailable == "true");
+		// console.log(gccInDb.isAvailable)
 
-  public async getAll(): Promise<GiftCodeCategory[]> {
-    const db = await DatabaseProvider.getConnection();
-    return await db.getRepository(GiftCodeCategory).find();
-  }
+		if (filePath != null) {
+			let imageUrl = await this.uploadImage(filePath);
+			gccInDb.imageUrl = imageUrl;
 
-  public async deactivateById(id: number): Promise<GiftCodeCategory> {
-    const db = await DatabaseProvider.getConnection();
-    let gccInDb = await this.getById(id);
-    gccInDb.isAvailable = false;
+			gccInDb.title = title;
+			gccInDb.sellingPrice = sellingPrice;
+			gccInDb.buyingPrice = buyingPrice;
+			gccInDb.prefix = prefix;
+			if (isAvailable == "true") gccInDb.isAvailable = true;
+			else if (isAvailable == "false") gccInDb.isAvailable = false;
+		} else {
+			gccInDb.imageUrl = imageUrl;
+			gccInDb.title = title;
+			gccInDb.sellingPrice = sellingPrice;
+			gccInDb.buyingPrice = buyingPrice;
+			gccInDb.prefix = prefix;
+			if (isAvailable == "true") gccInDb.isAvailable = true;
+			else if (isAvailable == "false") gccInDb.isAvailable = false;
+		}
 
-    return await db.getRepository(GiftCodeCategory).save(gccInDb);
-  }
+		return await gccRepository.save(gccInDb);
+	}
+
+	public async uploadImage(filePath: any): Promise<string> {
+		const result = await cloudinary.uploader.upload(filePath);
+		return result.url;
+	}
+
+	public async getById(id: number): Promise<GiftCodeCategory> {
+		const db = await DatabaseProvider.getConnection();
+
+		const gccRepository = await db.getRepository(GiftCodeCategory);
+		return gccRepository.findOne(id);
+	}
+
+	public async getAll(): Promise<GiftCodeCategory[]> {
+		const db = await DatabaseProvider.getConnection();
+		return await db.getRepository(GiftCodeCategory).find();
+	}
+
+	public async toggleStatus(id: number): Promise<GiftCodeCategory> {
+		const db = await DatabaseProvider.getConnection();
+		let gccInDb = await this.getById(id);
+		if (gccInDb.isAvailable == true) gccInDb.isAvailable = false;
+		else if (gccInDb.isAvailable == false) gccInDb.isAvailable = true;
+
+		return await db.getRepository(GiftCodeCategory).save(gccInDb);
+	}
+
+	public async getActiveCategories(): Promise<GiftCodeCategory[]> {
+		const db = await DatabaseProvider.getConnection();
+
+		return await db.getRepository(GiftCodeCategory).find({ isAvailable: true });
+	}
 }

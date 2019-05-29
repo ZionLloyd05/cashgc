@@ -1,0 +1,1 @@
+$("#categoryFrm").validate();

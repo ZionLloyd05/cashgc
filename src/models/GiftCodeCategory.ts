@@ -16,8 +16,11 @@ export class GiftCodeCategory {
   @Column()
   public title: string;
 
-  @Column()
-  public imageUrl: string;
+  @Column({
+    default:
+      "https://res.cloudinary.com/decloud23tech/image/upload/v1559007371/placeholder.png"
+  })
+  public imageUrl?: string;
 
   @Column("double")
   public sellingPrice: number;

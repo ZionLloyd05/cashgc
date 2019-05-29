@@ -1,3 +1,4 @@
+import { Admin } from './../models/Admin';
 import { CartItemService } from "./cartItem.service";
 import { GCCService } from "./gcc.service";
 import { DatabaseProvider } from "./../database/index";
@@ -69,14 +70,7 @@ export class UserService {
   }
 
   public async addToCart(gccId: number, userId: number): Promise<boolean> {
-    /**
-     * fetch gcccategory
-     * fetch user
-     * check if item exist in cart
-     *  if yes: increase quantity and increment total
-     * else
-     *  create new item (gcccategory, user)
-     */
+   
     const gcccategory = await this._gccService.getById(gccId);
     const user = await this.getById(userId);
     return true;
@@ -102,7 +96,22 @@ export class UserService {
         }
       }
     });
-    return userFound;
+    let userDto: IUserDTO;
+    userDto = {...userFound};
+    return userDto;
+  }
+
+  /**
+   * confirmAdmin
+   */
+  public async confirmAdmin(user: IUserDTO): Promise<boolean> {
+    const db = await DatabaseProvider.getConnection();
+
+    let adminRepository = await db.getRepository(Admin);
+    let admin = await adminRepository.findOne({ user: user })
+    console.log(admin)
+    if(admin && admin != null) return true
+    else return false;
   }
 
   /**   *

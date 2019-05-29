@@ -24,14 +24,6 @@ function startServer() {
             host: config_1.default.host,
             port: config_1.default.dbport
         });
-        try {
-            yield index_1.DatabaseProvider.getConnection();
-            console.log("Database connected");
-        }
-        catch (error) {
-            console.log("error");
-            console.log(error);
-        }
         const app = require("./config/viewsetup").default();
         yield require("./server").default({ app });
         app.listen(config_1.default.port, err => {
@@ -45,6 +37,14 @@ function startServer() {
             console.log(" ( :  Server listening on port: ", config_1.default.port, " : ) ");
             console.log("-------------------------------------------------------");
         });
+        try {
+            yield index_1.DatabaseProvider.getConnection();
+            console.log("Database connected");
+        }
+        catch (error) {
+            console.log("error");
+            console.log(error);
+        }
     });
 }
 startServer();

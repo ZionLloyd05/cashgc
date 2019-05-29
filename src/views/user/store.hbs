@@ -22,6 +22,7 @@
                 <div class="kt-portlet" id="kt_page_portlet">
                     <div class="kt-portlet__head kt-portlet__head--lg" style="">
                         <div class="kt-portlet__head-label">
+                            
                             <h3 class="kt-portlet__head-title">Total Price: $0.00</h3>
                         </div>
                         <div class="kt-portlet__head-toolbar">
@@ -38,9 +39,11 @@
                         </div>
                     </div>
                     <div class="kt-portlet__body">
-                        <form class="kt-form" id="kt_form">
-                            <div class="row">
-                                <div class="col-md-4 mb-4">
+                        <div class="row" id="storeBody">
+                            <span id="spinner" style="display:none;" class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </span>
+                            {{!-- <div class="col-md-4 mb-4">
                                     <div class="card">
                                         <div class="">
                                             <img class="width__100" src="/images/placeholder.png" />
@@ -61,119 +64,8 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card">
-                                        <div class="">
-                                            <img class="width__100" src="/images/placeholder.png" />
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row mb-3">
-                                                <div class="col-7">
-                                                    <h5 class="card-title">Price: $50.00</h5>
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="number" placeholder="Quantity" name="qty" id="qty"
-                                                        class="input-sm form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-brand pull-right">
-                                                <i class="flaticon-business"></i>
-                                                <span class="kt-hidden-mobile">Add to Cart</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card">
-                                        <div class="">
-                                            <img class="width__100" src="/images/placeholder.png" />
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row mb-3">
-                                                <div class="col-7">
-                                                    <h5 class="card-title">Price: $300.00</h5>
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="number" placeholder="Quantity" name="qty" id="qty"
-                                                        class="input-sm form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-brand pull-right">
-                                                <i class="flaticon-business"></i>
-                                                <span class="kt-hidden-mobile">Add to Cart</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card">
-                                        <div class="">
-                                            <img class="width__100" src="/images/placeholder.png" />
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row mb-3">
-                                                <div class="col-7">
-                                                    <h5 class="card-title">Price: $100.00</h5>
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="number" placeholder="Quantity" name="qty" id="qty"
-                                                        class="input-sm form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-brand pull-right">
-                                                <i class="flaticon-business"></i>
-                                                <span class="kt-hidden-mobile">Add to Cart</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card">
-                                        <div class="">
-                                            <img class="width__100" src="/images/placeholder.png" />
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row mb-3">
-                                                <div class="col-7">
-                                                    <h5 class="card-title">Price: $250.00</h5>
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="number" placeholder="Quantity" name="qty" id="qty"
-                                                        class="input-sm form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-brand pull-right">
-                                                <i class="flaticon-business"></i>
-                                                <span class="kt-hidden-mobile">Add to Cart</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card">
-                                        <div class="">
-                                            <img class="width__100" src="/images/placeholder.png" />
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row mb-3">
-                                                <div class="col-7">
-                                                    <h5 class="card-title">Price: $100.00</h5>
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="number" placeholder="Quantity" name="qty" id="qty"
-                                                        class="input-sm form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-brand pull-right">
-                                                <i class="flaticon-business"></i>
-                                                <span class="kt-hidden-mobile">Add to Cart</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                                </div> --}}
+                        </div>
                     </div>
                 </div>
                 <!--end::Portlet-->
@@ -181,4 +73,6 @@
 
         </div>
     </div>
+     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 </div>
+<script src="/js/user/store.js"></script>
