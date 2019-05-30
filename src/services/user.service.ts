@@ -1,3 +1,5 @@
+import { CartItem } from './../models/CartItem';
+import { IUserDTO } from './../models/User';
 import { Admin } from "./../models/Admin";
 import { CartItemService } from "./cartItem.service";
 import { GCCService } from "./gcc.service";
@@ -74,7 +76,15 @@ export class UserService {
 		const user = await this.getById(userId);
 		return true;
 		// if()
-	}
+  }
+  
+  public async getCartItem(user: IUserDTO): Promise<CartItem[]>{
+    const db = await DatabaseProvider.getConnection();
+
+    const itemRepo = await db.getRepository(CartItem);
+    const items = await itemRepo.find({ user: user});
+    return items;
+  }
 
 	public async isExist(email: string): Promise<boolean> {
 		const user = await this.getByEmail(email);

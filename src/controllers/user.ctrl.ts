@@ -1,3 +1,4 @@
+import { CartItem } from './../models/CartItem';
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
 import { injectable, inject } from "inversify";
@@ -39,5 +40,9 @@ export class UserController {
 
   public async getAllUsers(): Promise<IUserDTO[]> {
     return await this._userService.getAll();
+  }
+
+  public async getCartItems(user: IUserDTO): Promise<CartItem[]>{
+    return await this._userService.getCartItem(user);
   }
 }
