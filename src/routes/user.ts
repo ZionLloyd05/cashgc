@@ -42,7 +42,11 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/category", this.getActiveCategories.bind(this));
 
-		router.get("/user/cartitem/:operation", this.cartItemOperation.bind(this));
+		/**
+		 * Cart Item routes
+		 */
+		router.get("/user/cartitem", this.cartItemOperation.bind(this));
+		router.post("/user/cartitem", this.addItemToCart.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -81,15 +85,20 @@ export class UserRoute implements IRoute {
 	}
 
 	private async cartItemOperation(req: Request, res: Response) {
-		let operation = req.params.operation;
-		let items = await this._userController.getCartItems(req.user);
-		console.log(items);
-		if (operation == "count") {
-			let itemCount = items.length;
-			res.send({
-				status: "read",
-				data: itemCount
-			});
-		}
+		let itemBundle = await this._userController.getCartItems(req.user);
+		// console.log(itemBundle);
+		res.send({
+			status: "read",
+			data: itemBundle
+		});
+	}
+
+	private async addItemToCart(req: Request, res: Response) {
+		const { gcId, qty } = req.body;
+		let saved = await this._userController.addToCart(gcId, req.user.id, qty);
+		res.send({
+			status: "added",
+			data: saved
+		});
 	}
 }

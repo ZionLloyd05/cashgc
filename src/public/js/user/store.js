@@ -1,15 +1,13 @@
 $(document).ready(function () {
     loadCodeCategories();
-
-    $(document).on("click", "#addtocart", function (e) {
-        e.stopPropagation();
-        console.log($(this).attr("data-cid"))
-    })
 })
- 
+
 var cart = $("#cart_no");
 var csrfToken = $('#_csrf').val();
 var spinner = $('#spinner');
+
+var cartItemTotal = $('#cartItemTotal');
+var cartItemBody = $('#cartItemBody');
 
 
 var loadCodeCategories = function () {
@@ -23,6 +21,13 @@ var loadCodeCategories = function () {
         },
         success: function (response) {
             buildCodeCategory(response.data);
+            document.addEventListener('click', function (event) {
+                if (event.target.classList.contains('addtocart')) {
+                    var btnId = event.target.getAttribute("id");
+                    var itemId = event.target.getAttribute("data-cid");
+                    addItemToCart(btnId, itemId);
+                }
+            }, false);
         }
     })
 }
@@ -30,18 +35,152 @@ var loadCodeCategories = function () {
 function buildCodeCategory(data = []) {
     var storeBody = $("#storeBody");
     var categoryBuilds = "";
-    data.forEach(category => {
+    data.forEach((category, idx) => {
         categoryBuilds += '<div class="col-md-4 mb-4">';
         categoryBuilds += '<div class="card">';
         categoryBuilds += '<div class=""><img class="width__100" src="' + category.imageUrl + '"/></div>';
         categoryBuilds += '<div class="card-body"><div class="row mb-3">';
         categoryBuilds += '<div class="col-7"><h5 class="card-title">Price: $' + category.sellingPrice + '.00</h5></div>';
-        categoryBuilds += '<div class="col-5"><input type="number" placeholder="Quantity" name="qty" id="qty" class="input-sm form-control"></div></div>';
-        categoryBuilds += '<button type="button" class="btn btn-sm btn-brand pull-right" data-cid=' + category.id + ' id="addtocart">Add to Cart</button>';
+        categoryBuilds += '<div class="col-5"><input type="number" value="" placeholder="Quantity" name="qty" id="qty" class="input-sm form-control"></div></div>';
+        categoryBuilds += '<button type="button" data-pr="' + category.sellingPrice + '" class="btn btn-sm btn-brand pull-right addtocart" data-cid=' + category.id + ' id="addtocart' + idx + '">Add to Cart</button>';
         categoryBuilds += '</div></div></div>';
 
     })
-    // console.log(categoryBuilds);
     spinner.hide();
     storeBody.html(categoryBuilds);
+}
+
+function addItemToCart(btnId, itemId) {
+
+    var cart = document.getElementById('cart_no');
+    var totalPrice = document.getElementById('totalPrice');
+    var totalPriceValue = totalPrice.getAttribute("data-pr");
+
+    var cartBtn = document.getElementById(btnId);
+    var itemPrice = cartBtn.getAttribute("data-pr");
+
+    var input = cartBtn.parentNode.children[0].children[1].children[0];
+    var qty = input.value;
+    input.value = '';
+
+    if (qty == '') qty = 1;
+
+    qty = Number(qty);
+
+    let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
+    console.log("newTotalPrice => " + newTotalPrice)
+    totalPrice.textContent = newTotalPrice.toLocaleString();
+    totalPrice.setAttribute("data-pr", newTotalPrice)
+    console.log("totalPrice => " + totalPrice.textContent)
+
+    var newCartCount = Number(cart.textContent) + qty;
+    console.log("newCartCount => " + newCartCount)
+
+    cart.textContent = newCartCount.toString();
+
+    let payload = {
+        gcId: itemId,
+        qty
+    }
+    // console.log(payload);
+
+    fetch("/user/cartitem", {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(() => reloadCartItem())
+
+}
+
+function reloadCartItem() {
+    console.log("reload cart item")
+    // debugger
+    fetch("/user/cartitem/", {
+            method: 'GET',
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+
+            prepareCartInStore(res.data)
+
+        })
+        .catch(err => console.log(err))
+}
+
+function prepareCartInStore(data) {
+    console.log("preparing in store")
+    let {
+        items,
+        totalQuantity,
+        totalPrice
+    } = data;
+
+    // cart.text(totalQuantity)
+    let itemString = '';
+
+    (totalQuantity > 1) ? itemString = `${totalQuantity} cart items`: itemString = `${totalQuantity} cart item`
+
+    cartItemTotal.text(itemString);
+    // total && total.text(totalPrice)
+
+    let citemMarkupBundle = '';
+    cartItemBody.empty();
+    // console.log(items.length)
+    if (items.length > 0) {
+        items.forEach(item => {
+            let {
+                giftCodeCategory
+            } = item;
+            citemMarkupBundle += `
+                    <a href="#" class="kt-notification__item">
+                        <div class="kt-notification__item-icon">
+                            <i class="flaticon2-line-chart kt-font-success"></i>
+                        </div>
+                        <div class="kt-notification__item-details">
+                            <div class="kt-notification__item-title">
+                                ${giftCodeCategory.title} Gift Code
+                            </div>
+                            <div class="kt-notification__item-time">
+                                2 hrs ago
+                            </div>
+                        </div>
+                        <div class="kt-notification__item-icon">
+                            + ${item.quantity}
+                        </div>
+                    </a>
+                   
+            `
+        });
+
+        citemMarkupBundle += `
+            <div class="kt-notification__item">
+                <a href="" class="btn btn-block btn-brand">
+                    <i class="flaticon2-shopping-cart-1"></i>
+                    <span class="kt-hidden-mobile">Checkout</span>
+                </a>
+            </div>
+        `
+    } else {
+        citemMarkupBundle = `
+            <div class="kt-notification__item">
+            <div class="kt-notification__item-icon">
+            <i class="far fa-frown"></i>
+        </div>
+        <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title">
+                Oops, Cart's Empty!
+            </div>
+        </div>
+            </div>
+        `
+    }
+    // console.log(citemMarkupBundle);
+    cartItemBody.html(citemMarkupBundle);
 }

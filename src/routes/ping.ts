@@ -1,7 +1,6 @@
 import { UserService } from "./../services/user.service";
 import { createQueryBuilder } from "typeorm";
 import { CartItem } from "./../models/CartItem";
-import { CartItemService } from "./../services/cartItem.service";
 import { GCCService } from "./../services/gcc.service";
 import { GiftCodeCategory } from "./../models/GiftCodeCategory";
 import { User } from "./../models/User";
@@ -20,9 +19,6 @@ export class PingRoute implements IRoute {
 		UserService
 	);
 	private _gccService: GCCService = DIContainer.resolve<GCCService>(GCCService);
-	private _cartItemService: CartItemService = DIContainer.resolve<
-		CartItemService
-	>(CartItemService);
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
@@ -32,51 +28,6 @@ export class PingRoute implements IRoute {
 	 * Router Functions
 	 */
 	private async ping(req: Request, res: Response) {
-		console.log(req.originalUrl);
-		// let user = new User();
-		// user.id = 2;
-		// this._userService
-		// 	.confirmAdmin(user)
-		// 	.then(data => res.send(data))
-		// 	.catch(err => console.log(err));
-		// res.json("GET:  Ok 200");
-		// let nuser = new User();
-		// nuser = {
-		//   firstname: "shilo",
-		//   lastname: "Leke",
-		//   email: "shilolee@gmail.com",
-		//   address: "las vegas",
-		//   city: "juventus",
-		//   state: "spain",
-		//   country: "america",
-		//   password: "lisha123"
-		// };
-		// let newGc = new GiftCodeCategory();
-		// newGc = {
-		//   title: "5",
-		//   imageUrl: "blahblah",
-		//   sellingPrice: 120,
-		//   buyingPrice: 100,
-		//   prefix: "1A"
-		// };
-		// let user = await this._userController.getUserById(1);
-		// let gccc = await this._gccService.getById(1);
-		// let newCartItem = new CartItem();
-		// newCartItem = {
-		//   quantity: 1,
-		//   total: 200,
-		//   giftCodeCategory: gccc,
-		//   user: user
-		// };
-		// nuser = { ...req };
-		// try {
-		//   // await userService.update(nuser);
-		// this._userService
-		//   .create(nuser)
-		//   .then(user => res.send(user))
-		//   .catch(error => res.send(error));
-		//   // this._gccService.create(newGc)
-		//   // this._cartItemService.create(newCartItem)
 		//   const citem = await createQueryBuilder("CartItem")
 		//     .innerJoinAndSelect(
 		//       "CartItem.giftCodeCategory",
@@ -105,5 +56,16 @@ export class PingRoute implements IRoute {
 		//     res.send("ye");
 		//   })
 		//   .catch(error => res.send(error));
+		let uid = 2;
+		const citems = await createQueryBuilder("CartItem")
+			.innerJoinAndSelect(
+				"CartItem.giftCodeCategory",
+				"gcc",
+				"CartItem.giftCodeCategory = gcc.id"
+			)
+			.where("CartItem.user = :user", {user : uid})
+			.getMany();
+		
+		res.send(citems);
 	}
 }

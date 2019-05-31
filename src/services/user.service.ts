@@ -1,7 +1,6 @@
+import { createQueryBuilder } from 'typeorm';
 import { CartItem } from './../models/CartItem';
-import { IUserDTO } from './../models/User';
 import { Admin } from "./../models/Admin";
-import { CartItemService } from "./cartItem.service";
 import { GCCService } from "./gcc.service";
 import { DatabaseProvider } from "./../database/index";
 import { User, IUserDTO } from "../models/User";
@@ -12,14 +11,11 @@ import * as bcrypt from "bcryptjs";
 @injectable()
 export class UserService {
 	private _gccService: GCCService;
-	private _cartItemService: CartItemService;
 
 	constructor(
-		@inject(GCCService) private gccService: GCCService,
-		@inject(CartItemService) private cartItemService: CartItemService
+		@inject(GCCService) private gccService: GCCService
 	) {
 		this._gccService = gccService;
-		this._cartItemService = cartItemService;
 	}
 	public async create(user: User): Promise<IUserDTO> {
 		const db = await DatabaseProvider.getConnection();
@@ -71,19 +67,66 @@ export class UserService {
 		else return null;
 	}
 
-	public async addToCart(gccId: number, userId: number): Promise<boolean> {
+	public async addToCart(gccId: number, userId: number, qty: number): Promise<boolean> {
+		console.log("trying to add to cart");
+		const db = await DatabaseProvider.getConnection();
+		const cartRepo = db.getRepository(CartItem);
+
 		const gcccategory = await this._gccService.getById(gccId);
 		const user = await this.getById(userId);
+
+		const cartItemInDb = await cartRepo.findOne({ giftCodeCategory: gcccategory, user: user })
+		console.log(cartItemInDb)
+
+		if(cartItemInDb && cartItemInDb != null){
+			console.log("found the cart item in db")
+			cartItemInDb.quantity += qty;
+			cartItemInDb.total += (gcccategory.sellingPrice * qty);
+			await cartRepo.save(cartItemInDb);
+			console.log(cartItemInDb)
+			return true
+		}
+
+		console.log("its a new item, adding a new row of item")
+		let cartItem = new CartItem();
+		cartItem.quantity = qty;
+		cartItem.giftCodeCategory = gcccategory;
+		cartItem.user = user;
+		cartItem.total = (gcccategory.sellingPrice * qty);
+
+		await cartRepo.save(cartItem);
 		return true;
-		// if()
   }
   
-  public async getCartItem(user: IUserDTO): Promise<CartItem[]>{
+  public async getCartItem(user: IUserDTO): Promise<any>{
     const db = await DatabaseProvider.getConnection();
 
     const itemRepo = await db.getRepository(CartItem);
-    const items = await itemRepo.find({ user: user});
-    return items;
+	// const items = await itemRepo.find({ user: user});	
+	const items = await itemRepo.createQueryBuilder("CartItem")
+		.innerJoinAndSelect(
+			"CartItem.giftCodeCategory",
+			"gcc",
+			"CartItem.giftCodeCategory = gcc.id"
+		)
+		.where("CartItem.user = :user", {user : user.id})
+		.getMany();
+
+
+	let totalQuantity: number = 0;
+	let totalPrice: number = 0;
+
+	items.forEach(item => {
+		totalQuantity += item.quantity;
+		totalPrice += item.total;
+	})
+	
+	let itemBundle = {
+		items,
+		totalQuantity,
+		totalPrice
+	}
+    return itemBundle;
   }
 
 	public async isExist(email: string): Promise<boolean> {

@@ -24,7 +24,6 @@ export class CartItem {
     giftCodeCategory => giftCodeCategory.cartItems
   )
   public giftCodeCategory: GiftCodeCategory;
-
   @ManyToOne(type => User, user => user.cartItems)
   public user: User;
 
