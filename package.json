@@ -40,6 +40,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "mysql": "github:mysqljs/mysql",
+    "node-inspect": "^1.11.5",
     "nodemailer": "^6.1.1",
     "nodemon": "^1.19.0",
     "passport": "^0.4.0",

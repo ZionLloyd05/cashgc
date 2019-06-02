@@ -17,25 +17,13 @@ var loadUserCartItem = function () {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (response) {
-            bindTableToData(response.data.items);
-            // let {
-            //     items
-            // } = response.data;
-            // console.log(items[0].giftCodeCategory)
-            // spinner.hide();
+            bindTableToData(response.data.items)
         }
     })
 }
 
 var cartTbl;
 var bindTableToData = function (response) {
-    debugger;
-    // let {
-    //     items
-    // } = response.data;
-    console.log(response)
-    // console.log(response.items)
-    // console.log(items)
     cartTbl = $("#cartTbl").DataTable({
         aaData: response,
         aoColumns: [{
@@ -73,3 +61,10 @@ var bindTableToData = function (response) {
     })
     spinner.hide();
 };
+
+/**
+ * Checkout Functionality
+ */
+$("#checkoutBtn").on('click', function () {
+    $(this).addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+})

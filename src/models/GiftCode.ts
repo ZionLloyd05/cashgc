@@ -1,34 +1,37 @@
+import { Transaction } from "./Transaction";
 import { GiftCodeCategory } from "./GiftCodeCategory";
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  ManyToOne,
-  OneToOne,
-  JoinColumn,
-  Column
+	Entity,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+	ManyToOne,
+	Column,
+	ManyToMany
 } from "typeorm";
 
 @Entity()
 export class GiftCode {
-  @PrimaryGeneratedColumn()
-  public id: number;
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-  @Column()
-  public code: string;
+	@Column()
+	public code: string;
 
-  @Column({ default: false })
-  public isUsed: boolean;
+	@Column({ default: false })
+	public isUsed: boolean;
 
-  @Column()
-  public dateUsed?: Date;
+	@Column()
+	public dateUsed?: Date;
 
-  @ManyToOne(
-    type => GiftCodeCategory,
-    giftCodeCategory => giftCodeCategory.giftCodes
-  )
-  public giftCodeCategory: GiftCodeCategory;
+	@ManyToMany(type => Transaction)
+	public transactions?: Transaction[];
 
-  @CreateDateColumn()
-  createdAt: Date;
+	@ManyToOne(
+		type => GiftCodeCategory,
+		giftCodeCategory => giftCodeCategory.giftCodes
+	)
+	public giftCodeCategory: GiftCodeCategory;
+
+	@CreateDateColumn()
+	createdAt: Date;
 }

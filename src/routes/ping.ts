@@ -1,3 +1,4 @@
+import { GiftCodeService } from "./../services/gc.service";
 import { UserService } from "./../services/user.service";
 import { createQueryBuilder } from "typeorm";
 import { CartItem } from "./../models/CartItem";
@@ -19,6 +20,10 @@ export class PingRoute implements IRoute {
 		UserService
 	);
 	private _gccService: GCCService = DIContainer.resolve<GCCService>(GCCService);
+
+	private _gcService: GiftCodeService = DIContainer.resolve<GiftCodeService>(
+		GiftCodeService
+	);
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
@@ -63,9 +68,11 @@ export class PingRoute implements IRoute {
 				"gcc",
 				"CartItem.giftCodeCategory = gcc.id"
 			)
-			.where("CartItem.user = :user", {user : uid})
+			.where("CartItem.user = :user", { user: uid })
 			.getMany();
-		
-		res.send(citems);
+
+		let codes = await this._gcService.generateCodes(citems);
+
+		res.send(codes);
 	}
 }
