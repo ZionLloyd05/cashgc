@@ -2,12 +2,16 @@ import { CartItem } from "./../models/CartItem";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
 import { injectable, inject } from "inversify";
+import { GiftCodeService } from "./../services/gc.service";
+import DIContainer from "../container/DIContainer";
 // import { EventEmitter } from "events";
 
 @injectable()
 export class UserController {
 	private _userService: UserService;
-	// private userEvent: EventEmitter;
+	private _gcService: GiftCodeService = DIContainer.resolve<GiftCodeService>(
+		GiftCodeService
+	);
 
 	constructor(@inject(UserService) userService: UserService) {
 		/**
@@ -52,5 +56,10 @@ export class UserController {
 		qty: number
 	): Promise<boolean> {
 		return await this._userService.addToCart(gcId, userId, qty);
+	}
+
+	public async scaffoldCodes(cartItem: any): Promise<any> {
+		let codes = await this._gcService.generateCodes(cartItem);
+		return codes;
 	}
 }

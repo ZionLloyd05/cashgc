@@ -7,6 +7,7 @@ import { IRoute } from "./IRoute";
 import DIContainer from "../container/DIContainer";
 
 import * as csurf from "csurf";
+import { create } from "domain";
 
 export class UserRoute implements IRoute {
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
@@ -47,6 +48,16 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/cartitem", this.cartItemOperation.bind(this));
 		router.post("/user/cartitem", this.addItemToCart.bind(this));
+
+		/**
+		 * Invoice route
+		 */
+		router.get("/user/invoice", this.serveInvoiceView.bind(this));
+
+		/**
+		 * GiftCode routes
+		 */
+		router.post("/user/giftcode", this.scaffoldcodes.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -76,6 +87,15 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private serveInvoiceView(req: Request, res: Response) {
+		res.render("user/invoice", {
+			title: "Invoice",
+			layout: "userLayout",
+			isStore: true,
+			csrfToken: req.csrfToken()
+		})
+	}
+
 	private async getActiveCategories(req: Request, res: Response) {
 		const activeGccs = await this._gcController.getActiveGccs();
 		return res.send({
@@ -100,5 +120,14 @@ export class UserRoute implements IRoute {
 			status: "added",
 			data: saved
 		});
+	}
+
+	private async scaffoldcodes(req: Request, res: Response) {
+		let codeItems = req.body;
+		let codes = await this._userController.scaffoldCodes(codeItems);
+		res.send({
+			status: "created",
+			data: codes
+		})
 	}
 }

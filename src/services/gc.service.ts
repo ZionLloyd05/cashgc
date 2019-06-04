@@ -48,7 +48,7 @@ export class GiftCodeService {
 				let token = prefix+""+await this.generateToken();
 				let giftCodeObj = await this.create(token, gc);
 				let giftCode = giftCodeObj.code;
-				itemArr.push(giftCode);
+				itemArr.push({title: gc.title, giftCode});
 			}
 			console.log(itemArr);
 			generatedCodes.push(itemArr);
