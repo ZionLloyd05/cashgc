@@ -21,9 +21,8 @@
             {{log isStore}} --}}
             <ul class="kt-menu__nav ">
                 <li class="kt-menu__item  kt-menu__item--submenu {{#if isDashboard}} kt-menu__item--open {{/if}}">
-                    <a href="/user" class="kt-menu__link kt-menu__toggle"><i
-                            class="kt-menu__link-icon flaticon2-graphic"></i><span
-                            class="kt-menu__link-text">Dashboard</span></a>
+                    <a href="/user" class="kt-menu__link kt-menu__toggle"><i class="kt-menu__link-icon 
+flaticon-tea-cup"></i><span class="kt-menu__link-text">Dashboard</span></a>
                 </li>
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Store</h4>
@@ -37,6 +36,12 @@
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Operations</h4>
                     <i class="kt-menu__section-icon flaticon-more-v2"></i>
+                </li>
+                <li class="kt-menu__item  kt-menu__item--submenu {{#if isCode}} kt-menu__item--open {{/if}} "
+                    aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="/user/my-codes"
+                        class="kt-menu__link kt-menu__toggle"><i
+                            class="kt-menu__link-icon flaticon-shopping-basket"></i><span class="kt-menu__link-text">My
+                            Codes</span></a>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true"
                     data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i

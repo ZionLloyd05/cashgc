@@ -24,7 +24,7 @@ export class GccController {
 		gcCategory: any,
 		filePath: any
 	): Promise<GiftCodeCategory> {
-		if (gcCategory.id && gcCategory.id != null) {
+		if (gcCategory.id && gcCategory.id != "null") {
 			// update giftCodeCategory logic
 			console.log("updating from controller");
 			const updatedGcc = await this._gccService.update(gcCategory, filePath);

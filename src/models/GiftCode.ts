@@ -6,10 +6,12 @@ import {
 	CreateDateColumn,
 	ManyToOne,
 	Column,
-	ManyToMany
+	ManyToMany,
+	Unique
 } from "typeorm";
 
 @Entity()
+@Unique(["code"])
 export class GiftCode {
 	@PrimaryGeneratedColumn()
 	public id: number;

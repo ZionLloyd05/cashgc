@@ -105,7 +105,7 @@ License: You must have a valid license purchased only from https://themes.getboo
                     <div class="kt-header-menu-wrapper" id="kt_header_menu_wrapper" style="padding-top:25px;">
 
                         <div id="kt_header_menu" class="kt-header-menu kt-header-menu-mobile  kt-header-menu--layout- ">
-                            <h4>Hello, {{user.lastname}} {{user.firstname}} </h4>
+                            <h4 id="date"></h4>
 
                         </div>
                     </div>
@@ -154,7 +154,7 @@ License: You must have a valid license purchased only from https://themes.getboo
                                 </form>
                             </div>
                         </div>
-                      
+
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
 
                             <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
@@ -839,3 +839,21 @@ License: You must have a valid license purchased only from https://themes.getboo
 <!-- end::Body -->
 
 </html>
+
+<script>
+    var date = document.getElementById("date");
+
+    var dt = new Date();
+
+    var options = {
+        hour12: false,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    };
+
+    date.textContent = dt.toLocaleString('en-US', options);
+</script>

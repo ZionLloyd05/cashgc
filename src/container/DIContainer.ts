@@ -4,6 +4,7 @@ import { UserController } from "./../controllers/user.ctrl";
 import { UserService } from "./../services/user.service";
 import { Container } from "inversify";
 import { GCCService } from "./../services/gcc.service";
+import { TransactionService } from "../services/transaction.service";
 
 /**
  * Dependency Injection Container
@@ -18,5 +19,6 @@ DIContainer.bind<UserController>(UserController).toSelf();
 DIContainer.bind<GCCService>(GCCService).toSelf();
 DIContainer.bind<AuthService>(AuthService).toSelf();
 DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
+DIContainer.bind<TransactionService>(TransactionService).toSelf();
 
 export default DIContainer;

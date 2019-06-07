@@ -76,10 +76,7 @@ var bindTableToData = function (response) {
  */
 $("#checkoutBtn").on('click', function () {
     $(this).addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
-    /**
-     * @TODO Create a Transaction object
-     * and tie all giftcode generated to that transaction.
-     */
+
     scaffoldCodes(cartResponse);
 });
 
@@ -100,11 +97,41 @@ var scaffoldCodes = function (cartResponse) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
-            $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+
+            let giftCodes = data.data;
+            createDummyTransaction(giftCodes);
+            // $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
             bindGiftCodeData(data.data);
-            $('#exampleModalTooltips').modal("show");
+            // $('#exampleModalTooltips').modal("show");
         });
+}
+
+var createDummyTransaction = function (data) {
+    var flattenCodes = data.flat();
+    var gcodes = [];
+    flattenCodes.forEach(codes => {
+        gcodes.push(codes.giftCodeObj.id)
+    })
+    let transactionPayload = {
+        status: 0,
+        type: 0,
+        gcodes
+    }
+    console.log(transactionPayload);
+    fetch('/user/transaction', {
+            method: "POST",
+            body: JSON.stringify(transactionPayload),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+            // bindGiftCodeData(data.data);
+            $('#exampleModalTooltips').modal("show");
+        })
 }
 
 var gcTbl;
@@ -122,7 +149,7 @@ var bindGiftCodeData = function (data) {
         }, {
             data: "title"
         }, {
-            data: "giftCode"
+            data: "giftCodeObj.code"
         }]
     })
     gcHeader.removeClass("kt-spinner kt-spinner--v2 kt-spinner--md kt-spinner--info")

@@ -44,10 +44,15 @@ export class AdminRoute implements IRoute {
 		router.use(csrfProtection);
 
 		router.all("/admin/*", this._authService.mustBeLoggedIn);
-		
+
 		router.all("/admin/*", this._authService.routeGaurd);
 
-		router.get("/admin", this._authService.mustBeLoggedIn, this._authService.routeGaurd, this.serveDashboardView.bind(this));
+		router.get(
+			"/admin",
+			this._authService.mustBeLoggedIn,
+			this._authService.routeGaurd,
+			this.serveDashboardView.bind(this)
+		);
 
 		router.get("/admin/gc/categories", this.serveCategoryView.bind(this));
 
@@ -78,7 +83,11 @@ export class AdminRoute implements IRoute {
 	}
 
 	private async saveCategory(req: Request, res: Response) {
-		if (req.body.id && req.body.id == "") {
+		console.log("here");
+		console.log(req.body);
+		console.log(req.body.id == "null");
+		if (req.body.id && req.body.id == "null") {
+			// console.log("")
 			console.log("creating category");
 			// create new
 			let gcc = new GiftCodeCategory();
@@ -97,7 +106,7 @@ export class AdminRoute implements IRoute {
 				status: "created",
 				data: newGcc
 			});
-		} else if (req.body.id && req.body.id != "") {
+		} else if (req.body.id && req.body.id != "null") {
 			console.log("updating catgeory");
 			let gcc = new GiftCodeCategory();
 			let updatedGcc: GiftCodeCategory;

@@ -1,8 +1,9 @@
-import { GiftCodeCategory } from './../models/GiftCodeCategory';
+import { GiftCodeCategory } from "./../models/GiftCodeCategory";
 import { DatabaseProvider } from "./../database/index";
 import { GiftCode } from "./../models/GiftCode";
 import * as crypto from "crypto";
 import { injectable } from "inversify";
+import { createQueryBuilder } from "typeorm";
 
 @injectable()
 export class GiftCodeService {
@@ -45,16 +46,30 @@ export class GiftCodeService {
 			let itemArr = [];
 
 			for (let x = 0; x < quantity; x++) {
-				let token = prefix+""+await this.generateToken();
+				let token = prefix + "" + (await this.generateToken());
 				let giftCodeObj = await this.create(token, gc);
 				let giftCode = giftCodeObj.code;
-				itemArr.push({title: gc.title, giftCode});
+				itemArr.push({ title: gc.title, giftCodeObj });
 			}
-			console.log(itemArr);
+			// console.log(itemArr);
 			generatedCodes.push(itemArr);
 		});
 
 		return generatedCodes;
+	};
+
+	getUserCodes = async () => {
+		const db = await DatabaseProvider.getConnection();
+		const gcRepo = db.getRepository("GiftCode");
+
+		const citems = await createQueryBuilder("GiftCode")
+			.innerJoinAndSelect(
+				"GiftCode.giftCodeCategory",
+				"gcc",
+				"GiftCode.giftCodeCategory = gcc.id"
+			)
+			.getMany();
+		return citems;
 	};
 
 	/**

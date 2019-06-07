@@ -1,3 +1,4 @@
+import { TransactionService } from "./../services/transaction.service";
 import { CartItem } from "./../models/CartItem";
 import { User, IUserDTO } from "./../models/User";
 import { UserService } from "./../services/user.service";
@@ -12,6 +13,10 @@ export class UserController {
 	private _gcService: GiftCodeService = DIContainer.resolve<GiftCodeService>(
 		GiftCodeService
 	);
+
+	private _tService: TransactionService = DIContainer.resolve<
+		TransactionService
+	>(TransactionService);
 
 	constructor(@inject(UserService) userService: UserService) {
 		/**
@@ -61,5 +66,20 @@ export class UserController {
 	public async scaffoldCodes(cartItem: any): Promise<any> {
 		let codes = await this._gcService.generateCodes(cartItem);
 		return codes;
+	}
+
+	public async getUserCodes(): Promise<any> {
+		let codes = await this._gcService.getUserCodes();
+		return codes;
+	}
+
+	public async createTransaction(payload: any): Promise<any> {
+		let transaction = await this._tService.createTransaction(payload);
+		return transaction;
+	}
+
+	public async getUserTransaction(userId: number): Promise<any> {
+		let transactions = await this._tService.getUserTransaction(userId);
+		return transactions;
 	}
 }

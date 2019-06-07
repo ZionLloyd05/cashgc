@@ -1,5 +1,4 @@
 import { UserController } from "./../controllers/user.ctrl";
-import { UserService } from "./../services/user.service";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
 import { Router, Request, Response, NextFunction } from "express";
@@ -58,6 +57,12 @@ export class UserRoute implements IRoute {
 		 * GiftCode routes
 		 */
 		router.post("/user/giftcode", this.scaffoldcodes.bind(this));
+		router.get("/user/mycodes", this.serveCodeView.bind(this));
+		/**
+		 * Transaction routes
+		 */
+		router.post("/user/transaction", this.postTransaction.bind(this));
+		router.get("/user/transaction", this.getTransactions.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -87,13 +92,22 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private serveCodeView(req: Request, res: Response) {
+		res.render("user/codes", {
+			title: "My Codes",
+			layout: "userLayout",
+			isCode: true,
+			csrfToken: req.csrfToken()
+		});
+	}
+
 	private serveInvoiceView(req: Request, res: Response) {
 		res.render("user/invoice", {
 			title: "Invoice",
 			layout: "userLayout",
 			isStore: true,
 			csrfToken: req.csrfToken()
-		})
+		});
 	}
 
 	private async getActiveCategories(req: Request, res: Response) {
@@ -128,6 +142,25 @@ export class UserRoute implements IRoute {
 		res.send({
 			status: "created",
 			data: codes
-		})
+		});
+	}
+
+	private async postTransaction(req: Request, res: Response) {
+		let payload = req.body;
+		payload.user = req.user;
+		let transaction = await this._userController.createTransaction(payload);
+		res.send({
+			status: "created",
+			data: transaction
+		});
+	}
+
+	private async getTransactions(req: Request, res: Response) {
+		let userid = req.user.id;
+		let transactions = await this._userController.getUserTransaction(userid);
+		res.send({
+			status: "read",
+			data: transactions
+		});
 	}
 }
