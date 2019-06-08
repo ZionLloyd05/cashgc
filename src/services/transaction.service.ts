@@ -33,6 +33,7 @@ export class TransactionService {
 			.innerJoinAndSelect("transaction.user", "user")
 			.where({ user: userid })
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
+			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
 			.getMany();
 
 		return transactions;

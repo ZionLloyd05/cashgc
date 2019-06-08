@@ -10,6 +10,7 @@ var cartQuantitySpan = $('#cartTotalQuantity');
 var cartTotalAmountSpan = $('#cartTotalAmount');
 var gcHeader = $('#gcHeader');
 var gcHeaderText = $('#gcHeaderText');
+var clearCartBtn = $('#clearCart');
 
 var cartResponse = '';
 
@@ -131,7 +132,18 @@ var createDummyTransaction = function (data) {
             $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
             // bindGiftCodeData(data.data);
             $('#exampleModalTooltips').modal("show");
+            clearCart();
         })
+}
+
+
+var clearCart = function () {
+    fetch('/user/cartitem', {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        }
+    })
 }
 
 var gcTbl;

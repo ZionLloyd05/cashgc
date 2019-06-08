@@ -184,3 +184,32 @@ function prepareCartInStore(data) {
     // console.log(citemMarkupBundle);
     cartItemBody.html(citemMarkupBundle);
 }
+
+/**
+ * Clears user's cart on btn click
+ */
+$(document).on('click', '#clearCart', function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    clearCart();
+})
+
+var clearCart = function () {
+
+    var csrfToken = $('#_csrf').val();
+    var clearCartBtn = $('#clearCart');
+    clearCartBtn.addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary")
+    fetch('/user/cartitem', {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        }
+    }).then(function () {
+        clearCartBtn.removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+        window.location.reload();
+    })
+}
+
+$('#toCart').on('click', function () {
+    window.location.href = "/user/cart";
+})

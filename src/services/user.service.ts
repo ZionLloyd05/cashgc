@@ -96,7 +96,24 @@ export class UserService {
 
 		await cartRepo.save(cartItem);
 		return true;
-  }
+	}
+	
+	public async clearCart(userId: number) {
+		console.log("clearing cart");
+		const db = await DatabaseProvider.getConnection();
+		try{
+			await db
+			.createQueryBuilder()
+			.delete()
+			.from(CartItem)
+			.where("user", { user: userId })
+			.execute();
+		}
+		catch (ex) {
+			console.log(ex)
+		}
+
+	}
   
   public async getCartItem(user: IUserDTO): Promise<any>{
     const db = await DatabaseProvider.getConnection();

@@ -47,6 +47,7 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/cartitem", this.cartItemOperation.bind(this));
 		router.post("/user/cartitem", this.addItemToCart.bind(this));
+		router.delete("/user/cartitem", this.clearCart.bind(this));
 
 		/**
 		 * Invoice route
@@ -57,7 +58,7 @@ export class UserRoute implements IRoute {
 		 * GiftCode routes
 		 */
 		router.post("/user/giftcode", this.scaffoldcodes.bind(this));
-		router.get("/user/mycodes", this.serveCodeView.bind(this));
+		router.get("/user/my-codes", this.serveCodeView.bind(this));
 		/**
 		 * Transaction routes
 		 */
@@ -134,6 +135,15 @@ export class UserRoute implements IRoute {
 			status: "added",
 			data: saved
 		});
+	}
+
+	private async clearCart(req: Request, res: Response) {
+		const userId = req.user.id;
+		await this._userController.clearCart(userId);
+		res.send({
+			status: "removed",
+			data: true
+		})
 	}
 
 	private async scaffoldcodes(req: Request, res: Response) {

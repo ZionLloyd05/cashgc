@@ -90,6 +90,13 @@ export class PingRoute implements IRoute {
 		// 	.getMany();
 
 		let db = await DatabaseProvider.getConnection();
+		// var ress = await db
+		// 	.createQueryBuilder()
+		// 	.delete()
+		// 	.from(CartItem)
+		// 	.where("user", { user: 2 })
+		// 	.execute();
+
 		// let grepo = await db.getRepository("Transaction");
 		// let transaction = await grepo.find({
 		// 	relations: ["user"],
@@ -116,6 +123,6 @@ export class PingRoute implements IRoute {
 
 		// var transaction = await this._tService.createTransaction(payload);
 
-		res.send(trans);
+		res.send({ trans });
 	}
 }

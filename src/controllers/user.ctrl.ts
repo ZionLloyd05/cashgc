@@ -63,6 +63,10 @@ export class UserController {
 		return await this._userService.addToCart(gcId, userId, qty);
 	}
 
+	public async clearCart(userId: number) {
+		await this._userService.clearCart(userId);
+	}
+
 	public async scaffoldCodes(cartItem: any): Promise<any> {
 		let codes = await this._gcService.generateCodes(cartItem);
 		return codes;
