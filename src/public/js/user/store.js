@@ -161,7 +161,7 @@ function prepareCartInStore(data) {
 
         citemMarkupBundle += `
             <div class="kt-notification__item">
-                <a href="" class="btn btn-block btn-brand">
+                <a href="/user/cart" class="btn btn-block btn-brand">
                     <i class="flaticon2-shopping-cart-1"></i>
                     <span class="kt-hidden-mobile">Checkout</span>
                 </a>

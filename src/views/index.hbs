@@ -16,9 +16,10 @@
                 <!-- Logo -->
                 <div class="u-header__navbar-brand-wrapper">
                     <a class="navbar-brand u-header__navbar-brand" href="index.html" aria-label="Space">
-                        <img class="u-header__navbar-brand-default" src="assets_home/svg/logos/logo-white.svg"
-                            alt="Logo">
-                        <img class="u-header__navbar-brand-on-scroll" src="assets_home/svg/logos/logo.svg" alt="Logo">
+                        <img class="u-header__navbar-brand-default" style="width:100%"
+                            src="assets_home/svg/logos/cashGC_white.png" alt="Logo">
+                        <img class="u-header__navbar-brand-on-scroll" style="width:100%"
+                            src="assets_home/svg/logos/cashGC_black.png" alt="Logo">
                         <img class="u-header__navbar-brand-mobile" src="assets_home/svg/logos/logo-short.svg"
                             alt="Logo">
                     </a>
@@ -124,31 +125,57 @@
                 </div>
                 <!-- End Navigation -->
 
+                {{#if isLoggedIn}}
                 <ul class="navbar-nav flex-row u-header__secondary-nav">
                     <!-- Shopping Cart -->
                     <li class="nav-item u-header__navbar-icon-wrapper u-header__navbar-icon">
-                        <a id="shoppingCartDropdownInvoker" class="btn btn-xs btn-icon btn-text-dark"
-                            href="javascript:;" role="button" aria-controls="shoppingCartDropdown" aria-haspopup="true"
-                            aria-expanded="false" data-unfold-event="click" data-unfold-target="#shoppingCartDropdown"
-                            data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300"
-                            data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp"
-                            data-unfold-animation-out="fadeOut">
+                       
+                        <a id="shoppingCartDropdownWithItemsInvoker" class="btn btn-xs btn-icon btn-text-secondary" href="javascript:;" role="button"
+                                aria-controls="shoppingCartDropdownWithItems"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                data-unfold-event="click"
+                                data-unfold-target="#shoppingCartDropdownWithItems"
+                                data-unfold-type="css-animation"
+                                data-unfold-duration="300"
+                                data-unfold-delay="300"
+                                data-unfold-hide-on-scroll="true"
+                                data-unfold-animation-in="slideInUp"
+                                data-unfold-animation-out="fadeOut">
                             <span class="fa fa-shopping-cart btn-icon__inner"></span>
+                            <span class="badge-xs badge-primary badge-pos rounded-circle" id="ctnum">.</span>
                         </a>
+                     
 
-                        <div id="shoppingCartDropdown"
-                            class="u-unfold u-unfold--cart text-center border rounded-0 right-0 p-7"
-                            aria-labelledby="shoppingCartDropdownInvoker" style="min-width: 250px;">
-                            <span class="u-icon u-icon--primary u-icon--md rounded-circle mb-3">
-                                <span class="fa fa-shopping-basket u-icon__inner"></span>
-                            </span>
-                            <span class="d-block">Your Cart is Empty</span>
+                        <div id="shoppingCartDropdownWithItems" class="u-unfold u-unfold--cart text-center border rounded-0 right-0" aria-labelledby="shoppingCartDropdownWithItemsInvoker" style="width: 290px;">
+                            <!-- Title -->
+                            <div class="text-center p-1">
+                            Your Shopping Cart
+                            </div>
+                            <!-- End Title -->
+
+                            <hr class="my-0">
+
+                            <!-- Items Wrapper -->
+                            <div class="py-4" id="cartItemWrapper">
+                            <!-- Item -->
+                                
+                            <!-- End Item -->
+                            </div>
+                            <!-- End Items Wrapper -->
+
+                            <hr class="my-0">
+                            {{!-- <a class="btn btn-sm btn-primary" href="/user/cart">Checkout</a> --}}
+                             <a style="display:none;" class="text-secondary small mt-2" href="/user/cart" id="checkoutBtn"><i class="px-2 fa fa-shopping-cart"></i> Checkout</a>
+                            </div>
+                            <!-- End Subtotal -->
                         </div>
                     </li>
                     <!-- End Shopping Cart -->
 
 
                 </ul>
+                {{/if}}
             </nav>
             <!-- End Nav -->
         </div>
@@ -328,9 +355,11 @@
                 <!-- Testimonials -->
                 <div class="card card-frame mb-5 mb-lg-0">
                     <div class="card-body p-5">
-                        <blockquote class="text-secondary mb-0">I love Space! I love the ease of use, I love the
-                            fact that I have total creative freedom. The template is really nice and offers quite a
-                            large set of options. It's beautiful and the coding is done quickly and seamlessly.
+                        <blockquote class="text-secondary mb-0">Cash gitftcode Lorem ipsum dolor sit amet consectetur,
+                            adipisicing elit.
+                            Aliquid eaque magnam quaerat facilis, asperiores aspernatur odit quisquam eius quia expedita
+                            suscipit quo
+                            similique
                         </blockquote>
                     </div>
                     <div class="card-footer">
@@ -356,9 +385,11 @@
                 <!-- Testimonials -->
                 <div class="card card-frame mb-5 mb-lg-0">
                     <div class="card-body p-5">
-                        <blockquote class="text-secondary mb-0">We are incredibly impressed with Space and how well
-                            it supports its customers with amazing products and services. One simple subscription
-                            gives you access to all our tools, plus so much more.</blockquote>
+                        <blockquote class="text-secondary mb-0">Cash gitftcode Lorem ipsum dolor sit amet consectetur,
+                            adipisicing elit.
+                            Aliquid eaque magnam quaerat facilis, asperiores aspernatur odit quisquam eius quia expedita
+                            suscipit quo
+                            similique </blockquote>
                     </div>
                     <div class="card-footer">
                         <div class="media align-items-end">
@@ -371,7 +402,7 @@
                                 </span>
                             </div>
                             <div class="media-body">
-                                <h4 class="h6 mb-0">Mark McManus</h4>
+                                <h4 class="h6 mb-0">Khareem YK</h4>
                                 <span class="d-block text-muted font-size-14 font-weight-normal">reacted on <a
                                         href="#">Facebook</a></span>
                             </div>
@@ -383,9 +414,11 @@
                 <!-- Testimonials -->
                 <div class="card card-frame">
                     <div class="card-body p-5">
-                        <blockquote class="text-secondary mb-0">One simple subscription gives you access to all our
-                            tools, plus so much more. Space brings so many benefits to any team that does anything
-                            following a process.</blockquote>
+                        <blockquote class="text-secondary mb-0">Cash gitftcode Lorem ipsum dolor sit amet consectetur,
+                            adipisicing elit.
+                            Aliquid eaque magnam quaerat facilis, asperiores aspernatur odit quisquam eius quia expedita
+                            suscipit quo
+                            similique </blockquote>
                     </div>
                     <div class="card-footer">
                         <div class="media align-items-end">
@@ -455,7 +488,7 @@
                                     class="btn btn-link btn-block d-flex justify-content-between card-collapse__btn collapsed"
                                     data-toggle="collapse" data-target="#basicsCollapseOne" aria-expanded="false"
                                     aria-controls="basicsCollapseOne">
-                                    Do you have any built-in caching?
+                                    Cash gitftcode Lorem ipsum dolor ?
 
                                     <span class="card-collapse__btn-arrow">
                                         <span class="fa fa-arrow-down card-collapse__btn-arrow-inner"></span>
@@ -507,7 +540,7 @@
                                     class="btn btn-link btn-block d-flex justify-content-between card-collapse__btn collapsed"
                                     data-toggle="collapse" data-target="#basicsCollapseThree" aria-expanded="false"
                                     aria-controls="basicsCollapseThree">
-                                    What access comes with my hosting plan?
+                                    Cash gitftcode Lorem ipsum dolor sit amet ?
 
                                     <span class="card-collapse__btn-arrow">
                                         <span class="fa fa-arrow-down card-collapse__btn-arrow-inner"></span>
@@ -533,7 +566,7 @@
                                     class="btn btn-link btn-block d-flex justify-content-between card-collapse__btn collapsed"
                                     data-toggle="collapse" data-target="#basicsCollapseFour" aria-expanded="false"
                                     aria-controls="basicsCollapseFour">
-                                    How do I change my password?
+                                    Cash gitftcode Lorem ipsum dolor sit amet ?
 
                                     <span class="card-collapse__btn-arrow">
                                         <span class="fa fa-arrow-down card-collapse__btn-arrow-inner"></span>
@@ -563,9 +596,9 @@
             <div class="container">
                 <div class="row align-items-lg-center text-center text-lg-left space-2">
                     <div class="col-lg-7">
-                        <h2 class="text-white">Get started with Space</h2>
-                        <p class="lead text-white mb-0">Space gives you everything you need to manage business,
-                            build great stuff, and reach your goals.</p>
+                        <h2 class="text-white">Get started with Cash GiftCode</h2>
+                        <p class="lead text-white mb-0">Cash gitftcode Lorem ipsum dolor sit amet consectetur,
+                            adipisicing elit.</p>
                     </div>
 
                     <div class="col-lg-5 text-lg-right">
@@ -770,7 +803,7 @@
                 </div>
                 <!-- End Language -->
 
-                <p class="small text-muted">All rights reserved. &copy; Space. 2019 Htmlstream.</p>
+                <p class="small text-muted">All rights reserved. &copy; Cash GiftCode 2019.</p>
             </div>
         </div>
     </div>
@@ -810,7 +843,7 @@
                         <!-- List -->
                         <ul class="list-unstyled font-size-14 mb-5">
                             <li>
-                                <a class="media align-items-center u-sidebar--panel__link py-2 px-5" href="#">
+                                <a class="media align-items-center u-sidebar--panel__link py-2 px-5" href="/user/">
                                     <img class="max-width-4 mr-3" src="assets_home/svg/components/finance-dark-icon.svg"
                                         alt="Image Description">
                                     <div class="media-body">
@@ -894,4 +927,67 @@
     data-offset-top="400" data-compensation="#header" data-show-effect="slideInUp" data-hide-effect="slideOutDown">
     <span class="fa fa-arrow-up u-go-to__inner"></span>
 </a>
+<input type="hidden" value="{{csrfToken}}" id="_csrf">
 <!-- End Go to Top -->
+
+<script>
+    $(document).ready(function () {
+        
+    var csrfToken = $("#_csrf").val();
+
+    fetch("/user/cartitem/", {
+            method: 'GET',
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            prepareCart(res.data)
+        })
+        .catch(err => console.log(err))
+    })
+
+    var prepareCart = function(data) {
+
+    var ctWrapper = $('#cartItemWrapper');       
+    var citemMarkUpBundle = '';
+    var ctnum = $('#ctnum');
+    var ckBtn = $('#checkoutBtn');
+
+        let {
+            items,
+            totalQuantity,
+            totalPrice
+        } = data;
+
+        ctnum.text(totalQuantity);
+
+        if(items.length > 0) {
+            ckBtn.show();
+            items.forEach(item => {
+                let {giftCodeCategory} = item;
+                citemMarkUpBundle += `
+                    <div class="d-flex mb-1">
+                        <div class="u-shopping-cart__item-info-wrapper">
+                                <span class="d-block h6 mb-0">${giftCodeCategory.title} GC</span>
+                        </div>
+                        <div class="u-shopping-cart__item-img-wrapper mr-3">
+                            <span class="text-primary">+ ${item.quantity}</span>
+                        </div>
+                    </div>
+                `
+            })
+        }else{
+            ckBtn.hide()
+            citemMarkUpBundle += `
+                <span class="u-icon u-icon--primary u-icon--md rounded-circle mb-3">
+                    <span class="fa fa-shopping-basket u-icon__inner"></span>
+                    </span>
+                <span class="d-block">Your Cart is Empty</span>
+            `
+        }
+        //console.log(citemMarkUpBundle);
+        ctWrapper.append(citemMarkUpBundle);
+    }
+</script>

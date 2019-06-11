@@ -2,9 +2,10 @@
     <!-- begin::Aside Brand -->
     <div class="kt-aside__brand kt-grid__item " id="kt_aside_brand">
         <div class="kt-aside__brand-logo">
-            <a href="index.html">
+            {{!-- <a href="index.html">
                 <img alt="Logo" src="/assets/media/logos/logo-6.png" />
-            </a>
+            </a> --}}
+            <h3><a href="/">Cash<span class="text-white"> GiftCode</span></a></h3>
         </div>
 
         <div class="kt-aside__brand-tools">
@@ -30,32 +31,34 @@ flaticon-tea-cup"></i><span class="kt-menu__link-text">Dashboard</span></a>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu {{#if isStore}} kt-menu__item--open {{/if}} "><a
                         href="/user/store" class="kt-menu__link kt-menu__toggle"><i
-                            class="kt-menu__link-icon flaticon-cart"></i><span class="kt-menu__link-text">Gift Code
-                            Store</span></a>
+                            class="kt-menu__link-icon flaticon-cart"></i><span class="kt-menu__link-text">Buy Gift
+                            Code</span></a>
                 </li>
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Operations</h4>
                     <i class="kt-menu__section-icon flaticon-more-v2"></i>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu {{#if isCode}} kt-menu__item--open {{/if}} "
-                    aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="/user/my-codes"
-                        class="kt-menu__link kt-menu__toggle"><i
-                            class="kt-menu__link-icon flaticon-shopping-basket"></i><span class="kt-menu__link-text">My
-                            Codes</span></a>
-                </li>
-                <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true"
-                    data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i
-                            class="kt-menu__link-icon flaticon2-layers-1"></i><span class="kt-menu__link-text">Sell Gift
+
+                <li class="kt-menu__item  kt-menu__item--submenu {{#if isSales}} kt-menu__item--open {{/if}} "
+                    aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="/user/sales"
+                        class="kt-menu__link kt-menu__toggle"><i class="kt-menu__link-icon flaticon2-layers-1"></i><span
+                            class="kt-menu__link-text">Sell Gift
                             Code</span></a>
                 </li>
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Report</h4>
                     <i class="kt-menu__section-icon flaticon-more-v2"></i>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true"
+                {{!-- <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true"
                     data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i
                             class="kt-menu__link-icon flaticon2-copy"></i><span
                             class="kt-menu__link-text">Transaction</span></a>
+                </li> --}}
+                <li class="kt-menu__item  kt-menu__item--submenu {{#if isCode}} kt-menu__item--open {{/if}} "
+                    aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="/user/my-codes"
+                        class="kt-menu__link kt-menu__toggle"><i
+                            class="kt-menu__link-icon flaticon-shopping-basket"></i><span class="kt-menu__link-text">My
+                            Codes</span></a>
                 </li>
                 <li class="kt-menu__section ">
                     <h4 class="kt-menu__section-text">Setting</h4>

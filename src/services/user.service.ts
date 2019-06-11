@@ -1,5 +1,5 @@
-import { createQueryBuilder } from 'typeorm';
-import { CartItem } from './../models/CartItem';
+import { createQueryBuilder } from "typeorm";
+import { CartItem } from "./../models/CartItem";
 import { Admin } from "./../models/Admin";
 import { GCCService } from "./gcc.service";
 import { DatabaseProvider } from "./../database/index";
@@ -12,9 +12,7 @@ import * as bcrypt from "bcryptjs";
 export class UserService {
 	private _gccService: GCCService;
 
-	constructor(
-		@inject(GCCService) private gccService: GCCService
-	) {
+	constructor(@inject(GCCService) private gccService: GCCService) {
 		this._gccService = gccService;
 	}
 	public async create(user: User): Promise<IUserDTO> {
@@ -67,7 +65,11 @@ export class UserService {
 		else return null;
 	}
 
-	public async addToCart(gccId: number, userId: number, qty: number): Promise<boolean> {
+	public async addToCart(
+		gccId: number,
+		userId: number,
+		qty: number
+	): Promise<any> {
 		console.log("trying to add to cart");
 		const db = await DatabaseProvider.getConnection();
 		const cartRepo = db.getRepository(CartItem);
@@ -75,76 +77,106 @@ export class UserService {
 		const gcccategory = await this._gccService.getById(gccId);
 		const user = await this.getById(userId);
 
-		const cartItemInDb = await cartRepo.findOne({ giftCodeCategory: gcccategory, user: user })
-		console.log(cartItemInDb)
+		const cartItemInDb = await cartRepo.findOne({
+			relations: ["giftCodeCategory"],
+			where: { giftCodeCategory: gcccategory, user: user }
+		});
+		console.log(cartItemInDb);
 
-		if(cartItemInDb && cartItemInDb != null){
-			console.log("found the cart item in db")
+		if (cartItemInDb && cartItemInDb != null) {
+			console.log("found the cart item in db");
 			cartItemInDb.quantity += qty;
-			cartItemInDb.total += (gcccategory.sellingPrice * qty);
+			cartItemInDb.total += gcccategory.sellingPrice * qty;
 			await cartRepo.save(cartItemInDb);
-			console.log(cartItemInDb)
-			return true
+			// console.log(cartItemInDb)
+			return cartItemInDb;
 		}
 
-		console.log("its a new item, adding a new row of item")
+		console.log("its a new item, adding a new row of item");
 		let cartItem = new CartItem();
 		cartItem.quantity = qty;
 		cartItem.giftCodeCategory = gcccategory;
 		cartItem.user = user;
-		cartItem.total = (gcccategory.sellingPrice * qty);
+		cartItem.total = gcccategory.sellingPrice * qty;
 
 		await cartRepo.save(cartItem);
 		return true;
 	}
-	
+
+	public async removeFromCart(gccId: number, userId: number): Promise<any> {
+		console.log("trying to remove to cart");
+		console.log(gccId);
+		console.log(userId);
+		const db = await DatabaseProvider.getConnection();
+		const cartRepo = db.getRepository(CartItem);
+
+		const gcccategory = await this._gccService.getById(gccId);
+		const user = await this.getById(userId);
+
+		let cartItemInDb = await cartRepo.findOne({
+			relations: ["giftCodeCategory"],
+			where: { giftCodeCategory: gcccategory, user: user }
+		});
+		console.log(cartItemInDb);
+
+		if (cartItemInDb && cartItemInDb != null) {
+			cartItemInDb.quantity -= 1;
+			cartItemInDb.total -= gcccategory.sellingPrice;
+			if (cartItemInDb.quantity == 0) {
+				console.log("removing entity");
+				await cartRepo.remove(cartItemInDb);
+				return null;
+			}
+			await cartRepo.save(cartItemInDb);
+			return cartItemInDb;
+		}
+	}
+
 	public async clearCart(userId: number) {
 		console.log("clearing cart");
 		const db = await DatabaseProvider.getConnection();
-		try{
+		try {
 			await db
-			.createQueryBuilder()
-			.delete()
-			.from(CartItem)
-			.where("user", { user: userId })
-			.execute();
+				.createQueryBuilder()
+				.delete()
+				.from(CartItem)
+				.where("user", { user: userId })
+				.execute();
+		} catch (ex) {
+			console.log(ex);
 		}
-		catch (ex) {
-			console.log(ex)
-		}
-
 	}
-  
-  public async getCartItem(user: IUserDTO): Promise<any>{
-    const db = await DatabaseProvider.getConnection();
 
-    const itemRepo = await db.getRepository(CartItem);
-	// const items = await itemRepo.find({ user: user});	
-	const items = await itemRepo.createQueryBuilder("CartItem")
-		.innerJoinAndSelect(
-			"CartItem.giftCodeCategory",
-			"gcc",
-			"CartItem.giftCodeCategory = gcc.id"
-		)
-		.where("CartItem.user = :user", {user : user.id})
-		.getMany();
+	public async getCartItem(user: IUserDTO): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
 
+		const itemRepo = await db.getRepository(CartItem);
+		// const items = await itemRepo.find({ user: user});
+		const items = await itemRepo
+			.createQueryBuilder("CartItem")
+			.innerJoinAndSelect(
+				"CartItem.giftCodeCategory",
+				"gcc",
+				"CartItem.giftCodeCategory = gcc.id"
+			)
+			.where("CartItem.user = :user", { user: user.id })
+			.getMany();
 
-	let totalQuantity: number = 0;
-	let totalPrice: number = 0;
+		let totalQuantity: number = 0;
+		let totalPrice: number = 0;
 
-	items.forEach(item => {
-		totalQuantity += item.quantity;
-		totalPrice += item.total;
-	})
-	
-	let itemBundle = {
-		items,
-		totalQuantity,
-		totalPrice
+		items.forEach(item => {
+			totalQuantity += item.quantity;
+			totalPrice += item.total;
+		});
+
+		let itemBundle = {
+			items,
+			totalQuantity,
+			totalPrice
+		};
+		return itemBundle;
 	}
-    return itemBundle;
-  }
 
 	public async isExist(email: string): Promise<boolean> {
 		const user = await this.getByEmail(email);

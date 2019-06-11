@@ -56,9 +56,22 @@ var bindTableToData = function (response) {
         }, {
             data: "title"
         }, {
-            data: "code"
+            data: "code",
+            render: function (code, type, row, meta) {
+                return `
+                <div class="input-group">
+                    <input type="text" class="form-control" value="${code}" id="codeInp" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="btnCopy">Copy</button>
+                    </div>
+                </div>
+                `
+            }
         }, {
-            data: "date"
+            data: "date",
+            render: function (date, type, row, meta) {
+                return moment(date).format('LLL'); 
+            }
         }, {
             data: "status",
             render: function(data, type, row, meta){
@@ -73,3 +86,5 @@ var bindTableToData = function (response) {
     })
     spinner.hide();
 }
+
+// document.addEventListener('click')

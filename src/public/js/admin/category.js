@@ -15,7 +15,7 @@ var loadCategoryTable = function () {
         url: "/admin/category",
         method: "GET",
         dataType: "json",
-        header: {
+        headers: {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (response) {
@@ -35,7 +35,10 @@ var bindTableToData = function (response) {
                 return meta.row + 1;
             }
         }, {
-            data: "title"
+            data: "title",
+            render: function (title, type, row, meta) {
+                return title + " GC";
+            }
         }, {
             data: "prefix"
         }, {

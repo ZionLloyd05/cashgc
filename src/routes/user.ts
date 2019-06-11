@@ -48,6 +48,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/cartitem", this.cartItemOperation.bind(this));
 		router.post("/user/cartitem", this.addItemToCart.bind(this));
 		router.delete("/user/cartitem", this.clearCart.bind(this));
+		router.get("/user/cartitem/:id", this.rmoveFromCart.bind(this));
 
 		/**
 		 * Invoice route
@@ -59,6 +60,8 @@ export class UserRoute implements IRoute {
 		 */
 		router.post("/user/giftcode", this.scaffoldcodes.bind(this));
 		router.get("/user/my-codes", this.serveCodeView.bind(this));
+		router.get("/user/sales", this.serveSalesView.bind(this));
+		router.get("/user/verify/:code", this.verifyCode.bind(this));
 		/**
 		 * Transaction routes
 		 */
@@ -111,6 +114,15 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private serveSalesView(req: Request, res: Response) {
+		res.render("user/sales", {
+			title: "Sales",
+			layout: "userLayout",
+			isSales: true,
+			csrfToken: req.csrfToken()
+		});
+	}
+
 	private async getActiveCategories(req: Request, res: Response) {
 		const activeGccs = await this._gcController.getActiveGccs();
 		return res.send({
@@ -143,7 +155,7 @@ export class UserRoute implements IRoute {
 		res.send({
 			status: "removed",
 			data: true
-		})
+		});
 	}
 
 	private async scaffoldcodes(req: Request, res: Response) {
@@ -171,6 +183,34 @@ export class UserRoute implements IRoute {
 		res.send({
 			status: "read",
 			data: transactions
+		});
+	}
+
+	private async verifyCode(req: Request, res: Response) {
+		let code = req.params.code;
+		let gcInDb = await this._userController.getGCbyCode(code);
+		// console.log(gcInDb)
+		if (gcInDb === undefined) {
+			return res.send({
+				status: "invalid"
+			});
+		} else if (gcInDb && gcInDb.isUsed == true) {
+			return res.send({
+				status: "used"
+			});
+		}
+		return res.send({
+			status: "valid",
+			data: gcInDb
+		});
+	}
+
+	private async rmoveFromCart(req: Request, res: Response) {
+		let gccId = req.params.id;
+		let userId = req.user.id;
+		let result = await this._userController.removeFromCart(gccId, userId);
+		return res.send({
+			status: result
 		});
 	}
 }

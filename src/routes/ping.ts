@@ -89,7 +89,7 @@ export class PingRoute implements IRoute {
 		// 	)
 		// 	.getMany();
 
-		let db = await DatabaseProvider.getConnection();
+		// let db = await DatabaseProvider.getConnection();
 		// var ress = await db
 		// 	.createQueryBuilder()
 		// 	.delete()
@@ -103,7 +103,10 @@ export class PingRoute implements IRoute {
 		// 	where: { "id": 2 }
 		// });
 
-		let trans = await this._tService.getUserTransaction(2);
+		await this._userService.removeFromCart(2, 2);
+		// let trans = await this._tService.getUserTransaction(2);
+		// let gc = await this._gcService.getGCbyCode("1G26bc4d5b045119b7dc72");
+		// console.log(gc === undefined);
 
 		// var gcodes = [
 		// 	{
@@ -123,6 +126,6 @@ export class PingRoute implements IRoute {
 
 		// var transaction = await this._tService.createTransaction(payload);
 
-		res.send({ trans });
+		res.send({ status: "ok" });
 	}
 }

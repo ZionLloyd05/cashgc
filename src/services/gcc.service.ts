@@ -19,21 +19,27 @@ export class GCCService {
 		});
 	}
 	public async create(
-		gcCategory: GiftCodeCategory,
+		gcCategory: any,
 		filePath: any
 	): Promise<GiftCodeCategory> {
+		console.log(gcCategory);
 		console.log("creating from service");
 		const db = await DatabaseProvider.getConnection();
 
 		let newGCCategory = new GiftCodeCategory();
+		let {isAvailable} = gcCategory;
 
 		if (filePath != null) {
 			const imageUrl = await this.uploadImage(filePath);
 			gcCategory.imageUrl = imageUrl;
 
 			newGCCategory = { ...gcCategory };
+			if (isAvailable == "true") newGCCategory.isAvailable = true;
+			else if (isAvailable == "false") newGCCategory.isAvailable = false;
 		} else {
 			newGCCategory = { ...gcCategory };
+			if (isAvailable == "true") newGCCategory.isAvailable = true;
+			else if (isAvailable == "false") newGCCategory.isAvailable = false;
 		}
 
 		return await db.getRepository(GiftCodeCategory).save(newGCCategory);

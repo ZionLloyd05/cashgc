@@ -86,4 +86,13 @@ export class UserController {
 		let transactions = await this._tService.getUserTransaction(userId);
 		return transactions;
 	}
+
+	public async getGCbyCode(code: string): Promise<any> {
+		let gcInDb = await this._gcService.getGCbyCode(code);
+		return gcInDb;
+	}
+
+	public async removeFromCart(gccId: number, userId: number): Promise<any> {
+		return await this._userService.removeFromCart(gccId, userId);
+	}
 }
