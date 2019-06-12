@@ -25,9 +25,7 @@ export interface IUserDTO {
   lastname: string;
   email: string;
   phone: number;
-  address: string;
-  city: string;
-  state: string;
+
   country: string;
 }
 
@@ -54,19 +52,6 @@ export class User implements IUserDTO {
 
   @Column()
   public phone: number;
-
-  @Column()
-  @Min(10)
-  @Max(60)
-  public address: string;
-
-  @Column()
-  @Max(20)
-  public city: string;
-
-  @Column()
-  @Max(20)
-  public state: string;
 
   @Column()
   @Max(20)
