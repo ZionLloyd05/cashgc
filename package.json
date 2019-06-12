@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "test": "mocha -r ts-node/register src/**/*.ts",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/app.js",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\""
@@ -12,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.4.5",
+    "@types/chai-http": "^4.2.0",
     "@types/connect-flash": "0.0.34",
     "@types/cors": "^2.8.5",
     "@types/csurf": "^1.9.35",
@@ -20,6 +22,7 @@
     "@types/passport": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "chai-http": "^4.3.0",
     "class-validator": "^0.9.1",
     "cloudinary": "^1.14.0",
     "concurrently": "^4.1.0",

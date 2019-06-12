@@ -36,6 +36,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/store", this.serveStoreView.bind(this));
 
 		router.get("/user/cart", this.serveCartView.bind(this));
+		router.get("/user/profile", this.serveProfileView.bind(this));
 
 		/**
 		 * Gift Category routes
@@ -121,6 +122,15 @@ export class UserRoute implements IRoute {
 			isSales: true,
 			csrfToken: req.csrfToken()
 		});
+	}
+
+	private serveProfileView(req: Rquest, res: Response) {
+		res.render("user/profile", {
+			title: "Profile",
+			layout: "userLayout",
+			isProfile: true,
+			csrfToken: req.csrfToken()
+		})		
 	}
 
 	private async getActiveCategories(req: Request, res: Response) {
@@ -213,4 +223,5 @@ export class UserRoute implements IRoute {
 			status: result
 		});
 	}
+
 }

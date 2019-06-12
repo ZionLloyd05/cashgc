@@ -1,6 +1,9 @@
 "use strict"
 $(document).ready(function () {
     loadCodeTable();
+    $("#kt_toast_1").toast({
+        delay: 4e3
+    })
 })
 
 var csrfToken = $('#_csrf').val();
@@ -59,10 +62,10 @@ var bindTableToData = function (response) {
             data: "code",
             render: function (code, type, row, meta) {
                 return `
-                <div class="input-group">
-                    <input type="text" class="form-control" value="${code}" id="codeInp" readonly>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" value="${code}" id="id_${meta.row}" readonly>
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button" id="btnCopy">Copy</button>
+                        <button class="btn btn-primary btnCopy" type="button" id="btnCopy">Copy</button>
                     </div>
                 </div>
                 `
@@ -87,4 +90,15 @@ var bindTableToData = function (response) {
     spinner.hide();
 }
 
-// document.addEventListener('click')
+document.addEventListener('click', function (e) {
+    if ( e.target.classList.contains( 'btnCopy' ) ) {
+        var btn = e.target;
+        var input = btn.parentNode.parentNode.children[0];
+        var inpId = input.getAttribute('id');
+        
+        var copyText = document.getElementById(inpId);
+        copyText.select();
+        document.execCommand("copy");
+        $("#kt_toast_1").toast("show");
+    }
+}, false);
