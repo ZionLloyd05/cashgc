@@ -7,8 +7,6 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
             success: function (data) {
-
-                console.log(data[0].name)
                 $('#country').val(data[0].name);
             }
         })

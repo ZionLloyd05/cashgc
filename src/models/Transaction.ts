@@ -13,12 +13,19 @@ import { GiftCode } from "./GiftCode";
 
 enum Status {
 	Success,
-	Failed
+	Failed,
+	Pending
 }
 
 enum Type {
 	Buy,
 	Sell
+}
+
+enum Payment {
+	Paypal,
+	Paystack,
+	Bitcoin
 }
 
 @Entity()
@@ -33,6 +40,9 @@ export class Transaction {
 	@Column("enum", { enum: Status })
 	public status: Status;
 
+	@Column("enum", { enum: Payment })
+	public payment: Payment;
+
 	@ManyToOne(type => User, user => user.transactions)
 	public user: User;
 
@@ -41,7 +51,7 @@ export class Transaction {
 
 	@ManyToMany(type => GiftCode)
 	@JoinTable()
-	public giftCodes: GiftCode[];
+	public giftCodes?: GiftCode[];
 
 	@CreateDateColumn()
 	createdAt?: Date;

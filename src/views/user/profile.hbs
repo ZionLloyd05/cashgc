@@ -1,4 +1,8 @@
 <link href="/assets/css/profile-v1.css" rel="stylesheet" type="text/css" />
+{{!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
 <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
 
     <!-- begin:: Subheader -->
@@ -28,12 +32,12 @@
                             <div class="kt-profile__main-pic">
                                 <img src="assets/media/users/300_21.jpg" alt="">
                                 <label class="kt-profile__main-pic-upload">
-                                    <i class="flaticon-photo-camera"></i>
+                                    <i class="fa fa-user"></i>
                                 </label>
                             </div>
                             <div class="kt-profile__main-info">
-                                <div class="kt-profile__main-info-name">Brian Johnson</div>
-                                <div class="kt-profile__main-info-position">Lead Designer</div>
+                                <div class="kt-profile__main-info-name">{{user.firstname}} {{user.lastname}}</div>
+                                <div class="kt-profile__main-info-position">{{user.email}}</div>
                             </div>
                         </div>			
                     </div>
@@ -41,21 +45,21 @@
                         <div class="kt-profile__contact">
                             <a href="#" class="kt-profile__contact-item">
                                 <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-whatsup"><i class="flaticon-whatsapp"></i></span>
-                                <span class="kt-profile__contact-item-text">44 8475 804342</span>
+                                <span class="kt-profile__contact-item-text">{{user.phone}}</span>
                             </a>
                             <a href="#" class="kt-profile__contact-item">
                                 <span class="kt-profile__contact-item-icon"><i class="flaticon-email-black-circular-button kt-font-danger"></i></span>
-                                <span class="kt-profile__contact-item-text">brian@keenthemes.com</span>
+                                <span class="kt-profile__contact-item-text">{{user.email}}</span>
                             </a>
                             <a href="#" class="kt-profile__contact-item">
-                                <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="flaticon-twitter-logo-button"></i></span>
-                                <span class="kt-profile__contact-item-text">@brianjohnson</span>
+                                <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="fa fa-university"></i></span>
+                                <span class="kt-profile__contact-item-text">{{user.country}}</span>
                             </a>
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-3 col-xl-4">
                         <div class="kt-profile__stats">
-                            <div class="kt-profile__stats-item">
+                            {{!-- <div class="kt-profile__stats-item">
                                 <div class="kt-profile__stats-item-label">Sales</div>
                                 <div class="kt-profile__stats-item-chart">
                                     <span>USP: +23%</span>
@@ -68,7 +72,7 @@
                                     <span>RNP: +30%</span>
                                     <canvas id="kt_profile_mini_chart_2" width="100" height="40" style="display: block;"></canvas>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -84,9 +88,21 @@
                                 <a class="kt-nav__link active" data-toggle="tab" href="#kt_profile_tab_personal_information" role="tab" aria-selected="false">
                                     <span class="kt-nav__link-icon"><i class="flaticon2-user-outline-symbol"></i></span>
                                     <span class="kt-nav__link-text">Personal Information</span>
-                                    <span class="kt-nav__link-badge"><span class="kt-badge kt-badge--brand kt-badge--inline">2/4 completed</span></span>
                                 </a>
                             </li>
+							<li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_bank_information" role="tab" aria-selected="false">
+                                    <span class="kt-nav__link-icon"><i class="flaticon2-user-outline-symbol"></i></span>
+                                    <span class="kt-nav__link-text">Bank Information</span>
+                                </a>
+                            </li>
+							<li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_bitcoin_information" role="tab" aria-selected="false">
+                                    <span class="kt-nav__link-icon"><i class="flaticon-coins"></i></span>
+                                    <span class="kt-nav__link-text">Bitcoin Wallet</span>
+                                </a>
+                            </li>
+                            <li class="kt-nav__separator"></li>
                             <li class="kt-nav__item">
                                 <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_account_information" role="tab" aria-selected="false">
                                 	<span class="kt-nav__link-icon"><i class="flaticon2-soft-icons-1"></i></span>
@@ -98,12 +114,6 @@
 									<span class="kt-nav__link-icon"><i class="flaticon2-lock"></i></span>
                                     <span class="kt-nav__link-text">Change Password</span>
                                 </a>                                                 
-                            </li>
-                            <li class="kt-nav__item">
-                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_email_settings" role="tab">
-                                	<span class="kt-nav__link-icon"><i class="flaticon2-mail"></i></span>
-                                    <span class="kt-nav__link-text">Email Settings</span>
-                                </a>
                             </li>
                             {{!-- <li class="kt-nav__item">
                                 <a class="kt-nav__link" href="#" role="tab" data-toggle="kt-tooltip" title="" data-placement="right" data-original-title="This feature is coming soon!">
@@ -282,7 +292,7 @@
                                 </div>
 							</div>
 
-							<form class="kt-form kt-form--label-right">
+							<form class="kt-form kt-form--label-right" id="updateInfoForm">
 								<div class="kt-portlet__body">
 									<div class="kt-section kt-section--first">
 										<div class="kt-section__body">
@@ -311,50 +321,16 @@
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label">First Name</label>
 												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Nick">
+													<input class="form-control" id="firstname" name="firstname" type="text" value="{{user.firstname}}">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label">Last Name</label>
 												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Watson">
+													<input class="form-control" id="lastname" name="lastname" type="text" value="{{user.lastname}}">
 												</div>
 											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Company Name</label>
-												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Loop Inc.">
-													<span class="form-text text-muted">If you want your invoices addressed to a company. Leave blank to use your full name.</span>
-												</div>
-											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Contact Phone</label>
-												<div class="col-lg-9 col-xl-6">
-													<div class="input-group">
-														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
-														<input type="text" class="form-control" value="+45678967456" placeholder="Phone" aria-describedby="basic-addon1">
-													</div>
-													<span class="form-text text-muted">We'll never share your email with anyone else.</span>
-												</div>
-											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Email Address</label>
-												<div class="col-lg-9 col-xl-6">
-													<div class="input-group">
-														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
-														<input type="text" class="form-control" value="nick.watson@loop.com" placeholder="Email" aria-describedby="basic-addon1">
-													</div>
-												</div>
-											</div>
-											<div class="form-group form-group-last row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Company Site</label>
-												<div class="col-lg-9 col-xl-6">
-													<div class="input-group">
-														<input type="text" class="form-control" placeholder="Username" value="loop">
-														<div class="input-group-append"><span class="input-group-text">.com</span></div>
-													</div>
-												</div>
-											</div>
+											
 										</div>
 									</div>
 
@@ -365,52 +341,68 @@
 											<div class="row">
 												<label class="col-xl-3"></label>
 												<div class="col-lg-9 col-xl-6">
-													<h3 class="kt-section__title kt-section__title-sm">Address Details:</h3>
+													<h3 class="kt-section__title kt-section__title-sm">Contact Details:</h3>
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Address Line 1</label>
+												<label class="col-xl-3 col-lg-3 col-form-label">Email Address</label>
 												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="District 6 1352 W. Olive Ave">
+													<div class="input-group">
+														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
+														<input type="text" id="email" name="email" class="form-control" value="{{user.email}}" placeholder="Email">
+													</div>
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Address Line 2</label>
+												<label class="col-xl-3 col-lg-3 col-form-label">Contact Phone</label>
 												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Fresno 559-488-4020">
+													<div class="input-group">
+														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
+														<input type="text" id="phone" name="phone" class="form-control" value="{{user.phone}}" placeholder="Phone">
+													</div>
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">City</label>
+												<label class="col-xl-3 col-lg-3 col-form-label">Country</label>
 												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Polo Alto">
+													<input class="form-control" type="text" id="country" name="country" value="{{user.country}}">
 												</div>
 											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">State / Province / Region</label>
-												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="Los Angeles">
-												</div>
-											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label">Zip / Postal Code</label>
-												<div class="col-lg-9 col-xl-6">
-													<input class="form-control" type="text" value="780456">
-												</div>
-											</div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6">
-													<div class="kt-checkbox-single">
-														<label class="kt-checkbox">
-								                           	<input type="checkbox"> Use as shipping address.
-								                            <span></span>
-								                        </label>
-								                    </div>
-												</div>
-											</div>
+											
 								    	</div>
 									</div>
+
+                                    <div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
+                                    <div class="form-group row">
+                                 		<label class="col-xl-3 col-lg-3 col-form-label">Confirm you're not a robot</label>
+                                        <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" readonly class="form-control" id="num11" class="form-control" value="">
+                                            </div>
+                                        </div>
+                                         <div class="col-lg-1">
+                                            <span>+</span>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" readonly class="form-control" id="num12" class="form-control" value="">
+                                            </div>
+                                        </div>
+                                        {{!-- <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" id="total1" name="total1" class="form-control" value="">
+                                            </div>
+                                        </div> --}}
+                                        <input type="hidden" name="_csrf" id="_csrf" value="{{ csrfToken }}">
+                                        <input type="hidden" name="id" id="author" value="{{user.id}}">
+                                    </div>
+                                    <div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">=</label>
+												<div class="col-lg-7">
+                                                <input type="number" id="total1" name="total1" class="form-control" value="">
+												</div>
+											</div>
+
 								</div>
 								<div class="kt-portlet__foot">
 									<div class="kt-form__actions">
@@ -418,7 +410,7 @@
 											<div class="col-lg-3 col-xl-3">
 											</div>
 											<div class="col-lg-9 col-xl-9">
-												<button type="reset" class="btn btn-success">Submit</button>&nbsp;
+												<button type="submit" id="updateBtn" class="btn btn-brand">Save Changes</button>&nbsp;
 												<button type="reset" class="btn btn-secondary">Cancel</button>
 											</div>
 										</div>
@@ -430,7 +422,7 @@
 					<!--end: Personal Information-->
 					
 					<!--begin: Account Information-->
-					<div class="tab-pane fade" id="kt_profile_tab_account_information" role="tabpanel">
+					<div class="tab-pane fad0-e" id="kt_profile_tab_account_information" role="tabpanel">
 						<div class="kt-portlet">
 							<div class="kt-portlet__head">
 								<div class="kt-portlet__head-label">
@@ -507,7 +499,7 @@
 												<div class="col-lg-9 col-xl-6">
 													<div class="input-group">
 														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
-														<input type="text" class="form-control" value="nick.watson@loop.com" placeholder="Email" aria-describedby="basic-addon1">
+														<input type="text" class="form-control" value="nick.watson@loop.com" placeholder="Email">
 													</div>
 													<span class="form-text text-muted">Email will not be publicly displayed. <a href="#" class="kt-link">Learn more</a>.</span>
 												</div>
@@ -594,6 +586,128 @@
 						</div>
 					</div>
 					<!--end: Account Information-->
+
+					<!--begin: Account Information-->
+					<div class="tab-pane fade" id="kt_profile_tab_bank_information" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Bank Information <small>manage your bank details</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="bankAccountFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Bank Account:</h3>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Bank Name</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="bankname" name="bankname" type="text" value="">
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Account Number</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="accnumber" name="accnumber" type="text" value="">
+												</div>
+											</div>
+											
+                                        	<input type="hidden" name="bkid" id="bkid" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="saveaccBtn" class="btn btn-brand">Save Changes</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Account Information-->
+
+					<!--begin: Bitcoin Information-->
+					<div class="tab-pane fade" id="kt_profile_tab_bitcoin_information" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Wallet Information<small>manage your bitcoin wallet</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="walletFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Bitcoin Wallet:</h3>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Wallet ID</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="wallet" name="wallet" type="text" value="">
+												</div>
+											</div>
+											
+                                        	<input type="hidden" name="w_id" id="w_id" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="saveWalletBtn" class="btn btn-brand">Save Changes</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Bitcoin Information-->
+
 
 					<!--begin: Change Password -->
 					<div class="tab-pane fade" id="kt_profile_change_password" role="tabpanel">
@@ -863,3 +977,4 @@
 		</div>
     </div>
 </div>
+<script src="/js/user/profile.js"></script>

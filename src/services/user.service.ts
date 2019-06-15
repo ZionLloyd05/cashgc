@@ -1,3 +1,6 @@
+import { PendingCode } from './../models/PendingCode';
+import { Wallet } from './../models/Wallet';
+import { BankAccount } from "../models/BankAccount";
 import { createQueryBuilder } from "typeorm";
 import { CartItem } from "./../models/CartItem";
 import { Admin } from "./../models/Admin";
@@ -7,6 +10,7 @@ import { User, IUserDTO } from "../models/User";
 import * as crypto from "crypto";
 import { injectable, inject } from "inversify";
 import * as bcrypt from "bcryptjs";
+import { PendingCode } from '../models/PendingCode';
 
 @injectable()
 export class UserService {
@@ -27,19 +31,18 @@ export class UserService {
 		return await db.getRepository(User).save(newUser);
 	}
 
-	public async update(user: IUserDTO): Promise<IUserDTO> {
+	public async update(user: any): Promise<IUserDTO> {
 		const db = await DatabaseProvider.getConnection();
 		const userRepository = db.getRepository(User);
+
 		let userInDb = await userRepository.findOne(user.id);
 
-		const { firstname, lastname, email, address, city, state, country } = user;
+		const { firstname, lastname, email, phone, country } = user;
 		userInDb.firstname = firstname;
 		userInDb.lastname = lastname;
 		userInDb.email = email;
-		userInDb.address = address;
-		userInDb.city = city;
-		userInDb.state = state;
 		userInDb.country = country;
+		userInDb.phone = phone;
 
 		return await userRepository.save(userInDb);
 	}
@@ -200,6 +203,89 @@ export class UserService {
 		let userDto: IUserDTO;
 		userDto = { ...userFound };
 		return userDto;
+	}
+
+	public async createAccount(payload: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const accountRepo = await db.getRepository(BankAccount);
+
+		let newbkAccount = await new BankAccount();
+		newbkAccount = { ...payload };
+
+		return await accountRepo.save(newbkAccount);
+	}
+
+	/***
+	 * Wallet Methods
+	 */
+	public async createWallet(payload: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const walletRepo = await db.getRepository(Wallet);
+
+		let newWallet = await new Wallet();
+		newWallet = { ...payload };
+
+		return await walletRepo.save(newWallet);
+	}
+
+	public async updateWallet(wallet: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const walletRepo = await db.getRepository(Wallet);
+
+		let walletInDb = await walletRepo.findOne(wallet.id);
+
+		const { wid } = wallet;
+
+		walletInDb.wid = wid;
+
+		return await walletRepo.save(walletInDb);
+	}
+
+	public async getWallet(userId: number): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const walletRepo = await db.getRepository(Wallet);
+
+		return await walletRepo.findOne({
+			where: { user: userId }
+		});
+	}
+
+	/**
+	 * Bank Account Methods
+	 */
+	public async updateAccount(account: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const accountRepo = await db.getRepository(BankAccount);
+
+		let accountInDb = await accountRepo.findOne(account.id);
+
+		const { name, number } = account;
+
+		accountInDb.name = name;
+		accountInDb.number = number;
+
+		return await accountRepo.save(accountInDb);
+	}
+
+	public async getAccount(userId: number): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const accountRepo = await db.getRepository(BankAccount);
+
+		return await accountRepo.findOne({
+			where: { user: userId }
+		});
+	}
+
+	/**
+	 * Pending Code Methods
+	 */
+	public async createPendingCode(payload: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+
+		let newPendingCode = await new PendingCode();
+		newPendingCode = { ...payload }
+
+		return await db.getRepository(PendingCode).save(newPendingCode);
 	}
 
 	/**   *

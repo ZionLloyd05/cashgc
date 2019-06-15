@@ -103,7 +103,7 @@ export class PingRoute implements IRoute {
 		// 	where: { "id": 2 }
 		// });
 
-		await this._userService.removeFromCart(2, 2);
+		// await this._userService.removeFromCart(2, 2);
 		// let trans = await this._tService.getUserTransaction(2);
 		// let gc = await this._gcService.getGCbyCode("1G26bc4d5b045119b7dc72");
 		// console.log(gc === undefined);
@@ -125,7 +125,12 @@ export class PingRoute implements IRoute {
 		// };
 
 		// var transaction = await this._tService.createTransaction(payload);
-
-		res.send({ status: "ok" });
+		let account = {
+			name: "zenith",
+			number: 2100032257,
+			user: 2
+		};
+		let acc = await this._gcService.getGCbyCode("1A909b1ebf2c1d0c40e093"); 
+		res.send(acc);
 	}
 }

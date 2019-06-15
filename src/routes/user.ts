@@ -6,7 +6,6 @@ import { IRoute } from "./IRoute";
 import DIContainer from "../container/DIContainer";
 
 import * as csurf from "csurf";
-import { create } from "domain";
 
 export class UserRoute implements IRoute {
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
@@ -37,6 +36,7 @@ export class UserRoute implements IRoute {
 
 		router.get("/user/cart", this.serveCartView.bind(this));
 		router.get("/user/profile", this.serveProfileView.bind(this));
+		router.post("/user/account", this.saveProfile.bind(this));
 
 		/**
 		 * Gift Category routes
@@ -49,7 +49,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/cartitem", this.cartItemOperation.bind(this));
 		router.post("/user/cartitem", this.addItemToCart.bind(this));
 		router.delete("/user/cartitem", this.clearCart.bind(this));
-		router.get("/user/cartitem/:id", this.rmoveFromCart.bind(this));
+		router.get("/user/cartitem/:id", this.removeFromCart.bind(this));
 
 		/**
 		 * Invoice route
@@ -63,11 +63,24 @@ export class UserRoute implements IRoute {
 		router.get("/user/my-codes", this.serveCodeView.bind(this));
 		router.get("/user/sales", this.serveSalesView.bind(this));
 		router.get("/user/verify/:code", this.verifyCode.bind(this));
+
 		/**
 		 * Transaction routes
 		 */
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.getTransactions.bind(this));
+
+		/**
+		 * Bank Account Route
+		 */
+		router.get("/user/bkaccount", this.getAccount.bind(this));
+		router.post("/user/bkaccount", this.saveAccount.bind(this));
+
+		/**
+		 * Bitcoin Wallet Route
+		 */
+		router.get("/user/wallet", this.getWallet.bind(this));
+		router.post("/user/wallet", this.saveWallet.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -124,13 +137,13 @@ export class UserRoute implements IRoute {
 		});
 	}
 
-	private serveProfileView(req: Rquest, res: Response) {
+	private serveProfileView(req: Request, res: Response) {
 		res.render("user/profile", {
 			title: "Profile",
 			layout: "userLayout",
 			isProfile: true,
 			csrfToken: req.csrfToken()
-		})		
+		});
 	}
 
 	private async getActiveCategories(req: Request, res: Response) {
@@ -215,7 +228,7 @@ export class UserRoute implements IRoute {
 		});
 	}
 
-	private async rmoveFromCart(req: Request, res: Response) {
+	private async removeFromCart(req: Request, res: Response) {
 		let gccId = req.params.id;
 		let userId = req.user.id;
 		let result = await this._userController.removeFromCart(gccId, userId);
@@ -224,4 +237,69 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private async saveProfile(req: Request, res: Response) {
+		let { fname, lname, email, phone, country, id } = req.body;
+
+		let userPayload = {
+			firstname: fname,
+			lastname: lname,
+			email: email,
+			phone: phone,
+			country: country,
+			id: id
+		};
+
+		let updatedUser = await this._userController.saveUser(userPayload);
+
+		return res.send({
+			status: "update",
+			data: updatedUser
+		});
+	}
+
+	private async saveAccount(req: Request, res: Response) {
+
+		let account = { ...req.body }
+
+		account.user = req.user.id;
+
+		let newBankacc = await this._userController.saveAccount(account)
+
+		return res.send({
+			status: "save",
+			data: newBankacc
+		})
+	}
+
+	private async getAccount(req: Request, res: Response) {
+		const uacc = await this._userController.getAccount(req.user.id);
+
+		return res.send({
+			status: "read",
+			data: uacc
+		})
+	}
+
+	private async saveWallet(req: Request, res: Response) {
+
+		let wallet = { ...req.body }
+
+		wallet.user = req.user.id;
+
+		let newWallet = await this._userController.saveWallet(wallet)
+
+		return res.send({
+			status: "save",
+			data: newWallet
+		})
+	}
+
+	private async getWallet(req: Request, res: Response) {
+		const uwallet = await this._userController.getWallet(req.user.id);
+
+		return res.send({
+			status: "read",
+			data: uwallet
+		})
+	}
 }

@@ -75,7 +75,6 @@ export class GiftCodeService {
 	getGCbyCode = async (token: string): Promise<any> | null => {
 		const db = await DatabaseProvider.getConnection();
 		console.log(token);
-		// let gcInDb = await db.getRepository("GiftCode").findOne({ code: token });
 		let gcInDb = await db.getRepository("GiftCode").findOne({
 			relations: ["giftCodeCategory"],
 			where: { code: token }

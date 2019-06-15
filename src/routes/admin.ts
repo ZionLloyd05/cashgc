@@ -53,7 +53,10 @@ export class AdminRoute implements IRoute {
 			this._authService.routeGaurd,
 			this.serveDashboardView.bind(this)
 		);
-
+		
+		/**
+		 * Category Routes
+		 */
 		router.get("/admin/gc/categories", this.serveCategoryView.bind(this));
 
 		router.get("/admin/category", this.getAllCategory.bind(this));
@@ -62,6 +65,11 @@ export class AdminRoute implements IRoute {
 			this.upload.single("image"),
 			this.saveCategory.bind(this)
 		);
+
+		/**
+		 * Transaction Routes
+		 */
+		router.get("/admin/transaction", this.serveTransactionView.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -79,6 +87,15 @@ export class AdminRoute implements IRoute {
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
 			isCategory: true
+		});
+	}
+
+	private serveTransactionView(req: Request, res: Response) {
+		res.render("admin/transaction", {
+			title: "Dashboard",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isDashboard: true
 		});
 	}
 

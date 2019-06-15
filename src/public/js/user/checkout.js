@@ -51,9 +51,6 @@ var bindTableToData = function (response) {
             {
                 data: "id",
                 render: function (giftCodeCategory, type, row, meta) {
-                    // console.log(giftCodeCategory)
-                    // console.log(row)
-                    // debugger
                     return `${row.giftCodeCategory.title} gift code`
                 }
             },
