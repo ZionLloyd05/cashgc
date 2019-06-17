@@ -353,12 +353,10 @@ var createDummyTransaction = function (data) {
         .then(res => res.json())
         .then(data => {
             $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
-            // bindGiftCodeData(data.data);
             $('#exampleModalTooltips').modal("show");
             clearCart();
         })
 }
-
 
 var clearCart = function () {
     fetch('/user/cartitem', {
@@ -390,3 +388,45 @@ var bindGiftCodeData = function (data) {
     gcHeader.removeClass("kt-spinner kt-spinner--v2 kt-spinner--md kt-spinner--info")
     gcHeaderText.html("Note: You can access your Gift Codes here <a href='/user/my-codes'>My Codes</a>")
 }
+
+$(document).click('#triggerPay', function () {
+    var totalAmount = $('#cartTotalAmount').attr("data-pr")
+    console.log(totalAmount)
+
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            // Set up the transaction
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: totalAmount
+                    }
+                }]
+            });
+        },
+        onApprove: function (data, actions) {
+            // Capture the funds from the transaction
+            return actions.order.capture().then(function (details) {
+                // Show a success message to your buyer
+                console.log(details)
+                swal('Transaction completed by ' + details.payer.name.given_name, '', 'success')
+                //alert('Transaction completed by ' + details.payer.name.given_name);
+
+                // fetch('user/paypal-transaction-complete', {
+                //     method: 'post',
+                //     headers: {
+                //         'content-type': 'application/json'
+                //     },
+                //     body: JSON.stringify({
+                //         orderID: data.orderID,
+                //         amountToPay: totalAmount
+                //     })
+                // }).then(res => {
+                //     console.log(res)
+                // })
+            });
+        }
+    }).render('#paypal-button-container');
+
+    $('#payModal').modal('show');
+})

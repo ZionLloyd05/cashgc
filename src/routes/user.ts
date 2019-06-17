@@ -69,6 +69,7 @@ export class UserRoute implements IRoute {
 		 */
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.getTransactions.bind(this));
+		router.post("user/paypal-transaction-complete", this.handleTransactionComplete.bind(this));
 
 		/**
 		 * Bank Account Route
@@ -207,6 +208,15 @@ export class UserRoute implements IRoute {
 			status: "read",
 			data: transactions
 		});
+	}
+
+	private async handleTransactionComplete(req: Request, res: Response) {
+		let {orderID, amountToPay} = req.body;
+		// let response = await this._userController.verifyTransaction(orderId, amountToPay);
+		res.send({
+			status: "verify",
+			// data: response
+		})
 	}
 
 	private async verifyCode(req: Request, res: Response) {

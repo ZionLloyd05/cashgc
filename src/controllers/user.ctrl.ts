@@ -122,4 +122,11 @@ export class UserController {
 	public async createPendingCodes(payload: any): Promise<any> {
 		return this._userService.createPendingCode(payload);
 	}
+
+	// public async verifyTransaction(
+	// 	orderID: any,
+	// 	amountToPay: number
+	// ): Promise<number> {
+	// 	return this._tService.veriftTransaction(orderID, amountToPay);
+	// }
 }

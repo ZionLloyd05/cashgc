@@ -75,8 +75,8 @@ $(document).ready(function () {
         totalPriceSpan.text(totalPrice2.toLocaleString());
 
         if (input.attr("data-status") === "dirty") {
-            postedCodes.pop(code)
-            postedCodeIds.pop(codeId);
+            remove(postedCodes, code)
+            remove(postedCodeIds, codeId)
         }
 
         console.log(postedCodes)
@@ -86,6 +86,8 @@ $(document).ready(function () {
         parent.remove();
 
     })
+
+
 
     $(document).on('click', '#addMore', function (e) {
         e.stopPropagation();
@@ -108,17 +110,24 @@ $(document).ready(function () {
     })
 
     $('#proceedBtn').click(function () {
+        var codesToSell = postedCodeIds;
+
+        if (codesToSell.length < 1) {
+            swal("There's nothing to sell", "", "error");
+            return false;
+        }
+
+        var btn = $(this);
+        btn.addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
         var paymentOption = $("input[name='m_option_1']:checked").val();
         console.log(paymentOption)
         if (paymentOption == "bitcoin") {
-
-            var codesToPost = postedCodeIds;
 
             let transactionPayload = {
                 status: 2,
                 type: 1,
                 payment: 2,
-                gcodes: codesToPost
+                gcodes: codesToSell
             }
 
             fetch('/user/transaction', {
@@ -130,11 +139,20 @@ $(document).ready(function () {
                     }
                 }).then(res => res.json())
                 .then(data => {
-                    console.log(data)
+                    btn.removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+                    swal("Transaction Posted Successfully!", "Processing begins immediately.", "success")
+                        .then((value) => {
+                            window.location.reload();
+                        });
                 })
 
         } else if (paymentOption == "bank") {
-            console.log("bank")
+            //Paystack
         }
     })
 })
+
+var remove = function (arr, element) {
+    var idx = arr.indexOf(element);
+    arr.splice(idx, 1)
+}

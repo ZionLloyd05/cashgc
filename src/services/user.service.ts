@@ -1,16 +1,12 @@
 import { PendingCode } from './../models/PendingCode';
 import { Wallet } from './../models/Wallet';
 import { BankAccount } from "../models/BankAccount";
-import { createQueryBuilder } from "typeorm";
 import { CartItem } from "./../models/CartItem";
-import { Admin } from "./../models/Admin";
 import { GCCService } from "./gcc.service";
 import { DatabaseProvider } from "./../database/index";
 import { User, IUserDTO } from "../models/User";
-import * as crypto from "crypto";
 import { injectable, inject } from "inversify";
 import * as bcrypt from "bcryptjs";
-import { PendingCode } from '../models/PendingCode';
 
 @injectable()
 export class UserService {

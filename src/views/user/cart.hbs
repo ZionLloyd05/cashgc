@@ -58,6 +58,30 @@
             </div>
         </div>
 
+        <div class="modal fade" data-backdrop="static" id="payModal" tabindex="-1" role="dialog"
+            aria-labelledby="payModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        {{!-- <h5 class="modal-title"
+                            id="payModalCenterTitle">Preparing your gift codes...</h5> --}}
+                        <div id="gcHeader" class="">
+                            <h6 class="modal-title">
+                                Pay with PayPal
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="kt-portlet">
@@ -110,13 +134,13 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-lg-12 kt-align-right">
-                <a class="btn btn-primary text-white" href="/user/store" id="">
-                    Back to Store
-                </a>
-                <button type="button" class="btn btn-primary" id="checkoutBtn">Proceed to
-                    Payment
-                </button>
+            <div class="col-lg-6 kt-align-right">
+                <a href="/user/store" class="kt-link kt-font-brand">Back to Store</a>
+            </div>
+            <div class="col-lg-6">
+                <a href="#" class="kt-link kt-font-brand" id="triggerPay">Click to
+                    Checkout</a>
+
             </div>
         </div>
 
@@ -125,4 +149,7 @@
 
 <input type="hidden" name="" id="_csrf" value="{{csrfToken}}">
 {{!-- End of Modal --}}
+<script
+    src="https://www.paypal.com/sdk/js?client-id=ATVJ04LEM3Cn3LWpZG9p21gK9UFk3JTJc1HWa3C-T1bpEHvyKcJDWKgJZoZg719HbJzuju93Fojng7Mz">
+    </script>
 <script src="/js/user/checkout.js"></script>
