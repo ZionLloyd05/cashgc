@@ -14,24 +14,15 @@ export class PassportConfig {
 
 	static bootstrap = (passport: Passport.PassportStatic) => {
 		passport.serializeUser<User, number>((user: IUserDTO, done) => {
-			// console.log("serializing");
 			done(null, user.id);
 		});
 
 		passport.deserializeUser<User, number>(async (id: number, done) => {
-			// console.log("deserializing");
 			await PassportConfig._userService
 				.getById(id)
 				.then(user => {
-          let userDto: IUserDTO;
-          userDto = {...user}
-          // userDto.id = user.id;
-          // userDto.firstname = user.firstname;
-          // userDto.lastname = user.lastname;
-          // userDto.email = user.email;
-          // userDto.phone = user.phone;
-          // console.log("")
-					// console.log(userDto);
+					let userDto: IUserDTO;
+					userDto = { ...user };
 					done(null, userDto);
 				})
 				.catch(err => done(err, null));
@@ -89,9 +80,9 @@ export class PassportConfig {
 				await PassportConfig._userService
 					.authenticate(email, password)
 					.then(user => {
-						if (user) {
+						if (Object.keys(user).length > 0) {
 							let userDto: IUserDTO;
-              userDto = { ...user };
+							userDto = { ...user };
 							return done(null, userDto);
 						} else {
 							return done(
