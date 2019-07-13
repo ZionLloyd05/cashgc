@@ -3,6 +3,7 @@ import { DatabaseProvider } from "./../database/index";
 import { Transaction } from "./../models/Transaction";
 import { injectable } from "inversify";
 import * as checkoutNodeJssdk from "@paypal/checkout-server-sdk";
+import { createQueryBuilder } from "typeorm";
 // import * as payPalClient from "../common/paypalClient.js";
 
 @injectable()
@@ -77,6 +78,36 @@ export class TransactionService {
 			.getMany();
 
 		return transactions;
+	}
+
+	public async getAllTransaction(): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transactionRepo = await db.getRepository("transaction");
+		let transactions = transactionRepo.find({
+			relations: ["user"]
+		});
+
+		return transactions;
+	}
+
+	public async approveBitcoinTransaction(tid: number): Promise<boolean> {
+		await createQueryBuilder("Transaction")
+			.update(Transaction)
+			.set({ status: 0 })
+			.where("id = :id", { id: tid })
+			.execute();
+
+		return true;
+	}
+
+	public async declineBitcoinTransaction(tid: number): Promise<boolean> {
+		await createQueryBuilder("Transaction")
+			.update(Transaction)
+			.set({ status: 1 })
+			.where("id = :id", { id: tid })
+			.execute();
+
+		return true;
 	}
 
 	// public async veriftTransaction(

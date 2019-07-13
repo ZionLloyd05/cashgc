@@ -67,6 +67,7 @@ export class UserRoute implements IRoute {
 		/**
 		 * Transaction routes
 		 */
+		router.get("/user/transactions", this.serveTransactionView.bind(this));
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.getTransactions.bind(this));
 		router.post("user/paypal-transaction-complete", this.handleTransactionComplete.bind(this));
@@ -207,6 +208,15 @@ export class UserRoute implements IRoute {
 		res.send({
 			status: "read",
 			data: transactions
+		});
+	}
+
+	private async serveTransactionView(req: Request, res: Response) {
+		res.render("user/transaction", {
+			title: "Transactions",
+			layout: "userLayout",
+			csrfToken: req.csrfToken(),
+			isTransaction: true
 		});
 	}
 

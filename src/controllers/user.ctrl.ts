@@ -19,18 +19,13 @@ export class UserController {
 	>(TransactionService);
 
 	constructor(@inject(UserService) userService: UserService) {
-		/**
-		 * Declaring DIs */
-
+		
 		this._userService = userService;
-
-		/**
-		 * Defining Events, on user creation
-		 */
-		// this.userEvent = new EventEmitter();
-		// this.userEvent.on("new user", user => this.setUpNewCart(user));
 	}
 
+	/**
+	 * User Methods
+	 */
 	public async saveUser(user: any): Promise<IUserDTO> {
 		if (user.id && user.id != null) {
 			// update user logic
@@ -49,6 +44,10 @@ export class UserController {
 	public async getAllUsers(): Promise<IUserDTO[]> {
 		return await this._userService.getAll();
 	}
+
+	/**
+	 * Cart Methods
+	 */
 	public async getCartItems(user: IUserDTO): Promise<any> {
 		return await this._userService.getCartItem(user);
 	}
@@ -62,6 +61,14 @@ export class UserController {
 	public async clearCart(userId: number) {
 		await this._userService.clearCart(userId);
 	}
+
+	public async removeFromCart(gccId: number, userId: number): Promise<any> {
+		return await this._userService.removeFromCart(gccId, userId);
+	}
+
+	/**
+	 * Gift Code Methods
+	 */
 	public async scaffoldCodes(cartItem: any): Promise<any> {
 		let codes = await this._gcService.generateCodes(cartItem);
 		return codes;
@@ -70,6 +77,14 @@ export class UserController {
 		let codes = await this._gcService.getUserCodes();
 		return codes;
 	}
+	public async getGCbyCode(code: string): Promise<any> {
+		let gcInDb = await this._gcService.getGCbyCode(code);
+		return gcInDb;
+	}
+
+	/**
+	 * Transaction Methods
+	 */
 	public async createTransaction(payload: any): Promise<any> {
 		let transaction = await this._tService.createTransaction(payload);
 		return transaction;
@@ -78,13 +93,20 @@ export class UserController {
 		let transactions = await this._tService.getUserTransaction(userId);
 		return transactions;
 	}
-	public async getGCbyCode(code: string): Promise<any> {
-		let gcInDb = await this._gcService.getGCbyCode(code);
-		return gcInDb;
+	public async getAllTransaction(): Promise<any[]> {
+		let transactions = await this._tService.getAllTransaction();
+		return transactions;
 	}
-	public async removeFromCart(gccId: number, userId: number): Promise<any> {
-		return await this._userService.removeFromCart(gccId, userId);
+
+	public async updateTransaction(tid, operation) {
+		if (operation == "approve"){
+			return await this._tService.approveBitcoinTransaction(tid);
+		}
+		else if(operation == "decline"){
+			return await this._tService.declineBitcoinTransaction(tid);
+		}
 	}
+
 	/**
 	 * Method for Bank Account
 	 * @param account: any
@@ -103,6 +125,10 @@ export class UserController {
 	public async getAccount(userId: number): Promise<any> {
 		return this._userService.getAccount(userId);
 	}
+
+	/**
+	 * Wallet Methods
+	 */
 
 	public async saveWallet(wallet: any): Promise<any> {
 		// console.log(wallet);

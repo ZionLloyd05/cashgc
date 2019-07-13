@@ -241,9 +241,11 @@ export class UserService {
 		const db = await DatabaseProvider.getConnection();
 		const walletRepo = await db.getRepository(Wallet);
 
-		return await walletRepo.findOne({
+		const uwallet = await walletRepo.find({
 			where: { user: userId }
 		});
+
+		return uwallet;
 	}
 
 	/**

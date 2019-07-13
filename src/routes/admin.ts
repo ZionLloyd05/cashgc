@@ -6,6 +6,7 @@ import { IRoute } from "./IRoute";
 import * as csurf from "csurf";
 import DIContainer from "../container/DIContainer";
 import * as multer from "multer";
+import { UserController } from "./../controllers/user.ctrl";
 
 export class AdminRoute implements IRoute {
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
@@ -13,6 +14,9 @@ export class AdminRoute implements IRoute {
 	);
 	private _gcController: GccController = DIContainer.resolve<GccController>(
 		GccController
+	);
+	private _userController: UserController = DIContainer.resolve<UserController>(
+		UserController
 	);
 
 	private upload: any;
@@ -70,6 +74,13 @@ export class AdminRoute implements IRoute {
 		 * Transaction Routes
 		 */
 		router.get("/admin/transaction", this.serveTransactionView.bind(this));
+		router.get("/admin/transactions", this.getAllTransaction.bind(this));
+		router.post("/admin/transactions", this.updateTransaction.bind(this));
+
+		/**
+		 * Wallets Routes
+		 */
+		router.get("/admin/wallet/:id", this.getWalletByUser.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -92,10 +103,10 @@ export class AdminRoute implements IRoute {
 
 	private serveTransactionView(req: Request, res: Response) {
 		res.render("admin/transaction", {
-			title: "Dashboard",
+			title: "Transactions",
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
-			isDashboard: true
+			isTransaction: true
 		});
 	}
 
@@ -142,25 +153,7 @@ export class AdminRoute implements IRoute {
 				data: updatedGcc
 			});
 		}
-		// console.log(req.body);
-		// return res.send(req.body);
-		// let gcc = new GiftCodeCategory();
-		// gcc = { ...req.body };
-		// this._gcController
-		// 	.saveGcc(gcc)
-		// 	.then(data => {
-		// 		return res.send({
-		// 			status: "created",
-		// 			data
-		// 		});
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 		return res.send({
-		// 			status: "error",
-		// 			data: error
-		// 		});
-		// 	});
+		
 	}
 
 	private async getAllCategory(req: Request, res: Response) {
@@ -169,5 +162,28 @@ export class AdminRoute implements IRoute {
 			status: "read",
 			data: gccs
 		});
+	}
+
+	private async getAllTransaction(req: Request, res: Response) {
+		let transactions = await this._userController.getAllTransaction();
+		return res.send({
+			status: "read",
+			data: transactions
+		});
+	}
+
+	private async getWalletByUser(req: Request, res: Response) {
+		let uwallet = await this._userController.getWallet(req.params.id)
+		return res.send({
+			status: "read",
+			data: uwallet
+		})
+	}
+
+	private async updateTransaction(req: Request, res: Response) {
+		let transactId = req.query.tid
+		let operation = req.query.operation
+		
+		const response = await this._userController.updateTransaction(transactId, operation)
 	}
 }
