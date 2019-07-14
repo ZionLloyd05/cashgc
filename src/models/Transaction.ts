@@ -49,6 +49,9 @@ export class Transaction {
 	@Column("enum", { enum: Type })
 	public type: Type;
 
+	@Column()
+	public paymentRef?: String;
+
 	@ManyToMany(type => GiftCode)
 	@JoinTable()
 	public giftCodes?: GiftCode[];

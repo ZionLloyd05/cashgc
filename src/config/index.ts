@@ -65,6 +65,13 @@ export default {
    */
   cloudName: process.env.CLOUD_NAME,
   apiKey: process.env.API_KEY,
-  apiSecret: process.env.API_SECRET
+  apiSecret: process.env.API_SECRET,
+
+  /** 
+   * Paypal Config
+  */
+  mode: process.env.MODE,
+  client_id: process.env.CLIENT_ID,
+  client_secret: process.env.CLIENT_SECRET
   
 };

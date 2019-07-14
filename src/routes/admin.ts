@@ -184,6 +184,11 @@ export class AdminRoute implements IRoute {
 		let transactId = req.query.tid
 		let operation = req.query.operation
 		
-		const response = await this._userController.updateTransaction(transactId, operation)
+		let newTransaction = await this._userController.updateTransaction(transactId, operation)
+
+		return res.send({
+			status: "update",
+			data: newTransaction
+		})
 	}
 }

@@ -12,6 +12,8 @@ var gcHeader = $('#gcHeader');
 var gcHeaderText = $('#gcHeaderText');
 var clearCartBtn = $('#clearCart');
 
+var currentCartItem = [];
+
 var isTouched = false;
 var cartResponse = '';
 
@@ -33,6 +35,7 @@ var loadUserCartItem = function () {
             cartTotalAmountSpan.text((response.data.totalPrice).toLocaleString())
             cartTotalAmountSpan.attr('data-pr', response.data.totalPrice)
 
+            currentCartItem = response.data.items
             bindTableToData(response.data.items)
         }
     })
@@ -152,7 +155,7 @@ function reloadCartItem() {
         })
         .then(res => res.json())
         .then(res => {
-
+            currentCartItem = res.data.items
             prepareCartInStore(res.data)
 
         })
@@ -160,7 +163,7 @@ function reloadCartItem() {
 }
 
 function prepareCartInStore(data) {
-    console.log("preparing in store")
+
     let {
         items,
         totalQuantity,
@@ -389,44 +392,45 @@ var bindGiftCodeData = function (data) {
     gcHeaderText.html("Note: You can access your Gift Codes here <a href='/user/my-codes'>My Codes</a>")
 }
 
-$(document).click('#triggerPay', function () {
+$(document).on('click', '#triggerPay', function () {
     var totalAmount = $('#cartTotalAmount').attr("data-pr")
-    console.log(totalAmount)
+    $('#statusModal').modal("show")
 
-    paypal.Buttons({
-        createOrder: function (data, actions) {
-            // Set up the transaction
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: totalAmount
-                    }
-                }]
-            });
-        },
-        onApprove: function (data, actions) {
-            // Capture the funds from the transaction
-            return actions.order.capture().then(function (details) {
-                // Show a success message to your buyer
-                console.log(details)
-                swal('Transaction completed by ' + details.payer.name.given_name, '', 'success')
-                //alert('Transaction completed by ' + details.payer.name.given_name);
+    var items = []
 
-                // fetch('user/paypal-transaction-complete', {
-                //     method: 'post',
-                //     headers: {
-                //         'content-type': 'application/json'
-                //     },
-                //     body: JSON.stringify({
-                //         orderID: data.orderID,
-                //         amountToPay: totalAmount
-                //     })
-                // }).then(res => {
-                //     console.log(res)
-                // })
-            });
+    currentCartItem.forEach(item => {
+        var arr = []
+        var {
+            id,
+            quantity,
+            total,
+            createdAt
+        } = item
+        var newItemForm = {
+            "name": item.giftCodeCategory.title,
+            "sku": "gcode",
+            "price": item.giftCodeCategory.sellingPrice,
+            "currency": "USD",
+            "quantity": quantity
         }
-    }).render('#paypal-button-container');
+        items.push(newItemForm)
+    })
 
-    $('#payModal').modal('show');
+    var payload = {
+        items,
+        totalAmount
+    }
+
+    fetch('/user/pay', {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(response => {
+            window.location.href = response.data
+        })
 })

@@ -3,11 +3,14 @@ import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
 import { Router, Request, Response, NextFunction } from "express";
 import { IRoute } from "./IRoute";
+import * as paypal from "paypal-rest-sdk";
 import DIContainer from "../container/DIContainer";
 
 import * as csurf from "csurf";
 
 export class UserRoute implements IRoute {
+
+	private itemTotalAmount: Number = 0;
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
 		AuthService
 	);
@@ -70,7 +73,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/transactions", this.serveTransactionView.bind(this));
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.getTransactions.bind(this));
-		router.post("user/paypal-transaction-complete", this.handleTransactionComplete.bind(this));
+		router.post("/user/pay", this.handlePayment.bind(this));
 
 		/**
 		 * Bank Account Route
@@ -83,6 +86,13 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/wallet", this.getWallet.bind(this));
 		router.post("/user/wallet", this.saveWallet.bind(this));
+
+		/**
+		 * Payments Route
+		*/
+		router.get("/user/payment-success", this.executePayment.bind(this));
+		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
+		router.get("/user/successpage", this.serveSuccessView.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -130,6 +140,15 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private serveSuccessView(req: Request, res: Response) {
+		res.render("user/success", {
+			title: "Invoice",
+			layout: "userLayout",
+			isStore: true,
+			csrfToken: req.csrfToken()
+		});
+	}
+
 	private serveSalesView(req: Request, res: Response) {
 		res.render("user/sales", {
 			title: "Sales",
@@ -157,7 +176,7 @@ export class UserRoute implements IRoute {
 	}
 
 	private async cartItemOperation(req: Request, res: Response) {
-		let itemBundle = await this._userController.getCartItems(req.user);
+		let itemBundle = await this.fetchUserCartDetails(req.user);
 		// console.log(itemBundle);
 		res.send({
 			status: "read",
@@ -220,13 +239,107 @@ export class UserRoute implements IRoute {
 		});
 	}
 
-	private async handleTransactionComplete(req: Request, res: Response) {
-		let {orderID, amountToPay} = req.body;
-		// let response = await this._userController.verifyTransaction(orderId, amountToPay);
-		res.send({
-			status: "verify",
-			// data: response
-		})
+	private async handlePayment(req: Request, res: Response) {
+		var { items, totalAmount } = req.body;
+		
+		this.itemTotalAmount = totalAmount;
+
+		var create_payment_json = {
+			intent: "sale",
+			payer: {
+				payment_method: "paypal"
+			},
+			redirect_urls: {
+				return_url: "http://localhost:3000/user/payment-success",
+				cancel_url: "http://localhost:3000/user/payment-cancel"
+			},
+			"transactions": [{
+				"item_list": {
+					"items": items
+				},
+				"amount": {
+					"currency": "USD",
+					"total": totalAmount
+				},
+				"description": "This is the payment description."
+			}]
+		}
+
+		paypal.payment.create(create_payment_json, function(error, payment) {
+			if (error) {
+				console.log(error.response.details);
+				res.send(error);
+			} else {
+				for(let i = 0; i < payment.links.length; i++){
+					if(payment.links[i].rel === 'approval_url'){
+						res.send({
+							status: "create",
+							data: payment.links[i].href
+						});
+					}
+				}
+			}
+		});
+	}
+
+	private async executePayment(req: Request, res: Response) {
+		const payerId = req.query.PayerID;
+		const paymentId = req.query.paymentId;
+
+		const execute_payment_json = {
+			"payer_id": payerId,
+			"transactions": [{
+				"amount": {
+					"currency": "USD",
+					"total": this.itemTotalAmount
+				}
+			}]
+		};
+
+		paypal.payment.execute(paymentId, execute_payment_json, async (error, payment) => {
+			if (error) {
+				console.log(error.response);
+			} else {
+				console.log("Get Payment Response");
+				console.log(JSON.stringify(payment));
+
+				//get current user cart item
+				const itemBundle = await this.fetchUserCartDetails(req.user);
+				const userCartItems = itemBundle.items;
+
+				// scaffold codes
+				const codes = await this._userController.scaffoldCodes(userCartItems);
+				const gcodes = codes.data;
+				console.log(gcodes)
+
+				//save transaction(gcodes)
+				let transactionPayload = {
+					status: 0,
+					type: 0,
+					gcodes,
+					paymentRef: paymentId,
+					user: req.user
+				}
+
+				let transaction = await this._userController.createTransaction(transactionPayload);
+				console.log(transaction)
+
+
+				//pass the transaction id and payment id to payment success page
+				res.render("user/success", {
+					title: "Payment",
+					layout: "userLayout",
+					isStore: true,
+					isPaymentSuccessful: true,
+					transactId: transaction.id
+				})
+	
+			}
+		});
+	}
+
+	private cancelPayment(req: Request, res: Response) {
+		res.send('cancelled')
 	}
 
 	private async verifyCode(req: Request, res: Response) {
@@ -278,17 +391,16 @@ export class UserRoute implements IRoute {
 	}
 
 	private async saveAccount(req: Request, res: Response) {
-
-		let account = { ...req.body }
+		let account = { ...req.body };
 
 		account.user = req.user.id;
 
-		let newBankacc = await this._userController.saveAccount(account)
+		let newBankacc = await this._userController.saveAccount(account);
 
 		return res.send({
 			status: "save",
 			data: newBankacc
-		})
+		});
 	}
 
 	private async getAccount(req: Request, res: Response) {
@@ -297,21 +409,20 @@ export class UserRoute implements IRoute {
 		return res.send({
 			status: "read",
 			data: uacc
-		})
+		});
 	}
 
 	private async saveWallet(req: Request, res: Response) {
-
-		let wallet = { ...req.body }
+		let wallet = { ...req.body };
 
 		wallet.user = req.user.id;
 
-		let newWallet = await this._userController.saveWallet(wallet)
+		let newWallet = await this._userController.saveWallet(wallet);
 
 		return res.send({
 			status: "save",
 			data: newWallet
-		})
+		});
 	}
 
 	private async getWallet(req: Request, res: Response) {
@@ -320,6 +431,14 @@ export class UserRoute implements IRoute {
 		return res.send({
 			status: "read",
 			data: uwallet
-		})
+		});
+	}
+
+	/**
+	 * Workers' Functions
+	 */
+	public async fetchUserCartDetails(user: any): Promise<any> {
+		let item = await this._userController.getCartItems(user);
+		return item;
 	}
 }

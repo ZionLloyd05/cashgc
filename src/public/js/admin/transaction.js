@@ -38,62 +38,56 @@ var bindTableToData = function (response) {
         }, {
             data: "type",
             render: function (type) {
-                if(type == 0){
+                if (type == 0) {
                     return "Sales"
-                }
-                else if(type == 1){
+                } else if (type == 1) {
                     return "Buy"
                 }
             }
         }, {
             data: "status",
             render: function (status, type, row, meta) {
-                if(status == 0){
+                if (status == 0) {
                     return "<span class='kt-badge kt-badge--success kt-badge--inline'>Success</span>"
-                }
-                else if(status == 1){
+                } else if (status == 1) {
                     return "<span class='kt-badge kt-badge--danger kt-badge--inline'>Failed</span>"
-                }
-                else if(status == 2){
+                } else if (status == 2) {
                     return "<span class='kt-badge kt-badge--warning kt-badge--inline'>Pending</span>"
                 }
             }
         }, {
             data: "payment",
             render: function (payment) {
-                if(payment == 0){
+                if (payment == 0) {
                     return "Paypal"
-                }
-                else if(payment == 1){
+                } else if (payment == 1) {
                     return "Paystack"
-                }
-                else if(payment == 2){
+                } else if (payment == 2) {
                     return "Bitcoin"
                 }
             }
         }, {
             data: "id",
             render: function (user, type, row, meta) {
-                if(row.user && row.user.firstname && row.user.lastname)
+                if (row.user && row.user.firstname && row.user.lastname)
                     return `${row.user.firstname} ${row.user.lastname}`
             }
         }, {
             data: "id",
             render: function (id, type, row, meta) {
-                if(row.payment == 2){
+                if (row.payment == 2) {
                     return `
                         <span style="overflow: visible; position: relative; width: 110px;">
-                            <a id="approve" data-id=${id}
-                            title="Approve Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i id="edit" class="la la-check-square"></i></a>
-                            <a title="Decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-ban"></i></a>
+                            <a id="approve" data-id=${id} data-idx=${meta.row}
+                            title="Approve Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
+                            <a title="Decline" id="decline" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
                             <a data-userid=${row.user.id} title="View User Wallet" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewWallet"><i class="la la-eye"></i></a>
                         </span>
                     `
-                }
-                else{
+                } else {
                     return `
                     <span style="overflow: visible; position: relative; width: 110px;">
-                         <a title="Decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a>
+                         <a title="Decline" id="decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a>
                     </span>
                     `
                 }
@@ -123,7 +117,9 @@ $(document).on('click', '#viewWallet', function (e) {
 })
 
 $(document).on('click', '#approve', function (e) {
-    var transactId = $(this).attr("data-tid")
+
+    var transactId = $(this).attr("data-tid");
+    var rwIdx = $(this).attr("data-idx");
 
     $.ajax({
         url: `/admin/transactions/?tid=${transactId}&operation=approve`,
@@ -133,26 +129,71 @@ $(document).on('click', '#approve', function (e) {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (response) {
-            console.log(response)
+            let data = response.data
+            console.log(data)
+            swal("Transaction approved!", "", "success")
+
+            updateTableRow(data, rwIdx)
+        }
+    })
+})
+
+$(document).on('click', '#decline', function (e) {
+
+    var transactId = $(this).attr("data-tid")
+    var rwIdx = $(this).attr("data-idx");
+
+    $.ajax({
+        url: `/admin/transactions/?tid=${transactId}&operation=decline`,
+        method: "POST",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            let data = response.data
+            swal("Transaction declined!", "", "success")
+
+            updateTableRow(data, rwIdx)
         }
     })
 })
 
 document.addEventListener('click', function (e) {
-    if ( e.target.classList.contains( 'btnCopy' ) ) {
+    if (e.target.classList.contains('btnCopy')) {
         var btn = e.target;
         var input = btn.parentNode.parentNode.children[0];
         var inpId = input.getAttribute('id');
-        
+
         var copyText = document.getElementById(inpId);
         copyText.select();
         document.execCommand("copy");
     }
 }, false);
 
-function displayUserWallet(data){
-    if(data[0]){
-        $("#modalBody").append( `
+function updateTableRow(data, rwIdx) {
+    var table = $("#transactionTbl").DataTable();
+    var tempData = transactionTbl.row(parseInt(rwIdx))
+
+    var currentRow = table.row(rwIdx).node()
+    table.cell(currentRow, 0).data(rwIdx + 1)
+
+    tempData["id"] = data.id;
+    tempData["reference"] = data.reference;
+    tempData["type"] = data.type;
+    tempData["status"] = data.status;
+    tempData["payment"] = data.payment;
+    tempData["user"] = data.user;
+
+    table.row(parseInt(rwIdx)).data(tempData) //this is to update the data in the row cells
+    var currentRow = table.row(rwIdx).node()
+    table.cell(currentRow, 0).data(rwIdx + 1) //this is to set the S/N field
+    table.draw(false)
+}
+
+function displayUserWallet(data) {
+    if (data[0]) {
+        $("#modalBody").append(`
             <div class="input-group input-group-sm">
                 <input type="text" class="form-control" value="${data[0].wid}" id="id_${data[0].id}" readonly>
                 <div class="input-group-append">
@@ -160,11 +201,10 @@ function displayUserWallet(data){
                 </div>
             </div>
         `)
-    }else{
-        $("#modalBody").append( `
+    } else {
+        $("#modalBody").append(`
         <p>User has no wallet ID!</p>
     `)
     }
     $("#walletModal").modal("show");
 }
-

@@ -19,7 +19,6 @@ export class UserController {
 	>(TransactionService);
 
 	constructor(@inject(UserService) userService: UserService) {
-		
 		this._userService = userService;
 	}
 
@@ -99,10 +98,11 @@ export class UserController {
 	}
 
 	public async updateTransaction(tid, operation) {
-		if (operation == "approve"){
+		if (operation === "approve") {
+			console.log("approve");
 			return await this._tService.approveBitcoinTransaction(tid);
-		}
-		else if(operation == "decline"){
+		} else if (operation === "decline") {
+			console.log("decline");
 			return await this._tService.declineBitcoinTransaction(tid);
 		}
 	}
@@ -149,10 +149,5 @@ export class UserController {
 		return this._userService.createPendingCode(payload);
 	}
 
-	// public async verifyTransaction(
-	// 	orderID: any,
-	// 	amountToPay: number
-	// ): Promise<number> {
-	// 	return this._tService.veriftTransaction(orderID, amountToPay);
-	// }
+	
 }

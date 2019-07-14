@@ -128,7 +128,7 @@ $("#save").click(function (e) {
 
                     var currentRow = table.row(rwIdx).node()
                     table.cell(currentRow, 0).data(rwIdx + 1)
-                    // debugger
+
                     tempData["id"] = data.id;
                     tempData["title"] = data.title;
                     tempData["prefix"] = data.prefix;

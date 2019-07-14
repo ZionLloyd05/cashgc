@@ -2,9 +2,7 @@ import { GiftCode } from "./../models/GiftCode";
 import { DatabaseProvider } from "./../database/index";
 import { Transaction } from "./../models/Transaction";
 import { injectable } from "inversify";
-import * as checkoutNodeJssdk from "@paypal/checkout-server-sdk";
 import { createQueryBuilder } from "typeorm";
-// import * as payPalClient from "../common/paypalClient.js";
 
 @injectable()
 export class TransactionService {
@@ -45,7 +43,8 @@ export class TransactionService {
 			type: payload.type,
 			giftCodes: giftCodesArr,
 			user: payload.user,
-			payment: payload.payment
+			payment: payload.payment,
+			paymentRef: payload.paymentRef
 		};
 		transaction = { ...newPayload };
 		return await db.getRepository("Transaction").save(transaction);
@@ -90,48 +89,41 @@ export class TransactionService {
 		return transactions;
 	}
 
-	public async approveBitcoinTransaction(tid: number): Promise<boolean> {
+	public async approveBitcoinTransaction(tid: number): Promise<any> {
+		let db = await DatabaseProvider.getConnection();
+
 		await createQueryBuilder("Transaction")
 			.update(Transaction)
 			.set({ status: 0 })
 			.where("id = :id", { id: tid })
 			.execute();
 
-		return true;
+		let newTransaction = await db.getRepository("transaction").findOne({
+			relations: ["user"],
+			where: { id: tid }
+		});
+
+		return newTransaction;
 	}
 
-	public async declineBitcoinTransaction(tid: number): Promise<boolean> {
+	public async declineBitcoinTransaction(tid: number): Promise<any> {
+		let db = await DatabaseProvider.getConnection();
+
 		await createQueryBuilder("Transaction")
 			.update(Transaction)
 			.set({ status: 1 })
 			.where("id = :id", { id: tid })
 			.execute();
 
-		return true;
+		let newTransaction = await db.getRepository("transaction").findOne({
+			relations: ["user"],
+			where: { id: tid }
+		});
+
+		return newTransaction;
 	}
 
-	// public async veriftTransaction(
-	// 	orderId: any,
-	// 	amountToPay: number
-	// ): Promise<number> {
-	// 	const orderID = orderId;
-
-	// 	let request = new checkoutNodeJssdk.orders.OrdersGetRequest(orderID);
-
-	// 	let order;
-
-	// 	try {
-	// 		order = await payPalClient.client().execute(request);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 		return 500;
-	// 	}
-
-	// 	if (order.result.purchase_units[0].amount.value !== amountToPay) return 400;
-
-	// 	return 200;
-	// }
-
+	
 	/**
 	 * asynchronous version for .forEach methos
 	 */

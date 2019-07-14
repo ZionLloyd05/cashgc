@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const index_1 = require("./database/index");
 const config_1 = require("./config");
+const paypal = require("paypal-rest-sdk");
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         /**
@@ -23,6 +24,14 @@ function startServer() {
             password: config_1.default.password,
             host: config_1.default.host,
             port: config_1.default.dbport
+        });
+        /**
+         * PayPal configuration
+         */
+        paypal.configure({
+            'mode': config_1.default.mode,
+            'client_id': config_1.default.client_id,
+            'client_secret': config_1.default.client_secret
         });
         const app = require("./config/viewsetup").default();
         yield require("./server").default({ app });
