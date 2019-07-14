@@ -65,7 +65,7 @@ export class TransactionService {
 		await gcRepo.save(gcInDb);
 	}
 
-	public async getUserTransaction(userid: number): Promise<any[]> {
+	public async getUserTransactions(userid: number): Promise<any[]> {
 		let db = await DatabaseProvider.getConnection();
 		let transactions = await db
 			.getRepository("transaction")
@@ -77,6 +77,22 @@ export class TransactionService {
 			.getMany();
 
 		return transactions;
+	}
+
+	public async getUserCodesByTransaction(userid: number, tid: number): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transaction = await db
+			.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.where({ user: userid })
+			.andWhere("transaction.id = :transactionId")
+			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
+			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+			.setParameters({transactionId: tid})
+			.getMany();
+
+		return transaction;
 	}
 
 	public async getAllTransaction(): Promise<any[]> {

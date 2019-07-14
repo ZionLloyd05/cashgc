@@ -133,7 +133,7 @@ export class PingRoute implements IRoute {
 		// let acc = await this._gcService.getGCbyCode("1A909b1ebf2c1d0c40e093"); 
 		// res.send(acc);
 
-		let transactions = await this._tService.approveBitcoinTransaction(6);
-		res.send(transactions);
+		let transaction = await this._tService.getUserCodesByTransaction(2, 15);
+		res.send(transaction);
 	}
 }

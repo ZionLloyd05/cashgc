@@ -88,9 +88,13 @@ export class UserController {
 		let transaction = await this._tService.createTransaction(payload);
 		return transaction;
 	}
-	public async getUserTransaction(userId: number): Promise<any> {
-		let transactions = await this._tService.getUserTransaction(userId);
+	public async getUserTransactions(userId: number): Promise<any> {
+		let transactions = await this._tService.getUserTransactions(userId);
 		return transactions;
+	}
+	public async getUserCodesByTransaction(userId: number, tid: number): Promise<any> {
+		let transaction = await this._tService.getUserCodesByTransaction(userId, tid);
+		return transaction;
 	}
 	public async getAllTransaction(): Promise<any[]> {
 		let transactions = await this._tService.getAllTransaction();

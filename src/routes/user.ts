@@ -72,7 +72,7 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/transactions", this.serveTransactionView.bind(this));
 		router.post("/user/transaction", this.postTransaction.bind(this));
-		router.get("/user/transaction", this.getTransactions.bind(this));
+		router.get("/user/transaction", this.transactOperation.bind(this));
 		router.post("/user/pay", this.handlePayment.bind(this));
 
 		/**
@@ -92,7 +92,7 @@ export class UserRoute implements IRoute {
 		*/
 		router.get("/user/payment-success", this.executePayment.bind(this));
 		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
-		router.get("/user/successpage", this.serveSuccessView.bind(this));
+		// router.get("/user/successpage", this.serveSuccessView.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -140,14 +140,14 @@ export class UserRoute implements IRoute {
 		});
 	}
 
-	private serveSuccessView(req: Request, res: Response) {
-		res.render("user/success", {
-			title: "Invoice",
-			layout: "userLayout",
-			isStore: true,
-			csrfToken: req.csrfToken()
-		});
-	}
+	// private serveSuccessView(req: Request, res: Response) {
+	// 	res.render("user/success", {
+	// 		title: "Invoice",
+	// 		layout: "userLayout",
+	// 		isStore: true,
+	// 		csrfToken: req.csrfToken()
+	// 	});
+	// }
 
 	private serveSalesView(req: Request, res: Response) {
 		res.render("user/sales", {
@@ -176,7 +176,7 @@ export class UserRoute implements IRoute {
 	}
 
 	private async cartItemOperation(req: Request, res: Response) {
-		let itemBundle = await this.fetchUserCartDetails(req.user);
+		let itemBundle =  await this._userController.getCartItems(req.user);
 		// console.log(itemBundle);
 		res.send({
 			status: "read",
@@ -221,13 +221,24 @@ export class UserRoute implements IRoute {
 		});
 	}
 
-	private async getTransactions(req: Request, res: Response) {
+	private async transactOperation(req: Request, res: Response) {
 		let userid = req.user.id;
-		let transactions = await this._userController.getUserTransaction(userid);
-		res.send({
-			status: "read",
-			data: transactions
-		});
+		if(req.query && req.query.tid){
+			let tid = req.query.tid;
+			let transaction = await this._userController.getUserCodesByTransaction(userid, tid);
+			res.send({
+				status: "read",
+				data: transaction
+			});
+		}
+		else{
+			let transactions = await this._userController.getUserTransactions(userid);
+			res.send({
+				status: "read",
+				data: transactions
+			});
+		}
+				
 	}
 
 	private async serveTransactionView(req: Request, res: Response) {
@@ -304,34 +315,38 @@ export class UserRoute implements IRoute {
 				console.log(JSON.stringify(payment));
 
 				//get current user cart item
-				const itemBundle = await this.fetchUserCartDetails(req.user);
+				const itemBundle = await this._userController.getCartItems(req.user);
+				console.log(itemBundle)
 				const userCartItems = itemBundle.items;
 
 				// scaffold codes
 				const codes = await this._userController.scaffoldCodes(userCartItems);
-				const gcodes = codes.data;
-				console.log(gcodes)
-
-				//save transaction(gcodes)
+				let gcodes = codes;
+				// //save transaction(gcodes)
 				let transactionPayload = {
 					status: 0,
 					type: 0,
+					payment: 0,
 					gcodes,
 					paymentRef: paymentId,
 					user: req.user
 				}
 
 				let transaction = await this._userController.createTransaction(transactionPayload);
-				console.log(transaction)
 
+				// clear cart items
+				const userId = req.user.id;
+				await this._userController.clearCart(userId);
 
 				//pass the transaction id and payment id to payment success page
-				res.render("user/success", {
+				res.render("user/payment-confirmation", {
 					title: "Payment",
 					layout: "userLayout",
 					isStore: true,
 					isPaymentSuccessful: true,
-					transactId: transaction.id
+					transactId: transaction.id,
+					paymentId: transaction.paymentRef,
+					csrfToken: req.csrfToken()
 				})
 	
 			}
@@ -339,7 +354,12 @@ export class UserRoute implements IRoute {
 	}
 
 	private cancelPayment(req: Request, res: Response) {
-		res.send('cancelled')
+		res.render("user/payment-confirmation", {
+			title: "Payment",
+			layout: "userLayout",
+			isStore: true,
+			isPaymentSuccessful: false,
+		})
 	}
 
 	private async verifyCode(req: Request, res: Response) {
@@ -437,8 +457,5 @@ export class UserRoute implements IRoute {
 	/**
 	 * Workers' Functions
 	 */
-	public async fetchUserCartDetails(user: any): Promise<any> {
-		let item = await this._userController.getCartItems(user);
-		return item;
-	}
+	
 }
