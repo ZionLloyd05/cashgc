@@ -7,9 +7,9 @@ import * as paypal from "paypal-rest-sdk";
 import DIContainer from "../container/DIContainer";
 
 import * as csurf from "csurf";
+import { PaystackService } from "../services/paystack.service";
 
 export class UserRoute implements IRoute {
-
 	private itemTotalAmount: Number = 0;
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
 		AuthService
@@ -20,6 +20,10 @@ export class UserRoute implements IRoute {
 	private _userController: UserController = DIContainer.resolve<UserController>(
 		UserController
 	);
+
+	private _paystackService: PaystackService = DIContainer.resolve<
+		PaystackService
+	>(PaystackService);
 
 	initialize(router: Router): void {
 		const csrfProtection = csurf();
@@ -89,10 +93,17 @@ export class UserRoute implements IRoute {
 
 		/**
 		 * Payments Route
-		*/
+		 */
 		router.get("/user/payment-success", this.executePayment.bind(this));
 		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
 		// router.get("/user/successpage", this.serveSuccessView.bind(this));
+
+		/**
+		 * Miscellenous Route
+		 */
+		router.get("/user/banks", this.fetchBanks.bind(this));
+		router.get("/user/bankcode", this.fetchBankCode.bind(this));
+		router.get("/user/resolve-account", this.resolveAccount.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -176,7 +187,7 @@ export class UserRoute implements IRoute {
 	}
 
 	private async cartItemOperation(req: Request, res: Response) {
-		let itemBundle =  await this._userController.getCartItems(req.user);
+		let itemBundle = await this._userController.getCartItems(req.user);
 		// console.log(itemBundle);
 		res.send({
 			status: "read",
@@ -223,22 +234,23 @@ export class UserRoute implements IRoute {
 
 	private async transactOperation(req: Request, res: Response) {
 		let userid = req.user.id;
-		if(req.query && req.query.tid){
+		if (req.query && req.query.tid) {
 			let tid = req.query.tid;
-			let transaction = await this._userController.getUserCodesByTransaction(userid, tid);
+			let transaction = await this._userController.getUserCodesByTransaction(
+				userid,
+				tid
+			);
 			res.send({
 				status: "read",
 				data: transaction
 			});
-		}
-		else{
+		} else {
 			let transactions = await this._userController.getUserTransactions(userid);
 			res.send({
 				status: "read",
 				data: transactions
 			});
 		}
-				
 	}
 
 	private async serveTransactionView(req: Request, res: Response) {
@@ -252,7 +264,7 @@ export class UserRoute implements IRoute {
 
 	private async handlePayment(req: Request, res: Response) {
 		var { items, totalAmount } = req.body;
-		
+
 		this.itemTotalAmount = totalAmount;
 
 		var create_payment_json = {
@@ -264,25 +276,27 @@ export class UserRoute implements IRoute {
 				return_url: "http://localhost:3000/user/payment-success",
 				cancel_url: "http://localhost:3000/user/payment-cancel"
 			},
-			"transactions": [{
-				"item_list": {
-					"items": items
-				},
-				"amount": {
-					"currency": "USD",
-					"total": totalAmount
-				},
-				"description": "This is the payment description."
-			}]
-		}
+			transactions: [
+				{
+					item_list: {
+						items: items
+					},
+					amount: {
+						currency: "USD",
+						total: totalAmount
+					},
+					description: "This is the payment description."
+				}
+			]
+		};
 
 		paypal.payment.create(create_payment_json, function(error, payment) {
 			if (error) {
 				console.log(error.response.details);
 				res.send(error);
 			} else {
-				for(let i = 0; i < payment.links.length; i++){
-					if(payment.links[i].rel === 'approval_url'){
+				for (let i = 0; i < payment.links.length; i++) {
+					if (payment.links[i].rel === "approval_url") {
 						res.send({
 							status: "create",
 							data: payment.links[i].href
@@ -298,59 +312,74 @@ export class UserRoute implements IRoute {
 		const paymentId = req.query.paymentId;
 
 		const execute_payment_json = {
-			"payer_id": payerId,
-			"transactions": [{
-				"amount": {
-					"currency": "USD",
-					"total": this.itemTotalAmount
+			payer_id: payerId,
+			transactions: [
+				{
+					amount: {
+						currency: "USD",
+						total: this.itemTotalAmount
+					}
 				}
-			}]
+			]
 		};
 
-		paypal.payment.execute(paymentId, execute_payment_json, async (error, payment) => {
-			if (error) {
-				console.log(error.response);
-			} else {
-				console.log("Get Payment Response");
-				console.log(JSON.stringify(payment));
+		paypal.payment.execute(
+			paymentId,
+			execute_payment_json,
+			async (error, payment) => {
+				if (error) {
+					//	@TODO
+					// Save transaction and set status to failed
+					console.log(error.response);
+					res.render("user/payment-confirmation", {
+						title: "Payment",
+						layout: "userLayout",
+						isStore: true,
+						isPaymentSuccessful: false
+					});
+				} else {
+					console.log("Get Payment Response");
+					console.log(JSON.stringify(payment));
 
-				//get current user cart item
-				const itemBundle = await this._userController.getCartItems(req.user);
-				console.log(itemBundle)
-				const userCartItems = itemBundle.items;
+					//get current user cart item
+					const itemBundle = await this._userController.getCartItems(req.user);
+					console.log(itemBundle);
+					const userCartItems = itemBundle.items;
 
-				// scaffold codes
-				const codes = await this._userController.scaffoldCodes(userCartItems);
-				let gcodes = codes;
-				// //save transaction(gcodes)
-				let transactionPayload = {
-					status: 0,
-					type: 0,
-					payment: 0,
-					gcodes,
-					paymentRef: paymentId,
-					user: req.user
+					// scaffold codes
+					const codes = await this._userController.scaffoldCodes(userCartItems);
+					let gcodes = codes;
+					// //save transaction(gcodes)
+					let transactionPayload = {
+						status: 0,
+						type: 0,
+						payment: 0,
+						gcodes,
+						paymentRef: paymentId,
+						user: req.user
+					};
+
+					let transaction = await this._userController.createTransaction(
+						transactionPayload
+					);
+
+					// clear cart items
+					const userId = req.user.id;
+					await this._userController.clearCart(userId);
+
+					//pass the transaction id and payment id to payment success page
+					res.render("user/payment-confirmation", {
+						title: "Payment",
+						layout: "userLayout",
+						isStore: true,
+						isPaymentSuccessful: true,
+						transactId: transaction.id,
+						paymentId: transaction.paymentRef,
+						csrfToken: req.csrfToken()
+					});
 				}
-
-				let transaction = await this._userController.createTransaction(transactionPayload);
-
-				// clear cart items
-				const userId = req.user.id;
-				await this._userController.clearCart(userId);
-
-				//pass the transaction id and payment id to payment success page
-				res.render("user/payment-confirmation", {
-					title: "Payment",
-					layout: "userLayout",
-					isStore: true,
-					isPaymentSuccessful: true,
-					transactId: transaction.id,
-					paymentId: transaction.paymentRef,
-					csrfToken: req.csrfToken()
-				})
-	
 			}
-		});
+		);
 	}
 
 	private cancelPayment(req: Request, res: Response) {
@@ -358,8 +387,8 @@ export class UserRoute implements IRoute {
 			title: "Payment",
 			layout: "userLayout",
 			isStore: true,
-			isPaymentSuccessful: false,
-		})
+			isPaymentSuccessful: false
+		});
 	}
 
 	private async verifyCode(req: Request, res: Response) {
@@ -454,8 +483,37 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private async fetchBanks(req: Request, res: Response) {
+		const banks = await this._paystackService.fetchBanks();
+		return res.send({
+			status: "read",
+			data: banks
+		});
+	}
+
+	private async fetchBankCode(req: Request, res: Response) {
+		let bankname = req.query.bkname;
+		const code = await this._paystackService.fetchBankCode(bankname);
+
+		return res.send({
+			status: "read",
+			data: code
+		});
+	}
+
+	private async resolveAccount(req: Request, res: Response) {
+		let accnumber = req.query.accnumber;
+		let bankcode = req.query.code;
+
+		const response = await this._paystackService.resolveAccount(accnumber, bankcode);
+		
+		return res.send({
+			status: "read",
+			data: response
+		})
+	}
+
 	/**
 	 * Workers' Functions
 	 */
-	
 }

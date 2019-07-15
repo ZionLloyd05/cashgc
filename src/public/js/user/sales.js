@@ -146,8 +146,13 @@ $(document).ready(function () {
                         });
                 })
 
-        } else if (paymentOption == "bank") {
+        } else if (paymentOption === "bank") {
             //Paystack
+
+            // get secret key
+
+            // resolve user's account
+
         }
     })
 })

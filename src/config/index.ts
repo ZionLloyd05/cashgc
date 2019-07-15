@@ -72,6 +72,11 @@ export default {
   */
   mode: process.env.MODE,
   client_id: process.env.CLIENT_ID,
-  client_secret: process.env.CLIENT_SECRET
+  client_secret: process.env.CLIENT_SECRET,
+
+  /**
+   * Paystack Config
+   */
+  secret_key: process.env.SECRET_KEY
   
 };

@@ -9,6 +9,12 @@ $(document).ready(function () {
                 loadCodeTable(tid);
             })
     }
+    else if(paymentStatus === "false") {
+        swal('Payment Failed', '', 'error')
+            .then(val => {
+                window.location.href = "/user/store";
+            })
+    }
 })
 
 var csrfToken = $('#_csrf').val();

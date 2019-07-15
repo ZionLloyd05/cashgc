@@ -1,3 +1,4 @@
+import { PaystackService } from '../services/paystack.service';
 import { GiftCodeService } from "./../services/gc.service";
 import { AuthService } from "./../services/auth.service";
 import { UserController } from "./../controllers/user.ctrl";
@@ -20,5 +21,6 @@ DIContainer.bind<GCCService>(GCCService).toSelf();
 DIContainer.bind<AuthService>(AuthService).toSelf();
 DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
 DIContainer.bind<TransactionService>(TransactionService).toSelf();
+DIContainer.bind<PaystackService>(PaystackService).toSelf();
 
 export default DIContainer;
