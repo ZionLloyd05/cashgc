@@ -52,6 +52,9 @@ export class Transaction {
 	@Column()
 	public paymentRef?: String;
 
+	@Column()
+	public amount?: number
+
 	@ManyToMany(type => GiftCode)
 	@JoinTable()
 	public giftCodes?: GiftCode[];

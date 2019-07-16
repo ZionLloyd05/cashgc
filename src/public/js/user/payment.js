@@ -8,8 +8,7 @@ $(document).ready(function () {
             .then(val => {
                 loadCodeTable(tid);
             })
-    }
-    else if(paymentStatus === "false") {
+    } else if (paymentStatus === "false") {
         swal('Payment Failed', '', 'error')
             .then(val => {
                 window.location.href = "/user/store";
@@ -22,7 +21,6 @@ var spinner = $("#spinner");
 var headTitle = $('#head_title');
 
 var loadCodeTable = function (tid) {
-    spinner.show();
     headTitle.text("Generating your gift codes..")
     $.ajax({
         url: `/user/transaction?tid=${tid}`,

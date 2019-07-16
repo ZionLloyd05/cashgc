@@ -110,7 +110,9 @@ $(document).ready(function () {
     })
 
     $('#proceedBtn').click(function () {
+        $('#proceedBtn').attr('disabled', true)
         var codesToSell = postedCodeIds;
+        var totalPrice = $("#totalPrice2").attr('data-pr2');
 
         if (codesToSell.length < 1) {
             swal("There's nothing to sell", "", "error");
@@ -127,7 +129,8 @@ $(document).ready(function () {
                 status: 2,
                 type: 1,
                 payment: 2,
-                gcodes: codesToSell
+                gcodes: codesToSell,
+                amount: totalPrice
             }
 
             fetch('/user/transaction', {
@@ -152,6 +155,33 @@ $(document).ready(function () {
             // get secret key
 
             // resolve user's account
+
+            let payload = {
+                amount: totalPrice,
+                gcodes: codesToSell
+            }
+
+            fetch(`/user/transfer`, {
+                    method: "POST",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken
+                    }
+                })
+                .then(res => res.json())
+                .then(response => {
+                    var status = response.data.status
+                    if (status === "failed") {
+                        var error = response.date.data
+                        swal("Something went wrong", error, "error")
+                    } else if (status === "success") {
+                        swal("Transfer was successfully posted", "Payment will be recieved in few minutes", "success")
+                            .then(val => {
+                                window.location.reload()
+                            })
+                    }
+                })
 
         }
     })

@@ -1,17 +1,18 @@
+var spinner = $('#spinner');
 $(document).ready(function () {
     loadCodeCategories();
+    spinner.show();
 })
 
 var cart = $("#cart_no");
 var csrfToken = $('#_csrf').val();
-var spinner = $('#spinner');
 
 var cartItemTotal = $('#cartItemTotal');
 var cartItemBody = $('#cartItemBody');
 
 
 var loadCodeCategories = function () {
-    spinner.show();
+
     $.ajax({
         url: "/user/category",
         method: "GET",
@@ -67,32 +68,36 @@ function addItemToCart(btnId, itemId) {
 
     qty = Number(qty);
 
-    let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
-    console.log("newTotalPrice => " + newTotalPrice)
-    totalPrice.textContent = newTotalPrice.toLocaleString();
-    totalPrice.setAttribute("data-pr", newTotalPrice)
-    console.log("totalPrice => " + totalPrice.textContent)
-
-    var newCartCount = Number(cart.textContent) + qty;
-    console.log("newCartCount => " + newCartCount)
-
-    cart.textContent = newCartCount.toString();
-
-    let payload = {
-        gcId: itemId,
-        qty
+    if (qty < 1)
+        swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
+    else{
+        let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
+        console.log("newTotalPrice => " + newTotalPrice)
+        totalPrice.textContent = newTotalPrice.toLocaleString();
+        totalPrice.setAttribute("data-pr", newTotalPrice)
+        console.log("totalPrice => " + totalPrice.textContent)
+    
+        var newCartCount = Number(cart.textContent) + qty;
+        console.log("newCartCount => " + newCartCount)
+    
+        cart.textContent = newCartCount.toString();
+    
+        let payload = {
+            gcId: itemId,
+            qty
+        }
+        // console.log(payload);
+    
+        fetch("/user/cartitem", {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                }
+            })
+            .then(() => reloadCartItem())
     }
-    // console.log(payload);
-
-    fetch("/user/cartitem", {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken
-            }
-        })
-        .then(() => reloadCartItem())
 
 }
 

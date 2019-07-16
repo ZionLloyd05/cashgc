@@ -104,6 +104,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/banks", this.fetchBanks.bind(this));
 		router.get("/user/bankcode", this.fetchBankCode.bind(this));
 		router.get("/user/resolve-account", this.resolveAccount.bind(this));
+		router.post("/user/transfer", this.makeTransfer.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -262,6 +263,10 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	/**
+	 * TODO
+	 * Make paypal service to abstract it's functionalities
+	 */
 	private async handlePayment(req: Request, res: Response) {
 		var { items, totalAmount } = req.body;
 
@@ -356,7 +361,8 @@ export class UserRoute implements IRoute {
 						payment: 0,
 						gcodes,
 						paymentRef: paymentId,
-						user: req.user
+						user: req.user,
+						amount: itemBundle.totalPrice
 					};
 
 					let transaction = await this._userController.createTransaction(
@@ -460,6 +466,7 @@ export class UserRoute implements IRoute {
 			data: uacc
 		});
 	}
+	
 
 	private async saveWallet(req: Request, res: Response) {
 		let wallet = { ...req.body };
@@ -509,6 +516,18 @@ export class UserRoute implements IRoute {
 		
 		return res.send({
 			status: "read",
+			data: response
+		})
+	}
+
+	public async makeTransfer(req: Request, res: Response) {
+		let user = req.user;
+		let { amount, gcodes } = req.body
+
+		const response = await this._paystackService.makeTransfer(user, amount, gcodes);
+
+		return res.send({
+			status: "create",
 			data: response
 		})
 	}

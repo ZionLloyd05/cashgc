@@ -26,6 +26,12 @@ export class TransactionService {
 		} else if (payment === 1 && type === 1) {
 			//sales and payment with paystack
 			console.log("sales and payment with paystack");
+
+			// set all coin to is used
+			payload.gcodes &&
+				payload.gcodes.forEach(async codeId => {
+					await this.setCodeToUsed(codeId);
+				});
 		} else if (type === 0) {
 			//buy and ofcourse payment with paypal
 			console.log("buy and ofcourse payment with paypal");
@@ -44,7 +50,8 @@ export class TransactionService {
 			giftCodes: giftCodesArr,
 			user: payload.user,
 			payment: payload.payment,
-			paymentRef: payload.paymentRef
+			paymentRef: payload.paymentRef,
+			amount: payload.amount
 		};
 		transaction = { ...newPayload };
 		return await db.getRepository("Transaction").save(transaction);
@@ -79,7 +86,10 @@ export class TransactionService {
 		return transactions;
 	}
 
-	public async getUserCodesByTransaction(userid: number, tid: number): Promise<any[]> {
+	public async getUserCodesByTransaction(
+		userid: number,
+		tid: number
+	): Promise<any[]> {
 		let db = await DatabaseProvider.getConnection();
 		let transaction = await db
 			.getRepository("transaction")
@@ -89,7 +99,7 @@ export class TransactionService {
 			.andWhere("transaction.id = :transactionId")
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
 			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
-			.setParameters({transactionId: tid})
+			.setParameters({ transactionId: tid })
 			.getMany();
 
 		return transaction;
@@ -139,7 +149,6 @@ export class TransactionService {
 		return newTransaction;
 	}
 
-	
 	/**
 	 * asynchronous version for .forEach methos
 	 */

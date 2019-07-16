@@ -160,8 +160,12 @@ export class PingRoute implements IRoute {
 		// 		res.send(bnk);
 		// 	});
 
-		// let response = await this._paystackService.resolveAccount("2100032257", "057");
-		
+		// let response = await this._paystackService.resolveAccount(
+		// 	"2100032257",
+		// 	"057"
+		// );
+		// let response = await this._userService.getAccount(20);
+
 		// res.send(response);
 
 		// let payload = {
@@ -175,15 +179,17 @@ export class PingRoute implements IRoute {
 
 		// let response = await this._paystackService.createReceipt(payload);
 
-		let payload = {
-			source: "balance",
-			amount: 4000000,
-			recipient: "RCP_tne6sw3tlaaqdgn"
-		}
+		// let payload = {
+		// 	source: "balance",
+		// 	amount: 4000000,
+		// 	recipient: "RCP_tne6sw3tlaaqdgn"
+		// }
 
-		let response = await this._paystackService.initiateTransfer(payload);
+		// let response = await this._paystackService.initiateTransfer(payload);
+		let user = { id: 2 };
+		// let response = await this._paystackService.makeTransfer(user, 4000);
 
-		console.log(response)
-		res.send(response);
+		// console.log(response);
+		// res.send(response);
 	}
 }
