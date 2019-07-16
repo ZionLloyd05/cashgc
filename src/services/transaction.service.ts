@@ -80,8 +80,11 @@ export class TransactionService {
 			.innerJoinAndSelect("transaction.user", "user")
 			.where({ user: userid })
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
-			.getMany();
+			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")			
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany()
 
 		return transactions;
 	}
@@ -100,6 +103,9 @@ export class TransactionService {
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
 			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
 			.setParameters({ transactionId: tid })
+			.orderBy({
+				"transaction.id": "DESC"
+			})
 			.getMany();
 
 		return transaction;
@@ -107,10 +113,14 @@ export class TransactionService {
 
 	public async getAllTransaction(): Promise<any[]> {
 		let db = await DatabaseProvider.getConnection();
-		let transactionRepo = await db.getRepository("transaction");
-		let transactions = transactionRepo.find({
-			relations: ["user"]
-		});
+		let transactions = await db.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany();
+	
 
 		return transactions;
 	}

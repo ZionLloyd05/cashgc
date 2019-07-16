@@ -39,9 +39,9 @@ var bindTableToData = function (response) {
             data: "type",
             render: function (type) {
                 if (type == 0) {
-                    return "Sales"
-                } else if (type == 1) {
                     return "Buy"
+                } else if (type == 1) {
+                    return "Sales"
                 }
             }
         }, {
@@ -71,6 +71,11 @@ var bindTableToData = function (response) {
             render: function (user, type, row, meta) {
                 if (row.user && row.user.firstname && row.user.lastname)
                     return `${row.user.firstname} ${row.user.lastname}`
+            }
+        }, {
+            data: "amount",
+            render: function (amount) {
+                return amount.toLocaleString()
             }
         }, {
             data: "id",
