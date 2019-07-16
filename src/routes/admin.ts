@@ -81,6 +81,12 @@ export class AdminRoute implements IRoute {
 		 * Wallets Routes
 		 */
 		router.get("/admin/wallet/:id", this.getWalletByUser.bind(this));
+
+		/**
+		 * Gift Code Routes
+		 */
+		router.get("/admin/giftcodes", this.serveCodeView.bind(this));
+		router.get("/admin/codesbytransaction", this.getAllCodes.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -107,6 +113,15 @@ export class AdminRoute implements IRoute {
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
 			isTransaction: true
+		});
+	}
+
+	private serveCodeView(req: Request, res: Response) {
+		res.render("admin/codes", {
+			title: "Gift Codes",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isCodes: true
 		});
 	}
 
@@ -190,5 +205,13 @@ export class AdminRoute implements IRoute {
 			status: "update",
 			data: newTransaction
 		})
+	}
+
+	private async getAllCodes(req: Request, res: Response) {
+		let transactions = await this._userController.getAllCodesByTransaction();
+		return res.send({
+			status: "read",
+			data: transactions
+		});
 	}
 }

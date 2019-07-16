@@ -10,7 +10,6 @@ var csrfToken = $('#_csrf').val();
 var spinner = $('#spinner');
 
 var loadTransactionTable = function () {
-    spinner.show();
     $.ajax({
         url: "/admin/transactions",
         method: "GET",

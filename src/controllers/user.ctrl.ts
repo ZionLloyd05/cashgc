@@ -96,6 +96,10 @@ export class UserController {
 		let transaction = await this._tService.getUserCodesByTransaction(userId, tid);
 		return transaction;
 	}
+	public async getAllCodesByTransaction(): Promise<any> {
+		let transactions = await this._tService.getAllCodesByTransaction();
+		return transactions;
+	}
 	public async getAllTransaction(): Promise<any[]> {
 		let transactions = await this._tService.getAllTransaction();
 		return transactions;

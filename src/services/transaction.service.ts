@@ -111,6 +111,22 @@ export class TransactionService {
 		return transaction;
 	}
 
+	public async getAllCodesByTransaction(): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transaction = await db
+			.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
+			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany();
+
+		return transaction;
+	}
+
 	public async getAllTransaction(): Promise<any[]> {
 		let db = await DatabaseProvider.getConnection();
 		let transactions = await db.getRepository("transaction")

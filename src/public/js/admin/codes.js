@@ -1,18 +1,16 @@
 "use strict"
+
 $(document).ready(function () {
-    loadCodeTable();
-    $("#kt_toast_1").toast({
-        delay: 4e3
-    })
+    loadCodesTable()
 })
 
 var csrfToken = $('#_csrf').val();
 var spinner = $("#spinner");
 
-var loadCodeTable = function () {
+var loadCodesTable = function () {
 
     $.ajax({
-        url: "/user/transaction",
+        url: "/admin/codesbytransaction",
         method: "GET",
         dataType: "json",
         header: {
@@ -89,16 +87,3 @@ var bindTableToData = function (response) {
     })
     spinner.hide();
 }
-
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('btnCopy')) {
-        var btn = e.target;
-        var input = btn.parentNode.parentNode.children[0];
-        var inpId = input.getAttribute('id');
-
-        var copyText = document.getElementById(inpId);
-        copyText.select();
-        document.execCommand("copy");
-        $("#kt_toast_1").toast("show");
-    }
-}, false);
