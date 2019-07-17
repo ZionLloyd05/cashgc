@@ -27,7 +27,7 @@ export class GCCService {
 		const db = await DatabaseProvider.getConnection();
 
 		let newGCCategory = new GiftCodeCategory();
-		let {isAvailable} = gcCategory;
+		let { isAvailable } = gcCategory;
 
 		if (filePath != null) {
 			const imageUrl = await this.uploadImage(filePath);
@@ -61,9 +61,6 @@ export class GCCService {
 			prefix,
 			isAvailable
 		} = gcCategory;
-		// console.log(gcCategory.isAvailable);
-		// console.log(gcCategory.isAvailable == "true");
-		// console.log(gccInDb.isAvailable)
 
 		if (filePath != null) {
 			let imageUrl = await this.uploadImage(filePath);
@@ -97,7 +94,7 @@ export class GCCService {
 		const db = await DatabaseProvider.getConnection();
 
 		const gccRepository = await db.getRepository(GiftCodeCategory);
-		return gccRepository.findOne(id);
+		return await gccRepository.findOne(id);
 	}
 
 	public async getAll(): Promise<GiftCodeCategory[]> {

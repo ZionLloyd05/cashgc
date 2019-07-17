@@ -1,4 +1,3 @@
-import { PendingCode } from './../models/PendingCode';
 import { Wallet } from "./../models/Wallet";
 import { BankAccount } from "../models/BankAccount";
 import { Transaction } from "../models/Transaction";
@@ -9,7 +8,7 @@ import { User } from "../models/User";
 import { Admin } from "../models/Admin";
 import { DatabaseConfiguration } from "./index";
 import { Connection, createConnection } from "typeorm";
-import { External } from "../models/External";
+import { Rate } from "../models/Rate";
 
 export interface DatabaseConfiguration {
 	type: "mysql";
@@ -64,10 +63,10 @@ export class DatabaseProvider {
 				GiftCodeCategory,
 				BankAccount,
 				Wallet,
-        External,
-        PendingCode
+				Rate
 			],
-			synchronize: true
+			synchronize: true,
+			logging: true
 		});
 
 		return this._connection;

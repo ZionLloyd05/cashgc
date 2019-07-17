@@ -1,3 +1,4 @@
+import { RateService } from './../services/rate.service';
 import { PaystackService } from '../services/paystack.service';
 import { GiftCodeService } from "./../services/gc.service";
 import { AuthService } from "./../services/auth.service";
@@ -22,5 +23,6 @@ DIContainer.bind<AuthService>(AuthService).toSelf();
 DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
 DIContainer.bind<TransactionService>(TransactionService).toSelf();
 DIContainer.bind<PaystackService>(PaystackService).toSelf();
+DIContainer.bind<RateService>(RateService).toSelf();
 
 export default DIContainer;

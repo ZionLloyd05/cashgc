@@ -1,3 +1,4 @@
+import { RateService } from "./../services/rate.service";
 import { TransactionService } from "./../services/transaction.service";
 import { CartItem } from "./../models/CartItem";
 import { User, IUserDTO } from "./../models/User";
@@ -17,6 +18,10 @@ export class UserController {
 	private _tService: TransactionService = DIContainer.resolve<
 		TransactionService
 	>(TransactionService);
+
+	private _rService: RateService = DIContainer.resolve<RateService>(
+		RateService
+	);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -92,8 +97,14 @@ export class UserController {
 		let transactions = await this._tService.getUserTransactions(userId);
 		return transactions;
 	}
-	public async getUserCodesByTransaction(userId: number, tid: number): Promise<any> {
-		let transaction = await this._tService.getUserCodesByTransaction(userId, tid);
+	public async getUserCodesByTransaction(
+		userId: number,
+		tid: number
+	): Promise<any> {
+		let transaction = await this._tService.getUserCodesByTransaction(
+			userId,
+			tid
+		);
 		return transaction;
 	}
 	public async getAllCodesByTransaction(): Promise<any> {
@@ -157,5 +168,40 @@ export class UserController {
 		return this._userService.createPendingCode(payload);
 	}
 
-	
+	/**
+	 * Rate Methods
+	 */
+	public async getRateById(id: number): Promise<any> {
+		return await this._rService.getRateById(id);
+	}
+
+	public async getAllRate(): Promise<any> {
+		return await this._rService.getAllRate();
+	}
+
+	public async activateRate(id): Promise<any> {
+		return await this._rService.activateRate(id);
+	}
+
+	public async deactiveRate(id): Promise<any> {
+		return await this._rService.deactivateRate(id);
+	}
+
+	public async saveRate(payload): Promise<any> {
+		if (payload && payload.id != 0) {
+			console.log("update");
+			return await this._rService.update(payload);
+		}
+		console.log("create");
+		return await this._rService.create(payload);
+	}
+
+	public async removeRate(rateId: number): Promise<any> {
+		await this._rService.removeRate(rateId);
+		return "true";
+	}
+
+	public async getActiveRate(): Promise<any> {
+		return await this._rService.getActiveRate();
+	}
 }

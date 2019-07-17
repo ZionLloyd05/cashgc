@@ -1,4 +1,3 @@
-import { PendingCode } from "./PendingCode";
 import { CartItem } from "./CartItem";
 import { Transaction } from "./Transaction";
 import {
@@ -67,14 +66,12 @@ export class User implements IUserDTO {
 	@Column()
 	public resetPasswordExpiryDate?: string;
 
+
 	@Column()
 	public password?: string;
 
 	@OneToMany(type => CartItem, cartItem => cartItem.user)
 	public cartItems?: CartItem[];
-
-	@OneToMany(type => PendingCode, pendingCodes => pendingCodes.user)
-	public pendingCodes?: PendingCode[];
 
 	@OneToMany(type => Transaction, transaction => transaction.user)
 	public transactions?: Transaction[];

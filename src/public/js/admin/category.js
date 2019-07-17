@@ -10,7 +10,6 @@ var csrfToken = $('#_csrf').val();
 var spinner = $('#spinner');
 
 var loadCategoryTable = function () {
-    spinner.show();
     $.ajax({
         url: "/admin/category",
         method: "GET",

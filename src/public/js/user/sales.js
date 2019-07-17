@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    getExchangeRate()
+
     var csrfToken = $('#_csrf').val();
 
     var postedCodes = [];
@@ -87,8 +89,6 @@ $(document).ready(function () {
 
     })
 
-
-
     $(document).on('click', '#addMore', function (e) {
         e.stopPropagation();
         var template = `
@@ -110,7 +110,7 @@ $(document).ready(function () {
     })
 
     $('#proceedBtn').click(function () {
-        $('#proceedBtn').attr('disabled', true)
+
         var codesToSell = postedCodeIds;
         var totalPrice = $("#totalPrice2").attr('data-pr2');
 
@@ -122,9 +122,9 @@ $(document).ready(function () {
         var btn = $(this);
         btn.addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
         var paymentOption = $("input[name='m_option_1']:checked").val();
-        console.log(paymentOption)
-        if (paymentOption == "bitcoin") {
 
+        if (paymentOption == "bitcoin") {
+            $('#proceedBtn').attr('disabled', true)
             let transactionPayload = {
                 status: 2,
                 type: 1,
@@ -150,12 +150,7 @@ $(document).ready(function () {
                 })
 
         } else if (paymentOption === "bank") {
-            //Paystack
-
-            // get secret key
-
-            // resolve user's account
-
+            $('#proceedBtn').attr('disabled', true)
             let payload = {
                 amount: totalPrice,
                 gcodes: codesToSell
@@ -186,6 +181,22 @@ $(document).ready(function () {
         }
     })
 })
+
+var getExchangeRate = function () {
+    $.ajax({
+        url: '/user/rate',
+        method: "GET",
+        dataType: "json",
+        header: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (repsonse) {
+            if (response.status === "read") {
+                $('#nairaAmount').attr("data-rate", response.data)
+            }
+        }
+    })
+}
 
 var remove = function (arr, element) {
     var idx = arr.indexOf(element);

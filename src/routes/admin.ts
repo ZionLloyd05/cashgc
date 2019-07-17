@@ -57,7 +57,7 @@ export class AdminRoute implements IRoute {
 			this._authService.routeGaurd,
 			this.serveDashboardView.bind(this)
 		);
-		
+
 		/**
 		 * Category Routes
 		 */
@@ -87,6 +87,15 @@ export class AdminRoute implements IRoute {
 		 */
 		router.get("/admin/giftcodes", this.serveCodeView.bind(this));
 		router.get("/admin/codesbytransaction", this.getAllCodes.bind(this));
+
+		/**
+		 * Rates Routes
+		 */
+		router.get("/admin/exchange-rates", this.serveRateView.bind(this));
+		router.get("/admin/rate", this.getRateOperation.bind(this));
+		router.post("/admin/rate", this.saveRate.bind(this));
+		router.post("/admin/rate/status", this.toggleStatus.bind(this));
+		router.delete("/admin/rate", this.removeRate.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -122,6 +131,15 @@ export class AdminRoute implements IRoute {
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
 			isCodes: true
+		});
+	}
+
+	private serveRateView(req: Request, res: Response) {
+		res.render("admin/rate", {
+			title: "Rates",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isRate: true
 		});
 	}
 
@@ -168,7 +186,6 @@ export class AdminRoute implements IRoute {
 				data: updatedGcc
 			});
 		}
-		
 	}
 
 	private async getAllCategory(req: Request, res: Response) {
@@ -188,23 +205,26 @@ export class AdminRoute implements IRoute {
 	}
 
 	private async getWalletByUser(req: Request, res: Response) {
-		let uwallet = await this._userController.getWallet(req.params.id)
+		let uwallet = await this._userController.getWallet(req.params.id);
 		return res.send({
 			status: "read",
 			data: uwallet
-		})
+		});
 	}
 
 	private async updateTransaction(req: Request, res: Response) {
-		let transactId = req.query.tid
-		let operation = req.query.operation
-		
-		let newTransaction = await this._userController.updateTransaction(transactId, operation)
+		let transactId = req.query.tid;
+		let operation = req.query.operation;
+
+		let newTransaction = await this._userController.updateTransaction(
+			transactId,
+			operation
+		);
 
 		return res.send({
 			status: "update",
 			data: newTransaction
-		})
+		});
 	}
 
 	private async getAllCodes(req: Request, res: Response) {
@@ -213,5 +233,77 @@ export class AdminRoute implements IRoute {
 			status: "read",
 			data: transactions
 		});
+	}
+
+	private async getRateOperation(req: Request, res: Response) {
+		if (req.query && req.query.id) {
+			let rate = await this._userController.getRateById(req.query.id);
+			return res.send({
+				status: "read",
+				data: rate
+			});
+		}
+
+		let rates = await this._userController.getAllRate();
+		return res.send({
+			status: "read",
+			data: rates
+		});
+	}
+
+	private async saveRate(req: Request, res: Response) {
+		let rate = await this._userController.saveRate(req.body);
+	
+		if(req.body.id == 0){
+			return res.send({
+				status: "create",
+				data: rate
+			});
+		}
+		else if(req.body.id != 0){
+			return res.send({
+				status: "update",
+				data: rate
+			});
+		}
+	}
+
+	private async toggleStatus(req: Request, res: Response) {
+		let {isactive , id} = req.body
+
+		if(isactive === true){
+			let response = await this._userController.deactiveRate(id);
+			
+			return res.send({
+				status: "true",
+				data: response
+			})
+		}else if(isactive === false){
+			let response = await this._userController.activateRate(id);
+
+			if(typeof response === "string"){
+				// an error is returned
+				return res.send({
+					status: "false",
+					data: response
+				})
+			}
+
+			return res.send({
+				status: "true",
+				data: response
+			})
+		}
+	}
+
+	private async removeRate(req: Request, res: Response) {
+		let rateId = req.query.id;
+
+		let response = await this._userController.removeRate(rateId);
+
+		return res.send({
+			status: "true",
+			data: response
+		})
 	}
 }

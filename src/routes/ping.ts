@@ -1,3 +1,4 @@
+import { RateService } from "./../services/rate.service";
 "use strict";
 import { PaystackService } from "../services/paystack.service";
 import { DatabaseProvider } from "./../database/index";
@@ -22,9 +23,9 @@ import axios from "axios";
 import * as _ from "underscore";
 
 export class PingRoute implements IRoute {
-	// private _userController: UserController = DIContainer.resolve<UserController>(
-	//   UserController
-	// );
+	private _userController: UserController = DIContainer.resolve<UserController>(
+		UserController
+	);
 	private _userService: UserService = DIContainer.resolve<UserService>(
 		UserService
 	);
@@ -41,6 +42,10 @@ export class PingRoute implements IRoute {
 	private _paystackService: PaystackService = DIContainer.resolve<
 		PaystackService
 	>(PaystackService);
+
+	private _rService: RateService = DIContainer.resolve<RateService>(
+		RateService
+	);
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
@@ -191,5 +196,19 @@ export class PingRoute implements IRoute {
 
 		// console.log(response);
 		// res.send(response);
+
+		// let payload = { id: 1, localrate: 520 };
+		// let payload2 = { id: 0, localrate: 500 };
+
+		// let response = await this._userController.saveRate(payload);
+		// let response2 = await this._userController.saveRate(payload2);
+
+		// console.log(response);
+		// console.log(response2);
+		// res.send({ response, response2 });
+
+		let response = await this._rService.removeRate(2)
+
+		res.send(response)
 	}
 }

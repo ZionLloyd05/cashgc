@@ -104,6 +104,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/banks", this.fetchBanks.bind(this));
 		router.get("/user/bankcode", this.fetchBankCode.bind(this));
 		router.get("/user/resolve-account", this.resolveAccount.bind(this));
+		router.get("/user/rate", this.getCurrentRate.bind(this));
 		router.post("/user/transfer", this.makeTransfer.bind(this));
 	}
 
@@ -528,6 +529,15 @@ export class UserRoute implements IRoute {
 
 		return res.send({
 			status: "create",
+			data: response
+		})
+	}
+
+	public async getCurrentRate(req: Request, res: Response) {
+		let response = await this._userController.getActiveRate();
+
+		return res.send({
+			status: "read",
 			data: response
 		})
 	}
