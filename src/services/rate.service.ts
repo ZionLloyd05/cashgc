@@ -56,7 +56,7 @@ export class RateService {
 
 		return await createQueryBuilder("Rate")
 			.where("Rate.isactive = :isactive", { isactive: true })
-			.getMany();
+			.getOne();
 	}
 
 	public async activateRate(rateId: number): Promise<any> {

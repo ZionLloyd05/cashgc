@@ -15,6 +15,8 @@ $(document).ready(function () {
         var span = btn.closest("#wrapper").parent().find("#infoSpan");
         var code = input.val();
         var totalPriceSpan = $("#totalPrice2");
+        var rateInNaira = Number($("#nairaAmount").attr('data-rate'))
+        var nairaPriceSpan = $("#nairaAmount");
 
         $.ajax({
             url: "/user/verify/" + code,
@@ -49,8 +51,12 @@ $(document).ready(function () {
 
                         var currentPrice = Number(totalPriceSpan.attr("data-pr2"))
                         var totalPrice2 = currentPrice + price;
+                        var totalPriceInNaira = totalPrice2 * rateInNaira
+
                         totalPriceSpan.attr("data-pr2", totalPrice2);
                         totalPriceSpan.text(totalPrice2.toLocaleString());
+                        nairaPriceSpan.text(totalPriceInNaira.toLocaleString())
+
                         input.attr("data-status", "dirty")
                         postedCodes.push(code);
                         postedCodeIds.push(res.data.id)
@@ -70,11 +76,16 @@ $(document).ready(function () {
         var code = input.val();
         var codePrice = Number(btn.attr("data-code-pr"));
         var codeId = btn.attr("data-code-id");
+        var rateInNaira = Number($("#nairaAmount").attr('data-rate'))
+        var nairaPriceSpan = $("#nairaAmount");
+
         var currentPrice = Number(totalPriceSpan.attr("data-pr2"));
         var totalPrice2 = currentPrice - codePrice;
+        var totalPriceInNaira = totalPrice2 * rateInNaira
 
         totalPriceSpan.attr("data-pr2", totalPrice2);
         totalPriceSpan.text(totalPrice2.toLocaleString());
+        nairaPriceSpan.text(totalPriceInNaira.toLocaleString())
 
         if (input.attr("data-status") === "dirty") {
             remove(postedCodes, code)
@@ -190,9 +201,9 @@ var getExchangeRate = function () {
         header: {
             "X-CSRF-TOKEN": csrfToken
         },
-        success: function (repsonse) {
+        success: function (response) {
             if (response.status === "read") {
-                $('#nairaAmount').attr("data-rate", response.data)
+                $('#nairaAmount').attr("data-rate", response.data.localrate)
             }
         }
     })

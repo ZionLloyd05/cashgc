@@ -87,3 +87,16 @@ var bindTableToData = function (response) {
     })
     spinner.hide();
 }
+
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('btnCopy')) {
+        var btn = e.target;
+        var input = btn.parentNode.parentNode.children[0];
+        var inpId = input.getAttribute('id');
+
+        var copyText = document.getElementById(inpId);
+        copyText.select();
+        document.execCommand("copy");
+        $("#kt_toast_1").toast("show");
+    }
+}, false);
