@@ -207,8 +207,8 @@ export class PingRoute implements IRoute {
 		// console.log(response2);
 		// res.send({ response, response2 });
 
-		let response = await this._rService.removeRate(2)
+		let response = await this._rService.convertDollarToNaira(90);
 
-		res.send(response)
+		res.send({ response });
 	}
 }

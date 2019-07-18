@@ -298,103 +298,12 @@ $(document).on('click', '#minus', function () {
         })
 })
 
-/**
- * Checkout Functionality
- */
-$("#checkoutBtn").on('click', function () {
-    $(this).addClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
+$(document).on('click', '#proceedBtn', function () {
+    $("#optionModal").modal("show")
+})
 
-    scaffoldCodes(cartResponse);
-});
-
-
-// var scaffoldCodes = function (cartResponse) {
-//     gcHeader.addClass("kt-spinner kt-spinner--v2 kt-spinner--md kt-spinner--info");
-//     gcHeaderText.text("Preparing your gift codes...")
-//     var csrfToken = $('#_csrf').val();
-//     let payload = cartResponse;
-
-//     fetch("/user/giftcode", {
-//             method: 'POST',
-//             body: JSON.stringify(payload),
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "X-CSRF-TOKEN": csrfToken
-//             }
-//         })
-//         .then(res => res.json())
-//         .then(data => {
-
-//             let giftCodes = data.data;
-//             createDummyTransaction(giftCodes);
-//             // $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
-//             bindGiftCodeData(data.data);
-//             // $('#exampleModalTooltips').modal("show");
-//         });
-// }
-
-// var createDummyTransaction = function (data) {
-//     var flattenCodes = data.flat();
-//     var gcodes = [];
-//     flattenCodes.forEach(codes => {
-//         gcodes.push(codes.giftCodeObj.id)
-//     })
-//     let transactionPayload = {
-//         status: 0,
-//         type: 0,
-//         gcodes
-//     }
-//     console.log(transactionPayload);
-//     fetch('/user/transaction', {
-//             method: "POST",
-//             body: JSON.stringify(transactionPayload),
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "X-CSRF-TOKEN": csrfToken
-//             }
-//         })
-//         .then(res => res.json())
-//         .then(data => {
-//             $("#checkoutBtn").removeClass("kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary");
-//             $('#exampleModalTooltips').modal("show");
-//             clearCart();
-//         })
-// }
-
-// var clearCart = function () {
-//     fetch('/user/cartitem', {
-//         method: "DELETE",
-//         headers: {
-//             "X-CSRF-TOKEN": csrfToken
-//         }
-//     })
-// }
-
-// var gcTbl;
-// var bindGiftCodeData = function (data) {
-//     let flattenData = data.flat();
-//     console.log(flattenData);
-//     gcTbl = $("#gcTbl").DataTable({
-//         "iDisplayLength": 5,
-//         aaData: flattenData,
-//         aoColumns: [{
-//             data: "title",
-//             render: function (id, type, row, meta) {
-//                 return meta.row + 1;
-//             }
-//         }, {
-//             data: "title"
-//         }, {
-//             data: "giftCodeObj.code"
-//         }]
-//     })
-//     gcHeader.removeClass("kt-spinner kt-spinner--v2 kt-spinner--md kt-spinner--info")
-//     gcHeaderText.html("Note: You can access your Gift Codes here <a href='/user/my-codes'>My Codes</a>")
-// }
-
-$(document).on('click', '#triggerPay', function () {
+var initiatePayPalPayment = function () {
     var totalAmount = $('#cartTotalAmount').attr("data-pr")
-    $('#statusModal').modal("show")
 
     var items = []
 
@@ -433,4 +342,32 @@ $(document).on('click', '#triggerPay', function () {
         .then(response => {
             window.location.href = response.data
         })
+}
+
+var initiateBankDepositProcessing = function () {
+    console.log("processing transfer")
+}
+
+$("input[name='m_option_1']").on('click', function () {
+    var paymentOption = $("input[name='m_option_1']:checked").val();
+    var paymentInfoSpan = $("#paymentInfoSpan");
+
+    if (paymentOption === "bank") {
+        paymentInfoSpan.show("slideIn")
+    } else if (paymentOption === "paypal") {
+        paymentInfoSpan.hide("fadeOut")
+    }
+})
+
+$("#triggerPay").on('click', function () {
+    $("#optionModal").modal("hide")
+    $('#statusModal').modal("show")
+    var paymentOption = $("input[name='m_option_1']:checked").val();
+
+    if (paymentOption === "paypal") {
+
+        initiatePayPalPayment();
+    } else if (paymentOption === "bank") {
+        initiateBankDepositProcessing();
+    }
 })

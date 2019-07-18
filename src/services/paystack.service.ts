@@ -1,4 +1,5 @@
-import { TransactionService } from './transaction.service';
+import { RateService } from "./rate.service";
+import { TransactionService } from "./transaction.service";
 import { UserService } from "./user.service";
 import { injectable } from "inversify";
 import config from "../config";
@@ -10,10 +11,15 @@ import DIContainer from "../container/DIContainer";
 export class PaystackService {
 	private _userService: UserService = DIContainer.resolve<UserService>(
 		UserService
-	)
-	
-	private _tService: TransactionService = DIContainer.resolve<TransactionService>
-	(TransactionService);
+	);
+
+	private _tService: TransactionService = DIContainer.resolve<
+		TransactionService
+	>(TransactionService);
+
+	private _rService: RateService = DIContainer.resolve<RateService>(
+		RateService
+	);
 	private baseUrl;
 
 	constructor() {
@@ -100,20 +106,22 @@ export class PaystackService {
 		console.log(message);
 	}
 
-	public async makeTransfer(user: any, amountToTransfer: number, codesToSell: any): Promise<any> {
-		
+	public async makeTransfer(
+		user: any,
+		amountToTransfer: number,
+		codesToSell: any
+	): Promise<any> {
 		let error = "";
 		// collect user account details
 		let userAccount = await this._userService.getAccount(user.id);
 
-		this.log(userAccount)
+		this.log(userAccount);
 
 		if (userAccount && Object.keys(userAccount).length > 0) {
-			
 			// get bank code
 			let bankcode = await this.fetchBankCode(userAccount.name);
 
-			this.log(bankcode)
+			this.log(bankcode);
 
 			// verify user's account a.k.a resolving account
 			let resolveResponse = await this.resolveAccount(
@@ -121,11 +129,10 @@ export class PaystackService {
 				bankcode
 			);
 
-			this.log(resolveResponse)
+			this.log(resolveResponse);
 
-			if	(resolveResponse.status && resolveResponse.status == true){
-				
-				let {account_name, account_number} = resolveResponse.data;
+			if (resolveResponse.status && resolveResponse.status == true) {
+				let { account_name, account_number } = resolveResponse.data;
 
 				// create a transfer reciept
 				let recieptPayload = {
@@ -133,29 +140,31 @@ export class PaystackService {
 					name: account_name,
 					account_number: account_number,
 					bank_code: bankcode,
-					currency: "NGN",
-				}
+					currency: "NGN"
+				};
 
 				let recieptResponse = await this.createReceipt(recieptPayload);
 
-				this.log(recieptResponse)
+				this.log(recieptResponse);
 
-				if(recieptResponse.status && recieptResponse.status == true){
-
+				if (recieptResponse.status && recieptResponse.status == true) {
 					// initiate a transfer
-					let amountInKobo = this.nairaToKobo(amountToTransfer)
+					let amountInKobo = this.nairaToKobo(amountToTransfer);
 
 					let transferPayload = {
 						source: "balance",
 						amount: amountInKobo,
 						recipient: recieptResponse.data.recipient_code
-					}
+					};
 
 					let transferResponse = await this.initiateTransfer(transferPayload);
 
-					this.log(transferResponse)
+					this.log(transferResponse);
 
-					if(transferResponse.status && transferResponse.status == true){
+					if (transferResponse.status && transferResponse.status == true) {
+						let amountInNaira = await this._rService.convertDollarToNaira(
+							amountToTransfer
+						);
 
 						// save transaction
 						let transactionPayload = {
@@ -164,25 +173,22 @@ export class PaystackService {
 							payment: 1,
 							user,
 							paymentRef: transferResponse.data.transfer_code,
-							amount: amountToTransfer,
+							amount: amountInNaira,
 							gcodes: codesToSell
-						}
+						};
 
 						await this._tService.createTransaction(transactionPayload);
 
-						return {status: "success", data: transferResponse}
+						return { status: "success", data: transferResponse };
 					}
-
-				}else {
-					error = "Unable to create transfer reciept"
-					return {status: "failed", data: error}
+				} else {
+					error = "Unable to create transfer reciept";
+					return { status: "failed", data: error };
 				}
-				
-			} else{
-				error = "Incorrect account credentials"
-				return {status: "failed", data: error}
+			} else {
+				error = "Incorrect account credentials";
+				return { status: "failed", data: error };
 			}
-
 		} else {
 			error = "No account for user";
 			return { status: "failed", data: error };

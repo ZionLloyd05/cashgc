@@ -35,12 +35,13 @@ export class RateService {
 
 	public async getAllRate(): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
-        return await db.getRepository("rate")
-            .createQueryBuilder("rate")
-            .orderBy({
-                "rate.id": "DESC"
-            })
-            .getMany();
+		return await db
+			.getRepository("rate")
+			.createQueryBuilder("rate")
+			.orderBy({
+				"rate.id": "DESC"
+			})
+			.getMany();
 	}
 
 	public async getRateById(id: number): Promise<any> {
@@ -96,5 +97,12 @@ export class RateService {
 
 		let rateToRemove = await this.getRateById(rateId);
 		await rateRepo.remove(rateToRemove);
+	}
+
+	public async convertDollarToNaira(amountInDollar: number): Promise<number> {
+		let response = await this.getActiveRate();
+		let { localrate } = response;
+
+		return amountInDollar * localrate;
 	}
 }
