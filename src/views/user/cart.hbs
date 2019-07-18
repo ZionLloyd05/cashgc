@@ -72,7 +72,10 @@
                                 <div class="form-group">
                                     <label>Upload Receipt</label>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile">
+                                        <form id="orderForm">
+                                            <input type="file" class="custom-file-input" id="customFile" name="image">
+                                            <input type="hidden" id="totalAmount" value="" name="amount">
+                                        </form>
                                         <label class="custom-file-label selected" for="customFile"></label>
                                     </div>
                                     <span class="text-mute">

@@ -25,7 +25,8 @@ enum Type {
 enum Payment {
 	Paypal,
 	Paystack,
-	Bitcoin
+	Bitcoin,
+	Bank
 }
 
 @Entity()
@@ -53,7 +54,7 @@ export class Transaction {
 	public paymentRef?: String;
 
 	@Column()
-	public amount?: number
+	public amount?: number;
 
 	@ManyToMany(type => GiftCode)
 	@JoinTable()

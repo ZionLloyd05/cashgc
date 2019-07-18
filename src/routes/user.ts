@@ -1,3 +1,4 @@
+import { Order } from './../models/Order';
 import { UserController } from "./../controllers/user.ctrl";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
@@ -5,11 +6,36 @@ import { Router, Request, Response, NextFunction } from "express";
 import { IRoute } from "./IRoute";
 import * as paypal from "paypal-rest-sdk";
 import DIContainer from "../container/DIContainer";
+import * as multer from "multer";
 
 import * as csurf from "csurf";
 import { PaystackService } from "../services/paystack.service";
 
 export class UserRoute implements IRoute {
+
+	private upload: any;
+	private storage: any;
+
+	constructor() {
+		this.storage = multer.diskStorage({
+			filename: function(req, file, callback) {
+				// accept image files only
+				callback(null, Date.now() + file.originalname);
+			}
+		});
+		this.upload = multer({
+			storage: this.storage,
+			fileFilter(req, file, next) {
+				const isPhoto = file.mimetype.startsWith("image/");
+				if (isPhoto) {
+					next(null, true);
+				} else {
+					next(new Error("File not supported"), false);
+				}
+			}
+		});
+	}
+
 	private itemTotalAmount: Number = 0;
 	private _authService: AuthService = DIContainer.resolve<AuthService>(
 		AuthService
@@ -97,6 +123,15 @@ export class UserRoute implements IRoute {
 		router.get("/user/payment-success", this.executePayment.bind(this));
 		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
 		// router.get("/user/successpage", this.serveSuccessView.bind(this));
+
+		/**
+		 * Order Routes
+		 */
+		router.post("/user/order", 
+			this.upload.single("image"),
+			this.createOrder.bind(this)
+		);
+		// router.get("/user/order", this.getOrderOperation.bind(this));
 
 		/**
 		 * Miscellenous Route
@@ -541,6 +576,38 @@ export class UserRoute implements IRoute {
 			data: response
 		})
 	}
+
+	public async createOrder(req: Request, res: Response) {
+
+		if(req.file){
+			let filePath = req.file.path;
+			let payload = { 
+				amount : Number(req.body.amount),
+				user : req.user,
+				receiptPath : filePath
+			}
+
+			let newOrder = await this._userController.createOrder(payload)
+			return res.send({
+				status: "true",
+				data: newOrder
+			})
+		}
+		else{
+			return res.send({
+				status: "false",
+				data: "Receipt is needed as proof of payment"
+			})
+		}
+	}
+
+	// public async getOrderOperation(req: Request, res: Response) {
+	// 	if(req.query && req.query.id){
+	// 		// get order by Id
+	// 	}
+
+	// 	let orders
+	// }
 
 	/**
 	 * Workers' Functions

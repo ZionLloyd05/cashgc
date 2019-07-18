@@ -345,7 +345,34 @@ var initiatePayPalPayment = function () {
 }
 
 var initiateBankDepositProcessing = function () {
-    console.log("processing transfer")
+    var totalAmount = $('#cartTotalAmount').attr("data-pr")
+    $('#totalAmount').val(totalAmount)
+
+    let orderFrm = document.getElementById("orderForm");
+    let formData = new FormData(orderFrm)
+
+    fetch('/user/order', {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === "false") {
+                $('#statusModal').modal("hide")
+                swal(response.data, "", "error")
+                    .then(val => {
+                        $("#optionModal").modal("show")
+                    })
+            } else if (response.status === "true") {
+                swal("Transaction has been posted", "Transaction will be reviewed and processed", "success")
+                    .then(val => {
+                        window.location.href = "/user/store";
+                    })
+            }
+        })
 }
 
 $("input[name='m_option_1']").on('click', function () {

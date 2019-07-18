@@ -1,3 +1,5 @@
+import { OrderItemService } from './../services/orderItem.service';
+import { OrderService } from './../services/order.service';
 import { RateService } from "./../services/rate.service";
 import { TransactionService } from "./../services/transaction.service";
 import { CartItem } from "./../models/CartItem";
@@ -22,6 +24,14 @@ export class UserController {
 	private _rService: RateService = DIContainer.resolve<RateService>(
 		RateService
 	);
+
+	private _oService: OrderService = DIContainer.resolve<OrderService>(
+		OrderService
+	);
+
+	private _oItemService: OrderItemService = DIContainer.resolve<
+		OrderItemService
+	>(OrderItemService);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -203,5 +213,35 @@ export class UserController {
 
 	public async getActiveRate(): Promise<any> {
 		return await this._rService.getActiveRate();
+	}
+
+	/**
+	 * Order Methods
+	 */
+	public async createOrder(orderPayload): Promise<any> {
+		return await this._oService.scaffoldOrder(orderPayload)
+	}
+
+	public async toggleOrderStatus(orderId: number): Promise<any> {
+		return await this._oService.toggleOrderStatus(orderId);
+	}
+
+	public async getOrderById(id: number): Promise<any> {
+		return await this._oService.getById(id);
+	}
+
+	public async getAllOrder(): Promise<any> {
+		return await this._oService.getAll();
+	}
+
+	/**
+	 * Order Item Methods
+	 */
+	public async create(orderItemPayload): Promise<any> {
+		return await this._oItemService.create(orderItemPayload);
+	}
+
+	public async getOrderItemsByOrder(orderId: number): Promise<any> {
+		return await this._oItemService.getOrderItemsByOrder(orderId);
 	}
 }

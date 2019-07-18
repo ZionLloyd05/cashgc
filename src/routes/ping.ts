@@ -1,3 +1,5 @@
+import { OrderItemService } from "./../services/orderItem.service";
+import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
 "use strict";
 import { PaystackService } from "../services/paystack.service";
@@ -21,6 +23,7 @@ import { TransactionService } from "../services/transaction.service";
 import config from "../config";
 import axios from "axios";
 import * as _ from "underscore";
+import { Order } from "./../models/Order";
 
 export class PingRoute implements IRoute {
 	private _userController: UserController = DIContainer.resolve<UserController>(
@@ -46,6 +49,14 @@ export class PingRoute implements IRoute {
 	private _rService: RateService = DIContainer.resolve<RateService>(
 		RateService
 	);
+
+	private _oService: OrderService = DIContainer.resolve<OrderService>(
+		OrderService
+	);
+
+	private _oItemService: OrderItemService = DIContainer.resolve<
+		OrderItemService
+	>(OrderItemService);
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
@@ -207,8 +218,48 @@ export class PingRoute implements IRoute {
 		// console.log(response2);
 		// res.send({ response, response2 });
 
-		let response = await this._rService.convertDollarToNaira(90);
+		// let response = await this._rService.convertDollarToNaira(90);
+		// let transaction = { id: 1 };
+		// let payload = {
+		// 	transaction
+		// };
+		// let imgUrl = "https://image.com/dami?id=3434";
+		// // let imgUrl = '';
 
-		res.send({ response });
+		// let response = await this._oService.create(payload, imgUrl);
+		// let response = await this._oService.toggleOrderStatus(1);
+		// let trans = { id: 6 };
+		// let tPayload = {
+		// 	trans
+		// };
+		// let response = await this._oService.create(
+		// 	tPayload,
+		// 	"https://helloimg.com/234"
+		// );
+
+		// let gcc = new GiftCodeCategory();
+		// gcc.id = 7;
+		// let order = new Order();
+		// order.id = 1;
+
+		// let payload = {
+		// 	giftCodeCategory: gcc,
+		// 	order,
+		// 	quantity: 3
+		// };
+
+		// let response = await this._oItemService.create(payload);
+
+		// let response = await this._oItemService.getOrderItemsByOrder(1);
+
+		let userp = { id: 2 };
+		let payload = {
+			user: userp,
+			amount: 2000,
+			receiptPath: ""
+		};
+		let response = await this._oService.scaffoldOrder(payload);
+
+		res.send(response);
 	}
 }

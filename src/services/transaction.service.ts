@@ -32,9 +32,11 @@ export class TransactionService {
 				payload.gcodes.forEach(async codeId => {
 					await this.setCodeToUsed(codeId);
 				});
-		} else if (type === 0) {
+		} else if (payment === 0 && type === 0) {
 			//buy and ofcourse payment with paypal
 			console.log("buy and ofcourse payment with paypal");
+		} else if (payment === 3 && type === 0) {
+			console.log("buy and pay with bank payment");
 		}
 
 		payload.gcodes &&
@@ -80,11 +82,11 @@ export class TransactionService {
 			.innerJoinAndSelect("transaction.user", "user")
 			.where({ user: userid })
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")			
+			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
 			.orderBy({
 				"transaction.id": "DESC"
 			})
-			.getMany()
+			.getMany();
 
 		return transactions;
 	}
@@ -129,14 +131,14 @@ export class TransactionService {
 
 	public async getAllTransaction(): Promise<any[]> {
 		let db = await DatabaseProvider.getConnection();
-		let transactions = await db.getRepository("transaction")
+		let transactions = await db
+			.getRepository("transaction")
 			.createQueryBuilder("transaction")
 			.innerJoinAndSelect("transaction.user", "user")
 			.orderBy({
 				"transaction.id": "DESC"
 			})
 			.getMany();
-	
 
 		return transactions;
 	}

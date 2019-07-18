@@ -1,3 +1,5 @@
+import { OrderItem } from "./../models/OrderItem";
+import { Order } from "./../models/Order";
 import { Wallet } from "./../models/Wallet";
 import { BankAccount } from "../models/BankAccount";
 import { Transaction } from "../models/Transaction";
@@ -63,10 +65,12 @@ export class DatabaseProvider {
 				GiftCodeCategory,
 				BankAccount,
 				Wallet,
-				Rate
+				Rate,
+				Order,
+				OrderItem
 			],
-			synchronize: true,
-			logging: true
+			synchronize: true
+			// logging: true
 		});
 
 		return this._connection;
