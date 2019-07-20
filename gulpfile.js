@@ -1,8 +1,9 @@
 'use strict';
 
 var gulp = require('gulp'),
-    uglify = require('gulp-uglify'),
-    babel = require('gulp-babel')
+    uglify = require('gulp-uglify-es').default;
+
+const javascriptObfuscator = require('gulp-javascript-obfuscator');
 
 
 // Gulp task to minify Javascript files
@@ -12,6 +13,7 @@ gulp.task('scripts', function () {
         .pipe(uglify().on('error', function (e) {
             console.log(e)
         }))
+        .pipe(javascriptObfuscator())
         // Output
         .pipe(gulp.dest('./src/public/dist/js'))
 });

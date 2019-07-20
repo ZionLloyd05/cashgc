@@ -1,7 +1,7 @@
 var spinner = $('#spinner');
 $(document).ready(function () {
     loadCodeCategories();
-    spinner.show();
+    // spinner.show();
 })
 
 var cart = $("#cart_no");
@@ -70,24 +70,24 @@ function addItemToCart(btnId, itemId) {
 
     if (qty < 1)
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
-    else{
+    else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
         console.log("newTotalPrice => " + newTotalPrice)
         totalPrice.textContent = newTotalPrice.toLocaleString();
         totalPrice.setAttribute("data-pr", newTotalPrice)
         console.log("totalPrice => " + totalPrice.textContent)
-    
+
         var newCartCount = Number(cart.textContent) + qty;
         console.log("newCartCount => " + newCartCount)
-    
+
         cart.textContent = newCartCount.toString();
-    
+
         let payload = {
             gcId: itemId,
             qty
         }
         // console.log(payload);
-    
+
         fetch("/user/cartitem", {
                 method: 'POST',
                 body: JSON.stringify(payload),

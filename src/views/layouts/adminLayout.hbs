@@ -56,10 +56,8 @@ License: You must have a valid license purchased only from https://themes.getboo
     <link href="/assets/css/dash_custom.css" rel="stylesheet" type="text/css" />
     <!--end::Layout Skins -->
 
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
     <link rel="shortcut icon" href="/assets/media/logos/favicon.ico" />
 </head>
@@ -153,14 +151,14 @@ License: You must have a valid license purchased only from https://themes.getboo
                         <div class="kt-header__topbar-item dropdown">
                             <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px, 0px"
                                 aria-expanded="true">
-                                <span class="kt-header__topbar-icon">
+                                {{!-- <span class="kt-header__topbar-icon">
                                     <i class="fa fa-cart-plus"></i>
                                     <span
                                         class="kt-badge kt-badge--dot kt-badge--notify kt-badge--sm kt-badge--brand"></span>
                                     <span>2</span>
-                                </span>
+                                </span> --}}
                             </div>
-                            <div
+                            {{!-- <div
                                 class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-lg">
                                 <form>
                                     <div class="kt-head"
@@ -329,10 +327,10 @@ License: You must have a valid license purchased only from https://themes.getboo
                                         </a>
                                     </div>
                                 </form>
-                            </div>
-                        </div>
-                        <!--end: Notifications -->
-                        {{!-- <!--begin: Quick Actions -->
+                            </div> --}}
+                    </div>
+                    <!--end: Notifications -->
+                    {{!-- <!--begin: Quick Actions -->
                         <div class="kt-header__topbar-item">
                             <div class="kt-header__topbar-wrapper" id="kt_offcanvas_toolbar_quick_actions_toggler_btn">
                                 <span class="kt-header__topbar-icon"><i class="flaticon2-gear"></i></span>
@@ -374,103 +372,78 @@ License: You must have a valid license purchased only from https://themes.getboo
                             </div>
                         </div>
                         <!--end:: Languages --> --}}
-                        <!--begin: User Bar -->
-                        <div class="kt-header__topbar-item kt-header__topbar-item--user">
+                    <!--begin: User Bar -->
+                    <div class="kt-header__topbar-item kt-header__topbar-item--user">
 
-                            <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
-                                <div class="kt-header__topbar-user">
-                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-                                    <span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
-                                    <img alt="Pic" src="/assets/media/users/300_25.jpg" />
-                                    <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                                    <span
-                                        class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
-                                </div>
+                        <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
+                            <div class="kt-header__topbar-user">
+                                <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
+                                <span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
+                                <img alt="Pic" src="/assets/media/users/300_25.jpg" />
+                                <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
+                                <span
+                                    class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
                             </div>
+                        </div>
 
-                            <div
-                                class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
-                                <div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
-                                    style="background-image: url('/assets/media/misc/head_bg_sm.jpg')">
-                                    <div class="kt-user-card__wrapper">
-                                        <div class="kt-user-card__pic">
-                                            <img alt="Pic" src="/assets/media/users/300_21.jpg" />
-                                        </div>
-                                        <div class="kt-user-card__details">
-                                            <div class="kt-user-card__name">{{user.firstname}} {{user.lastname}}</div>
-                                            <div class="kt-user-card__position">{{user.email}}</div>
-                                        </div>
+                        <div
+                            class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
+                            <div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
+                                style="background-image: url('/assets/media/misc/head_bg_sm.jpg')">
+                                <div class="kt-user-card__wrapper">
+                                    <div class="kt-user-card__pic">
+                                        <img alt="Pic" src="/assets/media/users/300_21.jpg" />
+                                    </div>
+                                    <div class="kt-user-card__details">
+                                        <div class="kt-user-card__name">{{user.firstname}} {{user.lastname}}</div>
+                                        <div class="kt-user-card__position">{{user.email}}</div>
                                     </div>
                                 </div>
-
-                                <ul class="kt-nav kt-margin-b-10">
-                                    <li class="kt-nav__item">
-                                        <a href="custom/user/profile-v1.html" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
-                                            <span class="kt-nav__link-text">My Profile</span>
-                                        </a>
-                                    </li>
-                                    <li class="kt-nav__item">
-                                        <a href="custom/user/profile-v1.html" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-browser-2"></i></span>
-                                            <span class="kt-nav__link-text">My Tasks</span>
-                                        </a>
-                                    </li>
-                                    <li class="kt-nav__item">
-                                        <a href="custom/user/profile-v1.html" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-mail"></i></span>
-                                            <span class="kt-nav__link-text">Messages</span>
-                                        </a>
-                                    </li>
-                                    <li class="kt-nav__item">
-                                        <a href="custom/user/profile-v1.html" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-gear"></i></span>
-                                            <span class="kt-nav__link-text">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
-                                        <a href="custom/user/login-v1.html" target="_blank"
-                                            class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
-                                    </li>
-                                </ul>
                             </div>
 
-                        </div>
-                        <!--end: User Bar -->
-                        <!--begin:: Quick Panel Toggler -->
-                        <div class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
-                            <span class="kt-header__topbar-icon" id="kt_quick_panel_toggler_btn">
-                                <i class="flaticon2-power"></i>
+                            <ul class="kt-nav kt-margin-b-10">
 
-                            </span>
+                                <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
+                                    <a href="/logout" class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign
+                                        Out</a>
+                                </li>
+                            </ul>
                         </div>
-                        <!--end:: Quick Panel Toggler -->
-                    </div>
-                    <!-- end:: Header Topbar -->
-                </div>
-                <!-- end:: Header -->
 
-                {{{body }}}
-                <!-- begin:: Footer -->
-                <div class="kt-footer kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop">
-                    <div class="kt-footer__copyright">
-                        2019&nbsp;&copy;&nbsp;<a href="#" class="kt-link">CashGiftCode</a>
                     </div>
-                    <div class="kt-footer__menu">
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Privacy</a>
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Terms</a>
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Condition</a>
-                    </div>
+                    <!--end: User Bar -->
+                    <!--begin:: Quick Panel Toggler -->
+                    <a href="/logout" class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
+                        <span class="kt-header__topbar-icon" id="kt_quick_panel_toggler_btn">
+                            <i class="flaticon2-power"></i>
+                        </span>
+                    </a>
+                    <!--end:: Quick Panel Toggler -->
                 </div>
-                <!-- end:: Footer -->
+                <!-- end:: Header Topbar -->
             </div>
-            <!-- end:: Wrapper -->
+            <!-- end:: Header -->
 
+            {{{body }}}
+            <!-- begin:: Footer -->
+            <div class="kt-footer kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop">
+                <div class="kt-footer__copyright">
+                    2019&nbsp;&copy;&nbsp;<a href="#" class="kt-link">CashGiftCode</a>
+                </div>
+                <div class="kt-footer__menu">
+                    <a href="http://keenthemes.com/keen" target="_blank"
+                        class="kt-footer__menu-link kt-link">Privacy</a>
+                    <a href="http://keenthemes.com/keen" target="_blank" class="kt-footer__menu-link kt-link">Terms</a>
+                    <a href="http://keenthemes.com/keen" target="_blank"
+                        class="kt-footer__menu-link kt-link">Condition</a>
+                </div>
+            </div>
+            <!-- end:: Footer -->
         </div>
-        <!-- end:: Page -->
+        <!-- end:: Wrapper -->
+
+    </div>
+    <!-- end:: Page -->
     </div>
     <!-- end:: Root -->
 
@@ -478,7 +451,7 @@ License: You must have a valid license purchased only from https://themes.getboo
     <!-- begin:: Topbar Offcanvas Panels -->
 
 
-    <!-- begin::Offcanvas Toolbar Quick Actions -->
+    {{!-- <!-- begin::Offcanvas Toolbar Quick Actions -->
     <div id="kt_offcanvas_toolbar_quick_actions" class="kt-offcanvas-panel">
         <div class="kt-offcanvas-panel__head">
             <h3 class="kt-offcanvas-panel__title">
@@ -993,7 +966,7 @@ License: You must have a valid license purchased only from https://themes.getboo
             </div>
         </div>
     </div>
-    <!-- end:: Quick Panel -->
+    <!-- end:: Quick Panel --> --}}
 
 
     <!-- begin:: Scrolltop -->
@@ -1063,15 +1036,15 @@ License: You must have a valid license purchased only from https://themes.getboo
 
     var dt = new Date();
 
-    var options = { 
-				hour12: false,
-				weekday: 'long',
-				year: 'numeric',
-				month: 'long',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: 'numeric'
-			};
+    var options = {
+        hour12: false,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    };
 
     date.textContent = dt.toLocaleString('en-US', options);
 </script>

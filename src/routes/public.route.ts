@@ -17,7 +17,7 @@ export class PublicRoute implements IRoute {
 		router.post(
 			"/signin",
 			passport.authenticate("local-signin", {
-				successRedirect: "/user",
+				successRedirect: "/user/store",
 				failureRedirect: "/signin",
 				failureFlash: true
 			})

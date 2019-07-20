@@ -39,6 +39,8 @@
     "express-mysql-session": "^2.1.0",
     "express-session": "^1.16.1",
     "express-validator": "^5.3.1",
+    "gulp-javascript-obfuscator": "^1.1.6",
+    "gulp-uglify-es": "^1.0.4",
     "hbs": "^4.0.4",
     "inversify": "^5.0.1",
     "moment": "^2.24.0",
