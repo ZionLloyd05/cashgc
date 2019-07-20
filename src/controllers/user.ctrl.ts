@@ -223,7 +223,7 @@ export class UserController {
 	}
 
 	public async toggleOrderStatus(orderId: number): Promise<any> {
-		return await this._oService.toggleOrderStatus(orderId);
+		return await this._oService.setOrderProcessToTrue(orderId);
 	}
 
 	public async getOrderById(id: number): Promise<any> {
@@ -232,6 +232,10 @@ export class UserController {
 
 	public async getAllOrder(): Promise<any> {
 		return await this._oService.getAll();
+	}
+
+	public async processOrder(orderId: number, user: any): Promise<any> {
+		return await this._oService.processOrder(orderId, user);
 	}
 
 	/**

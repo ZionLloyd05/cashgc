@@ -59,6 +59,29 @@ export class TransactionService {
 		return await db.getRepository("Transaction").save(transaction);
 	}
 
+	public async updateTransactionWithGcodes(gcodes: any, transactionId: number) {
+		let db = await DatabaseProvider.getConnection();
+		let giftCodesArr: GiftCode[] = [];
+
+		let transactionInDb = await this.getTransactionById(transactionId);
+		console.log(transactionInDb);
+
+		if (gcodes.length > 0) {
+			gcodes.forEach(codeId => {
+				let giftCode = new GiftCode();
+				giftCode.id = codeId;
+				giftCodesArr.push(giftCode);
+			});
+		}
+
+		transactionInDb.giftCodes = giftCodesArr;
+
+		/**
+		 * @TODOD auto generate a payment ref
+		 */
+		return await db.getRepository("Transaction").save(transactionInDb);
+	}
+
 	public async setCodeToUsed(codeId: number): Promise<void> {
 		const db = await DatabaseProvider.getConnection();
 		const gcRepo = await db.getRepository(GiftCode);
@@ -72,6 +95,11 @@ export class TransactionService {
 		if (gcInDb) gcInDb.isUsed = true;
 
 		await gcRepo.save(gcInDb);
+	}
+
+	public async getTransactionById(transactionId: number): Promise<any> {
+		let db = await DatabaseProvider.getConnection();
+		return await db.getRepository(Transaction).findOne(transactionId);
 	}
 
 	public async getUserTransactions(userid: number): Promise<any[]> {
@@ -171,6 +199,22 @@ export class TransactionService {
 
 		let newTransaction = await db.getRepository("transaction").findOne({
 			relations: ["user"],
+			where: { id: tid }
+		});
+
+		return newTransaction;
+	}
+
+	public async setTransactionStatusToSuccess(tid: number): Promise<any> {
+		let db = await DatabaseProvider.getConnection();
+
+		await createQueryBuilder("Transaction")
+			.update(Transaction)
+			.set({ status: 0 })
+			.where("id = :id", { id: tid })
+			.execute();
+
+		let newTransaction = await db.getRepository("transaction").findOne({
 			where: { id: tid }
 		});
 

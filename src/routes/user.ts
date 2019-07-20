@@ -132,6 +132,7 @@ export class UserRoute implements IRoute {
 			this.createOrder.bind(this)
 		);
 		// router.get("/user/order", this.getOrderOperation.bind(this));
+		// router.post("/user/order", this.processOrder.bind(this));
 
 		/**
 		 * Miscellenous Route
@@ -600,6 +601,8 @@ export class UserRoute implements IRoute {
 			})
 		}
 	}
+
+	
 
 	// public async getOrderOperation(req: Request, res: Response) {
 	// 	if(req.query && req.query.id){

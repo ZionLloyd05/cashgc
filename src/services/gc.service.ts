@@ -45,6 +45,7 @@ export class GiftCodeService {
 			let gc = item.giftCodeCategory;
 			let itemArr = [];
 
+
 			for (let x = 0; x < quantity; x++) {
 				let token = prefix + "" + (await this.generateToken());
 				let giftCodeObj = await this.create(token, gc);

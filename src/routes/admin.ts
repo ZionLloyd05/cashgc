@@ -1,3 +1,4 @@
+import { User } from './../models/User';
 import { GiftCodeCategory } from "./../models/GiftCodeCategory";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
@@ -96,11 +97,27 @@ export class AdminRoute implements IRoute {
 		router.post("/admin/rate", this.saveRate.bind(this));
 		router.post("/admin/rate/status", this.toggleStatus.bind(this));
 		router.delete("/admin/rate", this.removeRate.bind(this));
+
+		/**
+		 * Orders Routes
+		 */
+		router.get("/admin/orders", this.serveOrdersView.bind(this));
+		router.get("/admin/order", this.getOrderOperation.bind(this));
+		router.post("/admin/order", this.processOrder.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
 		res.render("admin/index", {
 			title: "Dashboard",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isDashboard: true
+		});
+	}
+
+	private serveOrdersView(req: Request, res: Response) {
+		res.render("admin/orders", {
+			title: "Orders",
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
 			isDashboard: true
@@ -300,6 +317,37 @@ export class AdminRoute implements IRoute {
 		let rateId = req.query.id;
 
 		let response = await this._userController.removeRate(rateId);
+
+		return res.send({
+			status: "true",
+			data: response
+		})
+	}
+
+	private async getOrderOperation(req: Request, res: Response) {
+		if(req.query && req.query.id){
+			// get order by id function
+			let order = await this._userController.getOrderById(req.query.id)
+			return res.send({
+				status: "true",
+				data: order
+			})
+		}
+
+		let orders = await this._userController.getAllOrder();
+		return res.send({
+			status: "true",
+			data: orders
+		})
+	}
+
+	private async processOrder(req: Request, res: Response) {
+		let { tid, uid } = req.body;
+
+		let user = new User();
+		user.id = uid;
+		
+		let response = await this._userController.processOrder(tid, user);
 
 		return res.send({
 			status: "true",

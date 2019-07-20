@@ -230,8 +230,7 @@ export class PingRoute implements IRoute {
 		// let response = await this._oService.toggleOrderStatus(1);
 		// let trans = { id: 6 };
 		// let tPayload = {
-		// 	trans
-		// };
+		// 	trans		// };
 		// let response = await this._oService.create(
 		// 	tPayload,
 		// 	"https://helloimg.com/234"
@@ -258,7 +257,7 @@ export class PingRoute implements IRoute {
 			amount: 2000,
 			receiptPath: ""
 		};
-		let response = await this._oService.scaffoldOrder(payload);
+		let response = await this._oService.processOrder(7, userp);
 
 		res.send(response);
 	}

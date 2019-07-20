@@ -22,7 +22,7 @@ DIContainer.bind<UserService>(UserService).toSelf();
 DIContainer.bind<UserController>(UserController).toSelf();
 DIContainer.bind<GCCService>(GCCService).toSelf();
 DIContainer.bind<AuthService>(AuthService).toSelf();
-DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
+// DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
 DIContainer.bind<TransactionService>(TransactionService).toSelf();
 DIContainer.bind<PaystackService>(PaystackService).toSelf();
 DIContainer.bind<RateService>(RateService).toSelf();
