@@ -174,10 +174,6 @@ export class UserController {
 		return this._userService.getWallet(userId);
 	}
 
-	public async createPendingCodes(payload: any): Promise<any> {
-		return this._userService.createPendingCode(payload);
-	}
-
 	/**
 	 * Rate Methods
 	 */

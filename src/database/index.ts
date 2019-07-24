@@ -69,8 +69,7 @@ export class DatabaseProvider {
 				Order,
 				OrderItem
 			],
-			synchronize: true,
-			logging: true
+			synchronize: true
 		});
 
 		return this._connection;

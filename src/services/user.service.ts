@@ -1,4 +1,3 @@
-import { PendingCode } from './../models/PendingCode';
 import { Wallet } from './../models/Wallet';
 import { BankAccount } from "../models/BankAccount";
 import { CartItem } from "./../models/CartItem";
@@ -272,18 +271,6 @@ export class UserService {
 		return await accountRepo.findOne({
 			where: { user: userId }
 		});
-	}
-
-	/**
-	 * Pending Code Methods
-	 */
-	public async createPendingCode(payload: any): Promise<any> {
-		const db = await DatabaseProvider.getConnection();
-
-		let newPendingCode = await new PendingCode();
-		newPendingCode = { ...payload }
-
-		return await db.getRepository(PendingCode).save(newPendingCode);
 	}
 
 	/**   *

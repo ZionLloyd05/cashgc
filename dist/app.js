@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const index_1 = require("./database/index");
+const database_1 = require("./database");
 const config_1 = require("./config");
 const paypal = require("paypal-rest-sdk");
 function startServer() {
@@ -17,7 +17,7 @@ function startServer() {
         /**
          * Database configuration
          */
-        index_1.DatabaseProvider.configure({
+        database_1.DatabaseProvider.configure({
             type: "mysql",
             database: config_1.default.database,
             username: config_1.default.username,
@@ -29,9 +29,9 @@ function startServer() {
          * PayPal configuration
          */
         paypal.configure({
-            'mode': config_1.default.mode,
-            'client_id': config_1.default.client_id,
-            'client_secret': config_1.default.client_secret
+            mode: config_1.default.mode,
+            client_id: config_1.default.client_id,
+            client_secret: config_1.default.client_secret
         });
         const app = require("./config/viewsetup").default();
         yield require("./server").default({ app });
@@ -47,7 +47,7 @@ function startServer() {
             console.log("-------------------------------------------------------");
         });
         try {
-            yield index_1.DatabaseProvider.getConnection();
+            yield database_1.DatabaseProvider.getConnection();
             console.log("Database connected");
         }
         catch (error) {

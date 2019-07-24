@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { DatabaseProvider } from "./database/index";
+import { DatabaseProvider } from "./database";
 import config from "./config";
 import * as express from "express";
 import * as paypal from "paypal-rest-sdk";
@@ -21,11 +21,10 @@ async function startServer() {
 	 * PayPal configuration
 	 */
 	paypal.configure({
-		'mode': config.mode, //sandbox or live
-		'client_id': config.client_id,
-		'client_secret': config.client_secret
+		mode: config.mode, //sandbox or live
+		client_id: config.client_id,
+		client_secret: config.client_secret
 	});
-
 
 	const app = require("./config/viewsetup").default();
 	await require("./server").default({ app });
