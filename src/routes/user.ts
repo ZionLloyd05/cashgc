@@ -145,17 +145,17 @@ export class UserRoute implements IRoute {
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
-		res.render("user/index", {
-			title: "Dashboard",
+		res.render("user/store", {
+			title: "Store",
 			layout: "userLayout",
-			isDashboard: true,
+			isStore: true,
 			csrfToken: req.csrfToken()
 		});
 	}
 
 	private serveStoreView(req: Request, res: Response) {
 		res.render("user/store", {
-			title: "Dashboard",
+			title: "Store",
 			layout: "userLayout",
 			isStore: true,
 			csrfToken: req.csrfToken()

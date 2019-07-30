@@ -69,14 +69,15 @@
                         <!-- Account Signin -->
                         <li class="nav-item u-header__navbar-icon">
                             <!-- Account Sidebar Toggle Button -->
-                            <a id="sidebarNavToggler" class="btn btn-sm btn-primary" href="javascript:;" role="button"
+                            {{!-- <a id="sidebarNavToggler" class="btn btn-sm btn-primary" href="javascript:;" role="button"
                                 aria-controls="sidebarContent" aria-haspopup="true" aria-expanded="false"
                                 data-unfold-event="click" data-unfold-hide-on-scroll="false"
                                 data-unfold-target="#sidebarContent" data-unfold-type="css-animation"
                                 data-unfold-animation-in="fadeInRight" data-unfold-animation-out="fadeOutRight"
                                 data-unfold-duration="500">{{user.firstname}} {{user.lastname}} &nbsp;&nbsp; <i
                                     class="fas fa-bars mr-1"></i>
-                            </a>
+                            </a> --}}
+                             <a id="sidebarNavToggler" class="btn btn-sm btn-primary" href="/user" role="button">Dashboard</a>
                             <!-- End Account Sidebar Toggle Button -->
                         </li>
                         <!-- End Account Signin -->
@@ -812,7 +813,7 @@
 
 <!-- ========== SECONDARY CONTENTS ========== -->
 <!-- Panel Sidebar Navigation -->
-<aside id="sidebarContent" class="u-sidebar u-unfold--css-animation u-unfold--hidden"
+{{!-- <aside id="sidebarContent" class="u-sidebar u-unfold--css-animation u-unfold--hidden"
     aria-labelledby="sidebarNavToggler">
     <div class="u-sidebar__scroller">
         <div class="u-sidebar__container">
@@ -917,7 +918,7 @@
             <!-- End Footer -->
         </div>
     </div>
-</aside>
+</aside> --}}
 <!-- End Panel Sidebar Navigation -->
 
 <!-- ========== END SECONDARY CONTENTS ========== -->
