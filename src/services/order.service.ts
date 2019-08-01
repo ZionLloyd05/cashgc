@@ -174,7 +174,7 @@ export class OrderService {
 
 	public async uploadImage(filePath: any): Promise<string> {
 		const result = await cloudinary.uploader.upload(filePath);
-		return result.url;
+		return result.secure_url;
 	}
 
 	public async processOrder(orderId: number, user: any): Promise<any> {
