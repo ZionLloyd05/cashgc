@@ -87,7 +87,8 @@ export class GCCService {
 
 	public async uploadImage(filePath: any): Promise<string> {
 		const result = await cloudinary.uploader.upload(filePath);
-		return result.url;
+		console.log(result)
+		return result.secure_url;
 	}
 
 	public async getById(id: number): Promise<GiftCodeCategory> {

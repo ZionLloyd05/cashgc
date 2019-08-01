@@ -387,6 +387,13 @@ $("input[name='m_option_1']").on('click', function () {
 })
 
 $("#triggerPay").on('click', function () {
+    var totalAmount = Number($('#cartTotalAmount').attr("data-pr"))
+
+    if(totalAmount <= 0){
+        swal("Your cart is empty", "", "error");
+        return false;
+    }
+    
     $("#optionModal").modal("hide")
     $('#statusModal').modal("show")
     var paymentOption = $("input[name='m_option_1']:checked").val();
