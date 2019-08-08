@@ -193,11 +193,35 @@ export class UserService {
 				if (isValid) {
 					userFound = user;
 				}
+			}else{
+				return null;
 			}
 		});
 		let userDto: IUserDTO;
 		userDto = { ...userFound };
 		return userDto;
+	}
+	
+	public async updatePassword(email: string, currentPassword: string, newPassword: string): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+
+		let user = await this.authenticate(email, currentPassword);
+		console.log(user);
+		if(Object.keys(user).length <= 0){
+			return "incorrect credentials";
+		}
+
+		let hashedPwd = this.hashPassword(newPassword);
+
+		let updatedUser = new User();
+		updatedUser = { ...user };
+		updatedUser.password = hashedPwd;
+
+		await db.getRepository(User).save(updatedUser);
+
+		console.log(updatedUser);
+
+		return "updated";
 	}
 
 	public async createAccount(payload: any): Promise<any> {

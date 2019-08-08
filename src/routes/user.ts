@@ -142,6 +142,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/resolve-account", this.resolveAccount.bind(this));
 		router.get("/user/rate", this.getCurrentRate.bind(this));
 		router.post("/user/transfer", this.makeTransfer.bind(this));
+		router.post("/user/updatepassword", this.updatePassword.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -600,6 +601,16 @@ export class UserRoute implements IRoute {
 				data: "Receipt is needed as proof of payment"
 			})
 		}
+	}
+
+	public async updatePassword(req: Request, res: Response) {
+		let response = await this._userController.updatePassword(req.body);
+		console.log(response);
+
+		return res.send({
+			status: "update",
+			data: response
+		})
 	}
 
 	

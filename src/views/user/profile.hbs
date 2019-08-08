@@ -103,12 +103,12 @@
                                 </a>
                             </li>
                             <li class="kt-nav__separator"></li>
-                            <li class="kt-nav__item">
+                            {{!-- <li class="kt-nav__item">
                                 <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_account_information" role="tab" aria-selected="false">
                                 	<span class="kt-nav__link-icon"><i class="flaticon2-soft-icons-1"></i></span>
                                     <span class="kt-nav__link-text">Acccount Information</span>
                                 </a>                                                 
-                            </li>
+                            </li> --}}
                             <li class="kt-nav__item">
                                 <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_change_password" role="tab" aria-selected="true">
 									<span class="kt-nav__link-icon"><i class="flaticon2-lock"></i></span>
@@ -246,48 +246,7 @@
 								</div>
 								<div class="kt-portlet__head-toolbar">
 									<div class="kt-portlet__head-wrapper">
-                                        <div class="dropdown dropdown-inline">
-                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="flaticon2-gear"></i>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <ul class="kt-nav">
-                                                    <li class="kt-nav__section kt-nav__section--first">
-                                                        <span class="kt-nav__section-text">Export Tools</span>
-                                                    </li>
-                                                    <li class="kt-nav__item">
-                                                        <a href="#" class="kt-nav__link">
-                                                            <i class="kt-nav__link-icon la la-print"></i>
-                                                            <span class="kt-nav__link-text">Print</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="kt-nav__item">
-                                                        <a href="#" class="kt-nav__link">
-                                                            <i class="kt-nav__link-icon la la-copy"></i>
-                                                            <span class="kt-nav__link-text">Copy</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="kt-nav__item">
-                                                        <a href="#" class="kt-nav__link">
-                                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
-                                                            <span class="kt-nav__link-text">Excel</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="kt-nav__item">
-                                                        <a href="#" class="kt-nav__link">
-                                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
-                                                            <span class="kt-nav__link-text">CSV</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="kt-nav__item">
-                                                        <a href="#" class="kt-nav__link">
-                                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
-                                                            <span class="kt-nav__link-text">PDF</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                       
                                     </div>		
                                 </div>
 							</div>
@@ -374,7 +333,7 @@
 
                                     <div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
                                     <div class="form-group row">
-                                 		<label class="col-xl-3 col-lg-3 col-form-label">Confirm you're not a robot</label>
+                                 		<label class="col-xl-3 col-lg-3 col-form-label"></label>
                                         <div class="col-lg-3">
                                             <div class="input-group">
                                                 <input type="number" readonly class="form-control" id="num11" class="form-control" value="">
@@ -422,7 +381,7 @@
 					<!--end: Personal Information-->
 					
 					<!--begin: Account Information-->
-					<div class="tab-pane fad0-e" id="kt_profile_tab_account_information" role="tabpanel">
+					{{!-- <div class="tab-pane fad0-e" id="kt_profile_tab_account_information" role="tabpanel">
 						<div class="kt-portlet">
 							<div class="kt-portlet__head">
 								<div class="kt-portlet__head-label">
@@ -584,7 +543,7 @@
 								</div>	
 							</form>
 						</div>
-					</div>
+					</div> --}}
 					<!--end: Account Information-->
 
 					<!--begin: Account Information-->
@@ -719,88 +678,45 @@
 								</div>
 								<div class="kt-portlet__head-toolbar">
 									<div class="kt-portlet__head-toolbar">
-	<div class="dropdown dropdown-inline">
-		<button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<i class="la la-sellsy"></i>
-		</button>
-		<div class="dropdown-menu dropdown-menu-right">
-			<ul class="kt-nav">
-				<li class="kt-nav__section kt-nav__section--first">
-					<span class="kt-nav__section-text">Quick Actions</span>
-				</li>
-				<li class="kt-nav__item">
-					<a href="#" class="kt-nav__link">
-						<i class="kt-nav__link-icon flaticon2-graph-1"></i>
-						<span class="kt-nav__link-text">Statistics</span>
-					</a>
-				</li>
-				<li class="kt-nav__item">
-					<a href="#" class="kt-nav__link">
-						<i class="kt-nav__link-icon flaticon2-calendar-4"></i>
-						<span class="kt-nav__link-text">Events</span>
-					</a>
-				</li>
-				<li class="kt-nav__item">
-					<a href="#" class="kt-nav__link">
-						<i class="kt-nav__link-icon flaticon2-layers-1"></i>
-						<span class="kt-nav__link-text">Reports</span>
-					</a>
-				</li>
-				<li class="kt-nav__item">
-					<a href="#" class="kt-nav__link">
-						<i class="kt-nav__link-icon flaticon2-bell-1o"></i>
-						<span class="kt-nav__link-text">Notifications</span>
-					</a>
-				</li>
-				<li class="kt-nav__item">
-					<a href="#" class="kt-nav__link">
-						<i class="kt-nav__link-icon flaticon2-file-1"></i>
-						<span class="kt-nav__link-text">Files</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-	</div>
-</div>								</div>
+									</div>
+								</div>
 							</div>
 
-							<form class="kt-form kt-form--label-right">
+							<form class="kt-form kt-form--label-right" id="changePwdForm">
 								<div class="kt-portlet__body">
 									<div class="kt-section kt-section--first">
 										<div class="kt-section__body">
-											<div class="alert alert-outline-danger fade show kt-margin-t-20 kt-margin-b-40" role="alert">
-												<div class="alert-icon"><i class="flaticon-warning"></i></div>
-											  	<div class="alert-text">Configure user passwords to expire periodically. Users will need warning that their passwords are going to expire, or they might inadvertently get locked out of the system!</div>
-											  	<div class="alert-close">
-												  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-												    	<span aria-hidden="true"><i class="la la-close"></i></span>
-												  	</button>
-												</div>
-											</div>
-
+										
 											<div class="row">
 												<label class="col-xl-3"></label>
 												<div class="col-lg-9 col-xl-6">
-													<h3 class="kt-section__title kt-section__title-sm">Change Or Recover Your Password:</h3>
+													{{!-- <h3 class="kt-section__title kt-section__title-sm">Change:</h3> --}}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Email</label>
+												<div class="col-lg-9 col-xl-6">
+													<input type="email" id="emailupd" name="emailupd" class="form-control" value="" placeholder="Email">
+													{{!-- <a href="#" class="kt-link kt-font-sm kt-font-bold kt-margin-t-5">Forgot password ?</a> --}}
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label">Current Password</label>
 												<div class="col-lg-9 col-xl-6">
-													<input type="password" class="form-control" value="" placeholder="Current password">
-													<a href="#" class="kt-link kt-font-sm kt-font-bold kt-margin-t-5">Forgot password ?</a>
+													<input type="password" class="form-control" id="currentPwd" name="currentPwd" value="" placeholder="Current password">
+													{{!-- <a href="#" class="kt-link kt-font-sm kt-font-bold kt-margin-t-5">Forgot password ?</a> --}}
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label">New Password</label>
 												<div class="col-lg-9 col-xl-6">
-													<input type="password" class="form-control" value="" placeholder="New password">
+													<input type="password" class="form-control" id="newPwd" name="newPwd" value="" placeholder="New password">
 												</div>
 											</div>
 											<div class="form-group form-group-last row">
 												<label class="col-xl-3 col-lg-3 col-form-label">Verify Password</label>
 												<div class="col-lg-9 col-xl-6">
-													<input type="password" class="form-control" value="" placeholder="Verify password">
+													<input type="password" class="form-control" id="verifyPwd" name="verifyPwd" value="" placeholder="Verify password">
 												</div>
 											</div>									
 										</div>
@@ -812,7 +728,10 @@
 											<div class="col-lg-3 col-xl-3">
 											</div>
 											<div class="col-lg-9 col-xl-9">
-												<button type="reset" class="btn btn-danger">Change Password</button>&nbsp;
+												<button id="btnChangePwd" type="submit" class="btn btn-danger">
+													<span class="" id="spinner" role="status" aria-hidden="true"></span>
+													Change Password
+												</button>&nbsp;
 												<button type="reset" class="btn btn-secondary">Cancel</button>
 											</div>
 										</div>
@@ -979,3 +898,4 @@
     </div>
 </div>
 <script src="/dist/js/user/profile.js"></script>
+{{!-- <script src="/js/user/profile.js"></script> --}}

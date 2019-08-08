@@ -59,6 +59,11 @@ export class UserController {
 		return await this._userService.getAll();
 	}
 
+	public async updatePassword(payload: any): Promise<any> {
+		const {currentPassword, newPassword, email} = payload;
+		return await this._userService.updatePassword(email, currentPassword, newPassword);
+	}
+
 	/**
 	 * Cart Methods
 	 */

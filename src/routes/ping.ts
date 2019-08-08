@@ -78,6 +78,7 @@ export class PingRoute implements IRoute {
 		//   res.send(citem);
 		//   console.log(citem);
 		//   // res.send("ok");
+		
 		// } catch (error) {
 		//   console.log(error);
 		// }
@@ -251,14 +252,16 @@ export class PingRoute implements IRoute {
 
 		// let response = await this._oItemService.getOrderItemsByOrder(1);
 
-		let userp = { id: 2 };
-		let payload = {
-			user: userp,
-			amount: 2000,
-			receiptPath: ""
-		};
-		let response = await this._oService.processOrder(7, userp);
+		// let userp = { id: 2 };
+		// let payload = {
+		// 	user: userp,
+		// 	amount: 2000,
+		// 	receiptPath: ""
+		// };
+		// let response = await this._oService.processOrder(7, userp);
 
-		res.send(response);
+		let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
+
+		res.send({response});
 	}
 }

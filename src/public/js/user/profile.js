@@ -16,6 +16,89 @@ var generateCaptcha = function () {
     num12.setAttribute('value', rand12)
 }
 
+var changePwdForm = $('#changePwdForm');
+changePwdForm.validate({
+    rules: {
+        emailupd: {
+            required: true
+        },
+        currentPwd: {
+            required: true
+        },
+        newPwd: {
+            required: true,
+            minlength: 5
+        },
+
+        verifyPwd: {
+            equalTo: "#newPwd"
+        }
+    },
+    messages: {
+        emailupd: {
+            required: "Email is required"
+        },
+        currentPwd: {
+            required: "Your current password is required"
+        },
+        newPwd: {
+            required: "Your new password is required",
+            minlength: "Password must not be less than 5 characters"
+        },
+        verifyPwd: {
+            equalTo: "Passwords must match"
+        }
+    }
+})
+
+$("#changePwdForm").submit(function (e) {
+    e.preventDefault();
+
+    if (changePwdForm.valid()) {
+
+        var btn = $('#btnChangePwd');
+        var spinner = $('#spinner');
+
+        btn.attr("disabled", true);
+        spinner.addClass("spinner-grow spinner-grow-sm");
+
+        var email = $('#emailupd').val();
+        var currentPwd = $('#currentPwd').val();
+        var newPwd = $('#newPwd').val();
+
+        let payload = {
+            currentPassword: currentPwd,
+            newPassword: newPwd,
+            email
+        }
+
+        $.ajax({
+            url: "/user/updatepassword",
+            method: "POST",
+            dataType: "json",
+            data: payload,
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function (response) {
+
+                btn.attr("disabled", false);
+                spinner.removeClass("spinner-grow spinner-grow-sm");
+                
+                if(response.data == "updated"){
+                    window.location.href = "/logout";
+                }
+                else if(response.data == "incorrect credentials"){
+                    alert("Incorrect credentials");
+                    return false;
+                }
+                // 
+            }
+        })
+    }
+
+})
+
 var updateInfoForm = $('#updateInfoForm');
 updateInfoForm.validate({
     rules: {
@@ -266,9 +349,9 @@ var loadWalletInfo = function () {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (res) {
-            if (res.data && res.data != null) {
-                $('#wallet').val(res.data.wid);
-                $('#w_id').val(res.data.id);
+            if (res.data && res.data.lenght != 0) {
+                $('#wallet').val(res.data[0].wid);
+                $('#w_id').val(res.data[0].id);
             }
         }
     })
