@@ -64,7 +64,7 @@ export class User implements IUserDTO {
 	public resetPasswordToken?: string;
 
 	@Column()
-	public resetPasswordExpiryDate?: string;
+	public resetPasswordExpiryDate?: number;
 
 
 	@Column()

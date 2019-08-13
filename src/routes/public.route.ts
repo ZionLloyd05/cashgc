@@ -12,6 +12,7 @@ export class PublicRoute implements IRoute {
 		router.get("/", this.serveHomeView.bind(this));
 		router.get("/signup", this.serveSignupView.bind(this));
 		router.get("/signin", this.serveSignInView.bind(this));
+		router.get("/privacy", this.servePrivacyView.bind(this));
 		router.get("/logout", this.logout.bind(this));
 
 		router.post(
@@ -47,6 +48,15 @@ export class PublicRoute implements IRoute {
 			// csrfToken: req.csrfToken()
 		});
 	}
+
+	private servePrivacyView(req: Request, res: Response) {
+		res.render("privacy", {
+			title: "Privacy",
+			layout: "layout"
+		});
+	}
+
+	
 
 	private serveSignInView(req: Request, res: Response) {
 		var message = req.flash("error");
