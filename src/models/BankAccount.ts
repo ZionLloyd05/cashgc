@@ -15,7 +15,7 @@ export class BankAccount {
 	@Column()
 	public name: string;
 
-	@Column()
+	@Column({ type: "bigint" })
 	public number: number;
 
 	@OneToOne(() => User)

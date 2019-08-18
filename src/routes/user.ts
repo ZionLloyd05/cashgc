@@ -189,16 +189,6 @@ export class UserRoute implements IRoute {
 			csrfToken: req.csrfToken()
 		});
 	}
-
-	// private serveSuccessView(req: Request, res: Response) {
-	// 	res.render("user/success", {
-	// 		title: "Invoice",
-	// 		layout: "userLayout",
-	// 		isStore: true,
-	// 		csrfToken: req.csrfToken()
-	// 	});
-	// }
-
 	private serveSalesView(req: Request, res: Response) {
 		res.render("user/sales", {
 			title: "Sales",

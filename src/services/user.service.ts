@@ -282,9 +282,11 @@ export class UserService {
 		const { name, number } = account;
 
 		accountInDb.name = name;
-		accountInDb.number = number;
+		accountInDb.number = parseInt(number);
 
-		return await accountRepo.save(accountInDb);
+		let updated = await accountRepo.save(accountInDb);
+
+		return updated;
 	}
 
 	public async getAccount(userId: number): Promise<any> {
