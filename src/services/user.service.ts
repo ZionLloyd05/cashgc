@@ -279,7 +279,6 @@ export class UserService {
 		const accountRepo = await db.getRepository(BankAccount);
 
 		let accountInDb = await accountRepo.findOne(account.id);
-
 		const { name, number } = account;
 
 		accountInDb.name = name;
@@ -301,7 +300,7 @@ export class UserService {
 	 * This is a helper function used for data encryption, password in this use case.
 	 * @param data: string | number;
 	 */
-	private hashPassword(password: string): string {
+	public hashPassword(password: string): string {
 		return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 	}
 

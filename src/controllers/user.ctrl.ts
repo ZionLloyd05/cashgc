@@ -1,3 +1,4 @@
+import { AccountService } from './../services/account.service';
 import { OrderItemService } from './../services/orderItem.service';
 import { OrderService } from './../services/order.service';
 import { RateService } from "./../services/rate.service";
@@ -32,6 +33,8 @@ export class UserController {
 	private _oItemService: OrderItemService = DIContainer.resolve<
 		OrderItemService
 	>(OrderItemService);
+
+	private _accService: AccountService = DIContainer.resolve<AccountService>(AccountService);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -248,5 +251,20 @@ export class UserController {
 
 	public async getOrderItemsByOrder(orderId: number): Promise<any> {
 		return await this._oItemService.getOrderItemsByOrder(orderId);
+	}
+
+	/**
+	 * Accounts
+	 */
+	public async forgotPassword(email: string, header: string): Promise<any> {
+		return await this._accService.forgotPassword(email, header);
+	}
+
+	public async updateResetPassword(token: string, newPassword: string) {
+		return await this._accService.updatePassword(token, newPassword);
+	}
+
+	public async confirmTokenValidity(token: string): Promise<any> {
+		return await this._accService.checkTokenValidity(token);
 	}
 }

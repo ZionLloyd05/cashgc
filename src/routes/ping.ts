@@ -1,3 +1,4 @@
+import { AccountService } from "./../services/account.service";
 import { OrderItemService } from "./../services/orderItem.service";
 import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
@@ -58,6 +59,10 @@ export class PingRoute implements IRoute {
 		OrderItemService
 	>(OrderItemService);
 
+	private _accService: AccountService = DIContainer.resolve<AccountService>(
+		AccountService
+	);
+
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
 	}
@@ -77,8 +82,8 @@ export class PingRoute implements IRoute {
 		//     .getOne();
 		//   res.send(citem);
 		//   console.log(citem);
-		//   // res.send("ok");
-		
+		//   res.send("ok");
+
 		// } catch (error) {
 		//   console.log(error);
 		// }
@@ -260,8 +265,11 @@ export class PingRoute implements IRoute {
 		// };
 		// let response = await this._oService.processOrder(7, userp);
 
-		let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
+		// let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
+		let email = "alagbaladamilola@gmail.com";
+		let header = "localhost:3000";
+		let response = await this._accService.forgotPassword(email, header);
 
-		res.send({response});
+		res.send({ response });
 	}
 }
