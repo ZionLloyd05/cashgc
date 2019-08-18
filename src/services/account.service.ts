@@ -98,23 +98,23 @@ export class AccountService {
 		token: string,
 		newPassword: string
 	): Promise<any> {
-		// console.log(token);
-		// console.log(newPassword);
+		console.log(token);
+		console.log(newPassword);
 		const db = await DatabaseProvider.getConnection();
 
 		let user = await this.resetPasswordValidity(token);
 
 		if (user == null) return false;
 
-		// console.log(user);
-		// console.log(newPassword);
+		console.log(user);
+		console.log(newPassword);
 		user.password = this._userService.hashPassword(newPassword);
 		user.resetPasswordExpiryDate = undefined;
 		user.resetPasswordToken = undefined;
 
 		let userUpdated = await db.getRepository(User).save(user);
 
-		// console.log(userUpdated);
+		console.log(userUpdated);
 
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;
