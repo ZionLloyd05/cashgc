@@ -71,10 +71,10 @@
             <button class="kt-header-mobile__toolbar-toggler kt-header-mobile__toolbar-toggler--left"
                 id="kt_aside_mobile_toggler"><span></span></button>
 
-            <button class="kt-header-mobile__toolbar-toggler" id="kt_header_mobile_toggler"><span></span></button>
+            {{!-- <button class="kt-header-mobile__toolbar-toggler" id="kt_header_mobile_toggler"><span></span></button> --}}
 
-            <button class="kt-header-mobile__toolbar-topbar-toggler" id="kt_header_mobile_topbar_toggler"><i
-                    class="flaticon-more"></i></button>
+            <a href="/logout" class="kt-header-mobile__toolbar-topbar-toggler" id="kt_header_mobile_topbar_toggler"><i
+                    class="flaticon2-power"></i></a>
         </div>
     </div>
     <!-- end:: Header Mobile -->
@@ -166,7 +166,7 @@
                                     style="background-image: url('/assets/media/misc/head_bg_sm.jpg')">
                                     <div class="kt-user-card__wrapper">
                                         <div class="kt-user-card__pic">
-                                            <img alt="Pic" src="/assets/media/users/300_21.jpg" />
+                                            {{!-- <img alt="Pic" src="/assets/media/users/300_21.jpg" /> --}}
                                         </div>
                                         <div class="kt-user-card__details">
                                             <div class="kt-user-card__name">{{user.firstname}} {{user.lastname}}</div>
@@ -182,7 +182,7 @@
                                             <span class="kt-nav__link-text">My Profile</span>
                                         </a>
                                     </li>
-                                   
+
                                     <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
                                         <a href="custom/user/login-v1.html" target="_blank"
                                             class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
@@ -212,12 +212,9 @@
                         2019&nbsp;&copy;&nbsp;<a href="#" class="kt-link">CashGiftCode</a>
                     </div>
                     <div class="kt-footer__menu">
-                        <a href="/privacy" target="_blank"
-                            class="kt-footer__menu-link kt-link">Privacy</a>
-                        <a href="/privacy" target="_blank"
-                            class="kt-footer__menu-link kt-link">Terms</a>
-                        <a href="/privacy" target="_blank"
-                            class="kt-footer__menu-link kt-link">Condition</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Privacy</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Terms</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Condition</a>
                     </div>
                 </div>
                 <!-- end:: Footer -->
