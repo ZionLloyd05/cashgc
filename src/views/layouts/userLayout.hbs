@@ -147,51 +147,46 @@
                                 </form>
                             </div>
                         </div>
-
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
 
-                            <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
-                                <div class="kt-header__topbar-user">
-                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-                                    <span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
-                                    {{!-- <img alt="Pic" src="/assets/media/users/300_25.jpg" /> --}}
-                                    <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                                    <span
-                                        class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
-                                </div>
-                            </div>
+							<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
+								<div class="kt-header__topbar-user">
+									<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
+									<span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
+									<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+									<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
+									<span
+										class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
+								</div>
+							</div>
 
-                            <div
-                                class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
-                                <div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
-                                    style="background-image: url('/assets/media/misc/head_bg_sm.jpg')">
-                                    <div class="kt-user-card__wrapper">
-                                        <div class="kt-user-card__pic">
-                                            {{!-- <img alt="Pic" src="/assets/media/users/300_21.jpg" /> --}}
-                                        </div>
-                                        <div class="kt-user-card__details">
-                                            <div class="kt-user-card__name">{{user.firstname}} {{user.lastname}}</div>
-                                            <div class="kt-user-card__position">{{user.email}}</div>
-                                        </div>
-                                    </div>
-                                </div>
+							<div
+								class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
+								<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
+									style="background-image: url('/assets/media/head_bg_sm.jpg')">
+									<div class="kt-user-card__wrapper">
+										<div class="kt-user-card__pic">
+											<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+										</div>
+										<div class="kt-user-card__details">
+											<div class="kt-user-card__name" style="font-size:13px">{{user.firstname}} {{user.lastname}}</div>
+											{{!-- <div class="kt-user-card__position" style="font-size:13px">{{user.email}}</div> --}}
+										</div>
+									</div>
+								</div>
 
-                                <ul class="kt-nav kt-margin-b-10">
-                                    <li class="kt-nav__item">
-                                        <a href="/user/profile" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
-                                            <span class="kt-nav__link-text">My Profile</span>
-                                        </a>
-                                    </li>
+								<ul class="kt-nav kt-margin-b-10">
+									<li class="kt-nav__item">
+										<a href="/logout" class="kt-nav__link">
+											<span class="kt-nav__link-icon"><i class="flaticon2-power"></i></span>
+											<span class="kt-nav__link-text">Sign Out</span>
+										</a>
+									</li>
+								</ul>
+							</div>
 
-                                    <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
-                                        <a href="custom/user/login-v1.html" target="_blank"
-                                            class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
+						</div>
+						<!--end: User Bar -->
                         <!--end: User Bar -->
                         <!--begin:: Quick Panel Toggler -->
                         <div class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
