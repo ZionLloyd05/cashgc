@@ -34,14 +34,18 @@ export class AccountService {
 
 		//2. set reset token and expiry
 		user.resetPasswordToken = crypto.randomBytes(25).toString("hex");
-		user.resetPasswordExpiryDate = Date.now() + 900000; // 15 minutes from now
+
+		var now = new Date();
+		now.setMinutes(now.getMinutes() + 15); // timestamp
+		now = new Date(now); // Date object
+		user.resetPasswordExpiryDate = now; // 5 minutes from now
 
 		await db.getRepository(User).save(user);
 
 		console.log(user);
 
 		// 3. send token to email
-		const url = `${header}/account/reset-password/${user.resetPasswordToken}`;
+		const url = `${header}/account/reset/${user.resetPasswordToken}`;
 		const htmlContent = `<h3>Hello dear user,</h3><br/><p>Kindly click <a href="${url}"><b>here</b></a>, or copy and paste the link in your browser to reset your password,</p><br/>${url}<br/><p>From Cash GiftCode</p>`;
 		const textContent = `Hi dear user, click on the link attached to reset your password. ${url} , From Cash GiftCode`;
 
@@ -62,20 +66,24 @@ export class AccountService {
 	public async resetPasswordValidity(token: string): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 
+		var now = new Date();
+		now.setMinutes(now.getMinutes() + 1);
+		now = new Date(now);
+
 		let user = await db
-			.getRepository("user")
+			.getRepository(User)
 			.createQueryBuilder("user")
-			.where({ resetPasswordExpires: MoreThan(Date.now()) })
 			.where({ resetPasswordToken: token })
+			// .andWhere( 'resetPasswordExpires' > now )
 			.getOne();
 
-		if (!user) {
-			console.log("invalid");
+		let resetExpireTimeOut = user.resetPasswordExpiryDate;
+
+		if (resetExpireTimeOut > now) {
+			return user;
+		} else {
 			return null;
 		}
-
-		console.log("valid");
-		return user;
 	}
 
 	public async checkTokenValidity(token: string): Promise<any> {
@@ -90,25 +98,23 @@ export class AccountService {
 		token: string,
 		newPassword: string
 	): Promise<any> {
+		// console.log(token);
+		// console.log(newPassword);
 		const db = await DatabaseProvider.getConnection();
 
-		// let user = await db
-		// 	.getRepository(User)
-		// 	.createQueryBuilder("user")
-		// 	.where({ resetPasswordExpires: MoreThan(Date.now()) })
-		// 	.where({ resetPasswordToken: token })
-		// 	.getOne();
-
-		// if (!user) return false;
 		let user = await this.resetPasswordValidity(token);
 
 		if (user == null) return false;
 
+		// console.log(user);
+		// console.log(newPassword);
 		user.password = this._userService.hashPassword(newPassword);
 		user.resetPasswordExpiryDate = undefined;
 		user.resetPasswordToken = undefined;
 
 		let userUpdated = await db.getRepository(User).save(user);
+
+		// console.log(userUpdated);
 
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;

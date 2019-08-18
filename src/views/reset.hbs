@@ -44,21 +44,22 @@
                         </div>
 
                         <!--begin::Form-->
-                        <form class="kt-login-v2__form kt-form" action="/reset-password" autocomplete="off"
-                            id="forgotPassword" method="post">
+                        <form class="kt-login-v2__form kt-form" action="" autocomplete="off" id="forgotPassword"
+                            method="post">
                             <input type="hidden" name="_csrf" id="_csrf" value="{{ csrfToken }}">
                             <div class="form-group">
                                 <input class="form-control" type="password" placeholder="Enter new password"
-                                    name="password" autocomplete="off" id="pwd">
-                                <input class="form-control" type="password" placeholder="Confirm password"
-                                    name="cpassword" autocomplete="off" id="cpwd">
+                                    name="password" autocomplete="off" id="pwd" value="">
                             </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" placeholder="Confirm password"
+                                    name="cpassword" autocomplete="off" id="cpwd" value="">
+                            </div>
+                            <div class="invalid-feedback" id="invalid" style="display: block;"></div>
                             <!--begin::Action-->
                             <div class="kt-login-v2__actions">
-                                {{!-- <a href="#" class="kt-link kt-link--brand">
-                                    Reset Password
-                                </a> --}}
-                                <button type="submit" class="btn btn-brand btn-elevate btn-pill">Reset Password</button>
+                                <button type="submit" id="btnReset" class="btn btn-brand btn-elevate btn-pill">Reset
+                                    Password</button>
                             </div>
                             <!--end::Action-->
                         </form>
@@ -90,3 +91,17 @@
     </div>
 </div>
 <!-- end:: Page -->
+
+<script>
+    $('#btnReset').click(function (e) {
+        var pwd = $('#pwd').val();
+        var cpwd = $('#cpwd').val();
+
+        if (cpwd != pwd) {
+            e.preventDefault();
+            $('#invalid').html('Password does not match');
+            return false;
+        }
+
+    })
+</script>

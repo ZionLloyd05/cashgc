@@ -38,12 +38,14 @@ export class AccountRoute implements IRoute {
 
 	private async updatePassword(req: Request, res: Response) {
 		let token = req.params.token;
-		let newPassword = req.body.newPassword;
+		let newPassword = req.body.password;
 
 		let response = await this._userController.updateResetPassword(
 			token,
 			newPassword
 		);
-		console.log(response);
+		if (response == true) {
+			res.redirect("/signin");
+		}
 	}
 }
