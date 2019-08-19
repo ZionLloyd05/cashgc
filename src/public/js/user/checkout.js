@@ -86,6 +86,18 @@ var bindTableToData = function (response) {
 
 
 $(document).on('click', '#add', function () {
+
+    var currentQuantity = Number(cartQuantitySpan.attr('data-qty'))
+    var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'))
+
+    var supposedNewPrice = currentTotalPrice + Number($(this).attr('data-pr'))
+
+    if (supposedNewPrice > 300) {
+        console.log("cannot");
+        swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
+        return false;
+    }
+
     isTouched = true;
     var gcId = $(this).attr('data-gcc');
 
@@ -111,8 +123,6 @@ $(document).on('click', '#add', function () {
              * Re-calculate total qty and price
              */
 
-            var currentQuantity = Number(cartQuantitySpan.attr('data-qty'))
-            var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'))
 
             var newQuantity = currentQuantity + 1;
             var newPrice = currentTotalPrice + Number($(this).attr('data-pr'))
@@ -389,11 +399,11 @@ $("input[name='m_option_1']").on('click', function () {
 $("#triggerPay").on('click', function () {
     var totalAmount = Number($('#cartTotalAmount').attr("data-pr"))
 
-    if(totalAmount <= 0){
+    if (totalAmount <= 0) {
         swal("Your cart is empty", "", "error");
         return false;
     }
-    
+
     $("#optionModal").modal("hide")
     $('#statusModal').modal("show")
     var paymentOption = $("input[name='m_option_1']:checked").val();

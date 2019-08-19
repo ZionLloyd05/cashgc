@@ -50,7 +50,7 @@ function buildCodeCategory(data = []) {
     spinner.hide();
     storeBody.html(categoryBuilds);
 }
-
+// var totalForTransaction = 0;
 function addItemToCart(btnId, itemId) {
 
     var cart = document.getElementById('cart_no');
@@ -68,9 +68,16 @@ function addItemToCart(btnId, itemId) {
 
     qty = Number(qty);
 
-    if (qty < 1)
+    let supposeTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
+    // console.log(newTotalPrice);
+
+    if (qty < 1) {
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
-    else {
+        return false;
+    } else if (supposeTotalPrice > 300) {
+        swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
+        return false;
+    } else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
         console.log("newTotalPrice => " + newTotalPrice)
         totalPrice.textContent = newTotalPrice.toLocaleString();

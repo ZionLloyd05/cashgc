@@ -71,10 +71,10 @@
                             <div class="kt-widget-13__foot">
                                 <div class="form-group">
                                     <label>Upload Receipt</label>
-                                        <form id="orderForm">
-                                            <input type="file" class="file" id="customFile" name="image">
-                                            <input type="hidden" id="totalAmount" value="" name="amount">
-                                        </form>
+                                    <form id="orderForm">
+                                        <input type="file" class="file" id="customFile" name="image">
+                                        <input type="hidden" id="totalAmount" value="" name="amount">
+                                    </form>
                                     <span class="text-mute">
                                         On successful deposit, upload a snapshot of receipt as a proof of payment claims
                                     </span>
@@ -205,4 +205,6 @@
 
 <input type="hidden" name="" id="_csrf" value="{{csrfToken}}">
 {{!-- End of Modal --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script src="/dist/js/user/checkout.js"></script>
+{{!-- <script src="/js/user/checkout.js"></script> --}}
