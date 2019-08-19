@@ -1,3 +1,4 @@
+import { TransactionService } from './../services/transaction.service';
 import { Order } from './../models/Order';
 import { UserController } from "./../controllers/user.ctrl";
 import { GccController } from "./../controllers/gcc.ctrl";
@@ -46,6 +47,10 @@ export class UserRoute implements IRoute {
 	private _userController: UserController = DIContainer.resolve<UserController>(
 		UserController
 	);
+	
+	private _tService: TransactionService = DIContainer.resolve<
+		TransactionService
+	>(TransactionService);
 
 	private _paystackService: PaystackService = DIContainer.resolve<
 		PaystackService
@@ -143,6 +148,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/rate", this.getCurrentRate.bind(this));
 		router.post("/user/transfer", this.makeTransfer.bind(this));
 		router.post("/user/updatepassword", this.updatePassword.bind(this));
+		router.post("/user/canmaketransaction", this.canMakeTransaction.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -306,8 +312,8 @@ export class UserRoute implements IRoute {
 				payment_method: "paypal"
 			},
 			redirect_urls: {
-				return_url: "http://localhost:3000/user/payment-success",
-				cancel_url: "http://localhost:3000/user/payment-cancel"
+				return_url: `${req.headers.host}/user/payment-success`,
+				cancel_url: `${req.headers.host}/user/payment-cancel`
 			},
 			transactions: [
 				{
@@ -599,6 +605,20 @@ export class UserRoute implements IRoute {
 
 		return res.send({
 			status: "update",
+			data: response
+		})
+	}
+
+	public async canMakeTransaction(req: Request, res: Response){
+		
+		let currentAmount = Number(req.body.totalAmount);
+		let userId = req.user.id;
+
+		console.log(currentAmount);
+		let response = await this._tService.canMakeTransaction(userId, currentAmount);
+		console.log(response)
+		res.send({
+			status: "read",
 			data: response
 		})
 	}

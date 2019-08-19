@@ -309,8 +309,49 @@ $(document).on('click', '#minus', function () {
 })
 
 $(document).on('click', '#proceedBtn', function () {
-    $("#optionModal").modal("show")
+    var totalAmount = Number($('#cartTotalAmount').attr("data-pr"));
+
+    // check if transaction can be made
+    // fetch('/user/canmaketransaction', {
+    //         method: "POST",
+    //         body: totalAmount,
+    //         headers: {
+    //             "X-CSRF-TOKEN": csrfToken
+    //         }
+    //     })
+    //     .then(res => res.json())
+    //     .then(response => {
+    //         console.log(response.data)
+    //     })
+    var payload = {
+        totalAmount
+    }
+
+    $.ajax({
+        url: "/user/canmaketransaction",
+        method: "POST",
+        dataType: "json",
+        data: payload,
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            displayTransactionBox(response.data)
+        }
+    })
+
+    // 
 })
+
+var displayTransactionBox = function (canProceedWithTransaction) {
+    if (canProceedWithTransaction)
+        $("#optionModal").modal("show")
+    else {
+        console.log("error")
+        swal("Transacion quota reached for today", "Cannot go beyond $500 transaction per day", "error");
+        return false;
+    }
+}
 
 var initiatePayPalPayment = function () {
     var totalAmount = $('#cartTotalAmount').attr("data-pr")

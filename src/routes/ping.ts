@@ -268,10 +268,18 @@ export class PingRoute implements IRoute {
 		// let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
 		// let email = "alagbaladamilola@gmail.com";
 		// let header = "localhost:3000";
-		let token = "e552be23ad9196a5c146ef72f664b08fb9f0c8e9008a497434";
-		let pwd= 'Dami111';
-		let response = await this._accService.updatePassword(token, pwd);
+		// let token = "e552be23ad9196a5c146ef72f664b08fb9f0c8e9008a497434";
+		// let pwd= 'Dami111';
+		// let response = await this._accService.updatePassword(token, pwd);
 
-		res.send({ response });
+		// let transaction = await this._tService.getUserTransactionsWithinLast24Hours(
+		// 	2
+		// );
+		// let response = this._tService.totalAmountInTransactions(transaction);
+
+		// let response = await this._tService.canMakeTransaction(2, 100000);
+		// // res.send({ response });
+		// console.log(response)
+		// res.send({ response });
 	}
 }
