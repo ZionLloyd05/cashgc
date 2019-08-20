@@ -86,14 +86,15 @@ var bindTableToData = function (response) {
 
 
 $(document).on('click', '#add', function () {
+    const MAX_TRANSACTION_LIMIT = 300;
 
     var currentQuantity = Number(cartQuantitySpan.attr('data-qty'))
     var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'))
 
     var supposedNewPrice = currentTotalPrice + Number($(this).attr('data-pr'))
 
-    if (supposedNewPrice > 300) {
-        console.log("cannot");
+    if (supposedNewPrice > MAX_TRANSACTION_LIMIT) {
+        // console.log("cannot");
         swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
         return false;
     }
@@ -131,7 +132,7 @@ $(document).on('click', '#add', function () {
 
             cartQuantitySpan.attr('data-qty', newQuantity)
             cartTotalAmountSpan.attr('data-pr', newPrice)
-            console.log(data)
+            // console.log(data)
 
             var rwIdx = $(this).attr('data-idx');
             let table = $("#cartTbl").DataTable();
@@ -155,7 +156,7 @@ $(document).on('click', '#add', function () {
 })
 
 function reloadCartItem() {
-    console.log("reload cart item")
+    // console.log("reload cart item")
     // debugger
     fetch("/user/cartitem/", {
             method: 'GET',
@@ -298,9 +299,9 @@ $(document).on('click', '#minus', function () {
                 table.cell(currentRow, 0).data(rwIdx + 1) //this is to set the S/N field
                 table.draw(false)
             } else if (data.status === null) {
-                console.log("yea")
+                // console.log("yea")
                 var rwIdx = $(this).attr('data-idx');
-                console.log(rwIdx)
+                // console.log(rwIdx)
                 let table = $('#cartTbl').DataTable();
                 table.row(rwIdx).remove().draw(false);
             }
@@ -347,7 +348,7 @@ var displayTransactionBox = function (canProceedWithTransaction) {
     if (canProceedWithTransaction)
         $("#optionModal").modal("show")
     else {
-        console.log("error")
+        // console.log("error")
         swal("Transacion quota reached for today", "Cannot go beyond $500 transaction per day", "error");
         return false;
     }

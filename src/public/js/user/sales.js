@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   getExchangeRate();
 
   var csrfToken = $("#_csrf").val();
@@ -6,7 +6,7 @@ $(document).ready(function() {
   var postedCodes = [];
   var postedCodeIds = [];
 
-  $(document).on("click", "#verify", function(e) {
+  $(document).on("click", "#verify", function (e) {
     e.preventDefault();
     let btn = $(this);
     btn.addClass(
@@ -29,7 +29,7 @@ $(document).ready(function() {
       headers: {
         "X-CSRF-TOKEN": csrfToken
       },
-      success: function(res) {
+      success: function (res) {
         btn.removeClass(
           "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
         );
@@ -71,13 +71,14 @@ $(document).ready(function() {
             postedCodeIds.push(res.data.id);
           }
         }
-        console.log(postedCodes);
-        console.log(postedCodeIds);
+        // console.log(postedCodes);
+        // console.log(postedCodeIds);
+
       }
     });
   });
 
-  $(document).on("click", "#remove", function() {
+  $(document).on("click", "#remove", function () {
     var btn = $(this);
 
     var totalPriceSpan = $("#totalPrice2");
@@ -101,14 +102,14 @@ $(document).ready(function() {
       remove(postedCodeIds, codeId);
     }
 
-    console.log(postedCodes);
-    console.log(postedCodeIds);
+    // console.log(postedCodes);
+    // console.log(postedCodeIds);
 
     var parent = $(this).closest("#inputBody");
     parent.remove();
   });
 
-  $(document).on("click", "#addMore", function(e) {
+  $(document).on("click", "#addMore", function (e) {
     e.stopPropagation();
     var template = `
             <div id="inputBody" class="form-group">
@@ -116,7 +117,7 @@ $(document).ready(function() {
                     <input type="text" id="code" name="code" data-status="saint" class="form-control" placeholder="Enter Gift Code">
                     <div class="input-group-append">
                     <button class="btn btn-secondary" id="verify" type="button"><i
-                    class="fa fa-plus"></i>  <span class="kt-hidden-mobile">Redeem</span>   </button>
+                    class="fa fa-plus kt-hidden-mobile"></i>  <span class="">Redeem</span>   </button>
                     <button class="btn btn-secondary" data-code-pr="" id="remove" type="button"><i
                     class="fa fa-times"></i></button>
                 </div>
@@ -128,7 +129,7 @@ $(document).ready(function() {
     inputBody.append(template);
   });
 
-  $("#proceedBtn").click(function() {
+  $("#proceedBtn").click(function () {
     var codesToSell = postedCodeIds;
     var totalPrice = $("#totalPrice2").attr("data-pr2");
 
@@ -154,13 +155,13 @@ $(document).ready(function() {
       };
 
       fetch("/user/transaction", {
-        method: "POST",
-        body: JSON.stringify(transactionPayload),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(transactionPayload),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          }
+        })
         .then(res => res.json())
         .then(data => {
           btn.removeClass(
@@ -182,13 +183,13 @@ $(document).ready(function() {
       };
 
       fetch(`/user/transfer`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          }
+        })
         .then(res => res.json())
         .then(response => {
           var status = response.data.status;
@@ -209,7 +210,7 @@ $(document).ready(function() {
   });
 });
 
-var getExchangeRate = function() {
+var getExchangeRate = function () {
   $.ajax({
     url: "/user/rate",
     method: "GET",
@@ -217,7 +218,7 @@ var getExchangeRate = function() {
     header: {
       "X-CSRF-TOKEN": csrfToken
     },
-    success: function(response) {
+    success: function (response) {
       if (response.status === "read") {
         $("#nairaAmount").attr("data-rate", response.data.localrate);
       }
@@ -225,7 +226,7 @@ var getExchangeRate = function() {
   });
 };
 
-var remove = function(arr, element) {
+var remove = function (arr, element) {
   var idx = arr.indexOf(element);
   arr.splice(idx, 1);
 };

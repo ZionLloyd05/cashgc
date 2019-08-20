@@ -53,6 +53,8 @@ function buildCodeCategory(data = []) {
 // var totalForTransaction = 0;
 function addItemToCart(btnId, itemId) {
 
+    const MAX_TRANSACTION_LIMIT = 300;
+
     var cart = document.getElementById('cart_no');
     var totalPrice = document.getElementById('totalPrice');
     var totalPriceValue = totalPrice.getAttribute("data-pr");
@@ -74,18 +76,18 @@ function addItemToCart(btnId, itemId) {
     if (qty < 1) {
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
         return false;
-    } else if (supposeTotalPrice > 300) {
+    } else if (supposeTotalPrice > MAX_TRANSACTION_LIMIT) {
         swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
         return false;
     } else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
-        console.log("newTotalPrice => " + newTotalPrice)
+        // console.log("newTotalPrice => " + newTotalPrice)
         totalPrice.textContent = newTotalPrice.toLocaleString();
         totalPrice.setAttribute("data-pr", newTotalPrice)
-        console.log("totalPrice => " + totalPrice.textContent)
+        // console.log("totalPrice => " + totalPrice.textContent)
 
         var newCartCount = Number(cart.textContent) + qty;
-        console.log("newCartCount => " + newCartCount)
+        // console.log("newCartCount => " + newCartCount)
 
         cart.textContent = newCartCount.toString();
 
@@ -109,7 +111,7 @@ function addItemToCart(btnId, itemId) {
 }
 
 function reloadCartItem() {
-    console.log("reload cart item")
+    // console.log("reload cart item")
     // debugger
     fetch("/user/cartitem/", {
             method: 'GET',
@@ -127,7 +129,7 @@ function reloadCartItem() {
 }
 
 function prepareCartInStore(data) {
-    console.log("preparing in store")
+    // console.log("preparing in store")
     let {
         items,
         totalQuantity,

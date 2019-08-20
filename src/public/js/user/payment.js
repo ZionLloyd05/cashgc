@@ -54,7 +54,7 @@ var formatData = function (data) {
             obj.push(payload)
         })
     })
-    console.log(obj)
+    // console.log(obj)
     return obj
 }
 
