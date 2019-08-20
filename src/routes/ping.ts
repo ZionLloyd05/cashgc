@@ -277,9 +277,9 @@ export class PingRoute implements IRoute {
 		// );
 		// let response = this._tService.totalAmountInTransactions(transaction);
 
-		// let response = await this._tService.canMakeTransaction(2, 100000);
+		let response = await this._tService.canMakeTransaction(4, 100);
 		// // res.send({ response });
-		// console.log(response)
-		// res.send({ response });
+		console.log(response);
+		res.send({ response });
 	}
 }

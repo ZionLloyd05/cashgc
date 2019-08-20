@@ -18,7 +18,7 @@ export class TransactionService {
 	 *
 	 */
 	constructor() {
-		this.MAXIMUM_TRANSACTION_AMOUNT = 100;
+		this.MAXIMUM_TRANSACTION_AMOUNT = 500;
 	}
 
 	public async createTransaction(payload: any): Promise<Transaction> {
@@ -293,16 +293,16 @@ export class TransactionService {
 	}
 
 	public async canMakeTransaction(userId: number, currentTransactionAmount: number): Promise<Boolean> {
-		// console.log(currentTransactionAmount);
+		console.log(currentTransactionAmount);
 		let transactions = await this.getUserTransactionsWithinLast24Hours(userId);
-		// console.log(transactions)
+		console.log(transactions)
 		let totalTransactionAmount = this.totalAmountInTransactions(transactions);
-		// console.log(totalTransactionAmount)
+		console.log(totalTransactionAmount)
 		let currentTransactionAmountInNaira = await this._rService.convertDollarToNaira(currentTransactionAmount);
 		let supposedTransactionTotal = totalTransactionAmount + currentTransactionAmountInNaira;
-		// console.log(supposedTransactionTotal);
+		console.log(supposedTransactionTotal);
 		let maxAmount = await this.getDollar(this.MAXIMUM_TRANSACTION_AMOUNT);
-		// console.log(maxAmount)
+		console.log(maxAmount)
 		if(supposedTransactionTotal > maxAmount)
 			return false;
 		else
