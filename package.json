@@ -43,6 +43,7 @@
     "gulp-javascript-obfuscator": "^1.1.6",
     "gulp-uglify-es": "^1.0.4",
     "hbs": "^4.0.4",
+    "internet-available": "^1.0.0",
     "inversify": "^5.0.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",

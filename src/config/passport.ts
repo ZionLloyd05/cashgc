@@ -23,7 +23,7 @@ export class PassportConfig {
 				.then(user => {
 					let userDto: IUserDTO;
 					userDto = { ...user };
-					console.log(userDto);
+					// console.log(userDto);
 					done(null, userDto);
 				})
 				.catch(err => done(err, null));

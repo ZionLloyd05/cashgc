@@ -3,6 +3,7 @@ import { DatabaseProvider } from "./database";
 import config from "./config";
 import * as express from "express";
 import * as paypal from "paypal-rest-sdk";
+import * as internetAvailable from "internet-available";
 
 async function startServer() {
 	/**
@@ -49,6 +50,17 @@ async function startServer() {
 		console.log("error");
 		console.log(error);
 	}
+
+	internetAvailable({
+		timeout: 4000,
+		retries: 10
+	})
+		.then(() => {
+			console.log("Internet available");
+		})
+		.catch(() => {
+			console.log("No internet");
+		});
 }
 
 startServer();

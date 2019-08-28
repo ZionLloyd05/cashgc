@@ -1,6 +1,6 @@
-import { AccountService } from './../services/account.service';
-import { OrderItemService } from './../services/orderItem.service';
-import { OrderService } from './../services/order.service';
+import { AccountService } from "./../services/account.service";
+import { OrderItemService } from "./../services/orderItem.service";
+import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
 import { TransactionService } from "./../services/transaction.service";
 import { CartItem } from "./../models/CartItem";
@@ -34,7 +34,9 @@ export class UserController {
 		OrderItemService
 	>(OrderItemService);
 
-	private _accService: AccountService = DIContainer.resolve<AccountService>(AccountService);
+	private _accService: AccountService = DIContainer.resolve<AccountService>(
+		AccountService
+	);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -59,12 +61,17 @@ export class UserController {
 		return await this._userService.getById(id);
 	}
 	public async getAllUsers(): Promise<IUserDTO[]> {
-		return await this._userService.getAll();
+		let users = await this._userService.getAll();
+		return users;
 	}
 
 	public async updatePassword(payload: any): Promise<any> {
-		const {currentPassword, newPassword, email} = payload;
-		return await this._userService.updatePassword(email, currentPassword, newPassword);
+		const { currentPassword, newPassword, email } = payload;
+		return await this._userService.updatePassword(
+			email,
+			currentPassword,
+			newPassword
+		);
 	}
 
 	/**
@@ -179,7 +186,7 @@ export class UserController {
 	}
 
 	public async getWallet(userId: number): Promise<any> {
-		return this._userService.getWallet(userId);
+		return await this._userService.getWallet(userId);
 	}
 
 	/**
@@ -223,7 +230,7 @@ export class UserController {
 	 * Order Methods
 	 */
 	public async createOrder(orderPayload): Promise<any> {
-		return await this._oService.scaffoldOrder(orderPayload)
+		return await this._oService.scaffoldOrder(orderPayload);
 	}
 
 	public async toggleOrderStatus(orderId: number): Promise<any> {
@@ -267,4 +274,8 @@ export class UserController {
 	public async confirmTokenValidity(token: string): Promise<any> {
 		return await this._accService.checkTokenValidity(token);
 	}
+
+	/**
+	 * Bank Account and Wallet Methods
+	 */
 }

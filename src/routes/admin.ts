@@ -1,4 +1,6 @@
-import { User } from './../models/User';
+import { PaystackService } from './../services/paystack.service';
+import { UserService } from './../services/user.service';
+import { User } from "./../models/User";
 import { GiftCodeCategory } from "./../models/GiftCodeCategory";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
@@ -19,6 +21,14 @@ export class AdminRoute implements IRoute {
 	private _userController: UserController = DIContainer.resolve<UserController>(
 		UserController
 	);
+	private _userService: UserService = DIContainer.resolve<UserService>(
+		UserService
+	);
+	
+	private _paystackService: PaystackService = DIContainer.resolve<
+	PaystackService
+	>(PaystackService);
+
 
 	private upload: any;
 	private storage: any;
@@ -90,6 +100,12 @@ export class AdminRoute implements IRoute {
 		router.get("/admin/codesbytransaction", this.getAllCodes.bind(this));
 
 		/**
+		 * Users Routes
+		 */
+		router.get("/admin/users", this.serveUserView.bind(this));
+		router.get("/admin/user", this.getUsers.bind(this));
+
+		/**
 		 * Rates Routes
 		 */
 		router.get("/admin/exchange-rates", this.serveRateView.bind(this));
@@ -104,6 +120,37 @@ export class AdminRoute implements IRoute {
 		router.get("/admin/orders", this.serveOrdersView.bind(this));
 		router.get("/admin/order", this.getOrderOperation.bind(this));
 		router.post("/admin/order", this.processOrder.bind(this));
+
+		/**
+		 * Profile Routes
+		 */
+		router.get("/admin/profile", this.serveProfileView.bind(this));
+
+		/**
+		 * Bank Account Route
+		 */
+		router.get("/admin/bkaccount", this.getAccount.bind(this));
+		router.post("/admin/bkaccount", this.saveAccount.bind(this));
+
+			/**
+		 * Bitcoin Wallet Route
+		 */
+		router.get("/admin/wallet", this.getWallet.bind(this));
+		router.post("/admin/wallet", this.saveWallet.bind(this));
+
+		/**
+		 * Miscellenous Route
+		 */
+		router.get("/admin/banks", this.fetchBanks.bind(this));
+	}
+
+	private serveUserView(req: Request, res: Response) {
+		res.render("admin/user", {
+			title: "User",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isUser: true
+		});
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -160,10 +207,19 @@ export class AdminRoute implements IRoute {
 		});
 	}
 
+	private serveProfileView(req: Request, res: Response) {
+		res.render("admin/profile", {
+			title: "Profile",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isRate: true
+		});
+	}
+
 	private async saveCategory(req: Request, res: Response) {
-		console.log("here");
-		console.log(req.body);
-		console.log(req.body.id == "null");
+		// console.log("here");
+		// console.log(req.body);
+		// console.log(req.body.id == "null");
 		if (req.body.id && req.body.id == "null") {
 			// console.log("")
 			console.log("creating category");
@@ -270,14 +326,13 @@ export class AdminRoute implements IRoute {
 
 	private async saveRate(req: Request, res: Response) {
 		let rate = await this._userController.saveRate(req.body);
-	
-		if(req.body.id == 0){
+
+		if (req.body.id == 0) {
 			return res.send({
 				status: "create",
 				data: rate
 			});
-		}
-		else if(req.body.id != 0){
+		} else if (req.body.id != 0) {
 			return res.send({
 				status: "update",
 				data: rate
@@ -285,31 +340,63 @@ export class AdminRoute implements IRoute {
 		}
 	}
 
-	private async toggleStatus(req: Request, res: Response) {
-		let {isactive , id} = req.body
+	private async fetchBanks(req: Request, res: Response) {
+		const banks = await this._paystackService.fetchBanks();
+		return res.send({
+			status: "read",
+			data: banks
+		});
+	}
 
-		if(isactive === true){
+	private async saveAccount(req: Request, res: Response) {
+		let account = { ...req.body };
+
+		account.user = req.user.id;
+
+		let newBankacc = await this._userController.saveAccount(account);
+
+		return res.send({
+			status: "save",
+			data: newBankacc
+		});
+	}
+
+	private async getAccount(req: Request, res: Response) {
+		const uacc = await this._userController.getAccount(req.user.id);
+
+		return res.send({
+			status: "read",
+			data: uacc
+		});
+	}
+	
+
+
+	private async toggleStatus(req: Request, res: Response) {
+		let { isactive, id } = req.body;
+
+		if (isactive === true) {
 			let response = await this._userController.deactiveRate(id);
-			
+
 			return res.send({
 				status: "true",
 				data: response
-			})
-		}else if(isactive === false){
+			});
+		} else if (isactive === false) {
 			let response = await this._userController.activateRate(id);
 
-			if(typeof response === "string"){
+			if (typeof response === "string") {
 				// an error is returned
 				return res.send({
 					status: "false",
 					data: response
-				})
+				});
 			}
 
 			return res.send({
 				status: "true",
 				data: response
-			})
+			});
 		}
 	}
 
@@ -321,24 +408,24 @@ export class AdminRoute implements IRoute {
 		return res.send({
 			status: "true",
 			data: response
-		})
+		});
 	}
 
 	private async getOrderOperation(req: Request, res: Response) {
-		if(req.query && req.query.id){
+		if (req.query && req.query.id) {
 			// get order by id function
-			let order = await this._userController.getOrderById(req.query.id)
+			let order = await this._userController.getOrderById(req.query.id);
 			return res.send({
 				status: "true",
 				data: order
-			})
+			});
 		}
 
 		let orders = await this._userController.getAllOrder();
 		return res.send({
 			status: "true",
 			data: orders
-		})
+		});
 	}
 
 	private async processOrder(req: Request, res: Response) {
@@ -346,12 +433,45 @@ export class AdminRoute implements IRoute {
 
 		let user = new User();
 		user.id = uid;
-		
+
 		let response = await this._userController.processOrder(tid, user);
 
 		return res.send({
 			status: "true",
 			data: response
-		})
+		});
 	}
+
+	private async getUsers(req: Request, res: Response) {
+		let response = await this._userController.getAllUsers();
+	
+		res.send({
+			status: "read",
+			data: response
+		});
+	}
+
+	
+	private async saveWallet(req: Request, res: Response) {
+		let wallet = { ...req.body };
+
+		wallet.user = req.user.id;
+
+		let newWallet = await this._userController.saveWallet(wallet);
+
+		return res.send({
+			status: "save",
+			data: newWallet
+		});
+	}
+
+	private async getWallet(req: Request, res: Response) {
+		const uwallet = await this._userController.getWallet(req.user.id);
+
+		return res.send({
+			status: "read",
+			data: uwallet
+		});
+	}
+
 }

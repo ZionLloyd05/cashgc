@@ -1,6 +1,14 @@
 var spinner = $('#spinner');
 $(document).ready(function () {
     loadCodeCategories();
+    // onlineCheck().then((res) => {
+    //     })
+    //     .catch(err => {
+    //         swal("You're not connected", "Click ok to reload the page", "error")
+    //             .then(val => {
+    //                 window.location.reload();
+    //             })
+    //     })
     // spinner.show();
 })
 
@@ -9,6 +17,25 @@ var csrfToken = $('#_csrf').val();
 
 var cartItemTotal = $('#cartItemTotal');
 var cartItemBody = $('#cartItemBody');
+
+
+var onlineCheck = function () {
+    const proxyURL = "https://cors-anywhere.herokuapp.com/";
+    const requestURL = "https://res.cloudinary.com/zionlloyd/image/upload/v1566997408/Date.png";
+    let xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+        xhr.onload = () => {
+            // Set online status
+            resolve(true);
+        };
+        xhr.onerror = () => {
+            // Set online status
+            reject(false);
+        };
+        xhr.open('GET', proxyURL + requestURL, true);
+        xhr.send();
+    });
+}
 
 
 var loadCodeCategories = function () {

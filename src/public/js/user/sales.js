@@ -1,5 +1,7 @@
 $(document).ready(function () {
   getExchangeRate();
+  userHasBankDetailsSet();
+  userHasBitcoinWalletSet();
 
   var csrfToken = $("#_csrf").val();
 
@@ -102,9 +104,6 @@ $(document).ready(function () {
       remove(postedCodeIds, codeId);
     }
 
-    // console.log(postedCodes);
-    // console.log(postedCodeIds);
-
     var parent = $(this).closest("#inputBody");
     parent.remove();
   });
@@ -138,11 +137,27 @@ $(document).ready(function () {
       return false;
     }
 
+    var paymentOption = $("input[name='m_option_1']:checked").val();
+
+    // checking needed prerequisite for successful transaction
+    if (paymentOption == "bitcoin") {
+      var bitcoinWallet = $("#hasBitcoinSet").val();
+      if (bitcoinWallet == "") {
+        swal("Your Bitcoin wallet has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
+    } else if (paymentOption == "bank") {
+      var bankAccount = $("#hasAccountSet").val();
+      if (bankAccount == "") {
+        swal("Your Bank account has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
+    }
+
     var btn = $(this);
     btn.addClass(
       "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
     );
-    var paymentOption = $("input[name='m_option_1']:checked").val();
 
     if (paymentOption == "bitcoin") {
       $("#proceedBtn").attr("disabled", true);
@@ -230,3 +245,35 @@ var remove = function (arr, element) {
   var idx = arr.indexOf(element);
   arr.splice(idx, 1);
 };
+
+var userHasBankDetailsSet = function () {
+  $.ajax({
+    url: "/user/isbankaccountset",
+    method: "GET",
+    dataType: "json",
+    header: {
+      "X-CSRF-TOKEN": csrfToken
+    },
+    success: function (response) {
+      if (response.data != null) {
+        $('#hasAccountSet').val(response.data.number);
+      }
+    }
+  });
+}
+
+var userHasBitcoinWalletSet = function () {
+  $.ajax({
+    url: "/user/isbtcset",
+    method: "GET",
+    dataType: "json",
+    header: {
+      "X-CSRF-TOKEN": csrfToken
+    },
+    success: function (response) {
+      if (response.data != null) {
+        $('#hasBitcoinSet').val(response.data.wid);
+      }
+    }
+  });
+}

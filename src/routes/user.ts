@@ -149,7 +149,10 @@ export class UserRoute implements IRoute {
 		router.post("/user/transfer", this.makeTransfer.bind(this));
 		router.post("/user/updatepassword", this.updatePassword.bind(this));
 		router.post("/user/canmaketransaction", this.canMakeTransaction.bind(this));
+		router.get("/user/isbtcset", this.isBitCoinSet.bind(this));
+		router.get("/user/isbankaccountset", this.isBankAccountSet.bind(this));
 	}
+
 
 	private serveDashboardView(req: Request, res: Response) {
 		res.render("user/store", {
@@ -601,7 +604,7 @@ export class UserRoute implements IRoute {
 
 	public async updatePassword(req: Request, res: Response) {
 		let response = await this._userController.updatePassword(req.body);
-		console.log(response);
+		// console.log(response);
 
 		return res.send({
 			status: "update",
@@ -614,12 +617,33 @@ export class UserRoute implements IRoute {
 		let currentAmount = Number(req.body.totalAmount);
 		let userId = req.user.id;
 
-		console.log(currentAmount);
+		// console.log(currentAmount);
 		let response = await this._tService.canMakeTransaction(userId, currentAmount);
-		console.log(response)
+		// console.log(response)
 		res.send({
 			status: "read",
 			data: response
+		})
+	}
+
+	
+	private async isBitCoinSet(req: Request, res: Response){
+		let userId = req.user.id;
+		let wallet = await this._userController.getWallet(userId);
+	
+		res.send({
+			status: "read",
+			data: wallet
+		})
+	}
+
+	private async isBankAccountSet(req: Request, res: Response) {
+		let userId = req.user.id;
+		let account = await this._userController.getAccount(userId);
+
+		res.send({
+			status: "read",
+			data: account
 		})
 	}
 

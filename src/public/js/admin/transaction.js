@@ -57,17 +57,20 @@ var bindTableToData = function (response) {
         }, {
             data: "payment",
             render: function (payment) {
+
                 if (payment == 0) {
                     return "Paypal"
                 } else if (payment == 1) {
                     return "Paystack"
                 } else if (payment == 2) {
                     return "Bitcoin"
+                } else if (payment == 3) {
+                    return "Bank"
                 }
             }
         }, {
             data: "id",
-            render: function (user, type, row, meta) {
+            render: function (id, type, row, meta) {
                 if (row.user && row.user.firstname && row.user.lastname)
                     return `${row.user.firstname} ${row.user.lastname}`
             }
@@ -79,21 +82,27 @@ var bindTableToData = function (response) {
         }, {
             data: "id",
             render: function (id, type, row, meta) {
-                if (row.payment == 2) {
-                    return `
-                        <span style="overflow: visible; position: relative; width: 110px;">
-                            <a id="approve" data-id=${id} data-idx=${meta.row}
-                            title="Approve Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
-                            <a title="Decline" id="decline" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
-                            <a data-userid=${row.user.id} title="View User Wallet" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewWallet"><i class="la la-eye"></i></a>
-                        </span>
-                    `
-                } else {
+                if (row.payment == 2 && row.type == 1) {
+                    //bitcoin transaction
                     return `
                     <span style="overflow: visible; position: relative; width: 110px;">
-                         <a title="Decline" id="decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a>
+                        <a id="approvebtc" data-id=${id} data-idx=${meta.row}
+                        title="Approve Bitcoin Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
+                        <a title="Decline Bitcoin Transaction" id="declinebtc" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
+                        <a data-userid=${row.user.id} title="View User Wallet" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewWallet"><i class="la la-eye"></i></a>
                     </span>
-                    `
+                `
+                } else if (row.payment == 3 && row.type == 0) {
+                    //bank order transaction
+                    if (row.status == 2) {
+                        return `
+                            <a href="/admin/orders">Process Transaction</a>
+                        `
+                    } else {
+                        return 'Processed'
+                    }
+                } else {
+                    return '-'
                 }
             }
         }]
@@ -104,7 +113,7 @@ var bindTableToData = function (response) {
 $(document).on('click', '#viewWallet', function (e) {
     e.preventDefault();
     var userId = $(this).attr('data-userid')
-    console.log(userId)
+    // console.log(userId)
 
     $.ajax({
         url: `/admin/wallet/${userId}`,
@@ -120,7 +129,7 @@ $(document).on('click', '#viewWallet', function (e) {
 
 })
 
-$(document).on('click', '#approve', function (e) {
+$(document).on('click', '#approvebtc', function (e) {
 
     var transactId = $(this).attr("data-tid");
     var rwIdx = $(this).attr("data-idx");
@@ -142,7 +151,7 @@ $(document).on('click', '#approve', function (e) {
     })
 })
 
-$(document).on('click', '#decline', function (e) {
+$(document).on('click', '#declinebtc', function (e) {
 
     var transactId = $(this).attr("data-tid")
     var rwIdx = $(this).attr("data-idx");
@@ -188,6 +197,7 @@ function updateTableRow(data, rwIdx) {
     tempData["status"] = data.status;
     tempData["payment"] = data.payment;
     tempData["user"] = data.user;
+    tempData["amount"] = data.amount;
 
     table.row(parseInt(rwIdx)).data(tempData) //this is to update the data in the row cells
     var currentRow = table.row(rwIdx).node()
@@ -196,10 +206,11 @@ function updateTableRow(data, rwIdx) {
 }
 
 function displayUserWallet(data) {
-    if (data[0]) {
+    $("#modalBody").empty();
+    if (data) {
         $("#modalBody").append(`
             <div class="input-group input-group-sm">
-                <input type="text" class="form-control" value="${data[0].wid}" id="id_${data[0].id}" readonly>
+                <input type="text" class="form-control" value="${data.wid}" id="id_${data.id}" readonly>
                 <div class="input-group-append">
                     <button class="btn btn-primary btnCopy" type="button" id="btnCopy">Copy</button>
                 </div>

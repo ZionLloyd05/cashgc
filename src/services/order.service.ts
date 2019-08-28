@@ -101,6 +101,7 @@ export class OrderService {
 		};
 
 		let newOrderResponse = await this.create(orderPayload, payload.receiptPath);
+		console.log(newOrderResponse);
 
 		if (typeof newOrderResponse === "string") {
 			return newOrderResponse;

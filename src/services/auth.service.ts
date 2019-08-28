@@ -33,12 +33,12 @@ export class AuthService {
 		// console.log("here" + Object.keys(admin).length + " " + entity);
 		if (admin && admin != null && entity == "user") {
 			res.redirect("/admin");
-			console.log("an admin");
+			// console.log("an admin");
 		} else if ((admin == undefined || admin == null) && entity == "admin") {
-			console.log("thief");
+			// console.log("thief");
 			res.redirect("/logout");
 		} else {
-			console.log("none");
+			// console.log("none");
 			next();
 		}
 		// if (admin && admin != null) {

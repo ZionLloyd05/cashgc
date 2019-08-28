@@ -1,4 +1,4 @@
-import { Wallet } from './../models/Wallet';
+import { Wallet } from "./../models/Wallet";
 import { BankAccount } from "../models/BankAccount";
 import { CartItem } from "./../models/CartItem";
 import { GCCService } from "./gcc.service";
@@ -68,7 +68,7 @@ export class UserService {
 		userId: number,
 		qty: number
 	): Promise<any> {
-		console.log("trying to add to cart");
+		// console.log("trying to add to cart");
 		const db = await DatabaseProvider.getConnection();
 		const cartRepo = db.getRepository(CartItem);
 
@@ -79,10 +79,10 @@ export class UserService {
 			relations: ["giftCodeCategory"],
 			where: { giftCodeCategory: gcccategory, user: user }
 		});
-		console.log(cartItemInDb);
+		// console.log(cartItemInDb);
 
 		if (cartItemInDb && cartItemInDb != null) {
-			console.log("found the cart item in db");
+			// console.log("found the cart item in db");
 			cartItemInDb.quantity += qty;
 			cartItemInDb.total += gcccategory.sellingPrice * qty;
 			await cartRepo.save(cartItemInDb);
@@ -90,7 +90,7 @@ export class UserService {
 			return cartItemInDb;
 		}
 
-		console.log("its a new item, adding a new row of item");
+		// console.log("its a new item, adding a new row of item");
 		let cartItem = new CartItem();
 		cartItem.quantity = qty;
 		cartItem.giftCodeCategory = gcccategory;
@@ -102,9 +102,9 @@ export class UserService {
 	}
 
 	public async removeFromCart(gccId: number, userId: number): Promise<any> {
-		console.log("trying to remove to cart");
-		console.log(gccId);
-		console.log(userId);
+		// console.log("trying to remove to cart");
+		// console.log(gccId);
+		// console.log(userId);
 		const db = await DatabaseProvider.getConnection();
 		const cartRepo = db.getRepository(CartItem);
 
@@ -115,13 +115,13 @@ export class UserService {
 			relations: ["giftCodeCategory"],
 			where: { giftCodeCategory: gcccategory, user: user }
 		});
-		console.log(cartItemInDb);
+		// console.log(cartItemInDb);
 
 		if (cartItemInDb && cartItemInDb != null) {
 			cartItemInDb.quantity -= 1;
 			cartItemInDb.total -= gcccategory.sellingPrice;
 			if (cartItemInDb.quantity == 0) {
-				console.log("removing entity");
+				// console.log("removing entity");
 				await cartRepo.remove(cartItemInDb);
 				return null;
 			}
@@ -131,7 +131,7 @@ export class UserService {
 	}
 
 	public async clearCart(userId: number) {
-		console.log("clearing cart");
+		// console.log("clearing cart");
 		const db = await DatabaseProvider.getConnection();
 		try {
 			await db
@@ -141,7 +141,7 @@ export class UserService {
 				.where("user", { user: userId })
 				.execute();
 		} catch (ex) {
-			console.log(ex);
+			// console.log(ex);
 		}
 	}
 
@@ -193,7 +193,7 @@ export class UserService {
 				if (isValid) {
 					userFound = user;
 				}
-			}else{
+			} else {
 				return null;
 			}
 		});
@@ -201,13 +201,17 @@ export class UserService {
 		userDto = { ...userFound };
 		return userDto;
 	}
-	
-	public async updatePassword(email: string, currentPassword: string, newPassword: string): Promise<any> {
+
+	public async updatePassword(
+		email: string,
+		currentPassword: string,
+		newPassword: string
+	): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 
 		let user = await this.authenticate(email, currentPassword);
-		console.log(user);
-		if(Object.keys(user).length <= 0){
+		// console.log(user);
+		if (Object.keys(user).length <= 0) {
 			return "incorrect credentials";
 		}
 
@@ -219,7 +223,7 @@ export class UserService {
 
 		await db.getRepository(User).save(updatedUser);
 
-		console.log(updatedUser);
+		// console.log(updatedUser);
 
 		return "updated";
 	}
@@ -264,9 +268,11 @@ export class UserService {
 		const db = await DatabaseProvider.getConnection();
 		const walletRepo = await db.getRepository(Wallet);
 
-		const uwallet = await walletRepo.find({
+		const uwallet = await walletRepo.findOne({
 			where: { user: userId }
 		});
+
+		// console.log(uwallet);
 
 		return uwallet;
 	}

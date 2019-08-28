@@ -20,17 +20,17 @@ export class AccountService {
 			where: { email: email }
 		});
 
-		console.log(user);
+		// console.log(user);
 
 		let error = "";
 
 		if (!user) {
-			console.log("false");
+			// console.log("false");
 			error = "Account does not exist";
 			return error;
 		}
 
-		console.log("true");
+		// console.log("true");
 
 		//2. set reset token and expiry
 		user.resetPasswordToken = crypto.randomBytes(25).toString("hex");
@@ -42,7 +42,7 @@ export class AccountService {
 
 		await db.getRepository(User).save(user);
 
-		console.log(user);
+		// console.log(user);
 
 		// 3. send token to email
 		const url = `${header}/account/reset/${user.resetPasswordToken}`;
@@ -56,7 +56,7 @@ export class AccountService {
 			textContent
 		};
 
-		console.log(payload);
+		// console.log(payload);
 
 		await this.sendPwdEmail(payload);
 
@@ -98,23 +98,23 @@ export class AccountService {
 		token: string,
 		newPassword: string
 	): Promise<any> {
-		console.log(token);
-		console.log(newPassword);
+		// console.log(token);
+		// console.log(newPassword);
 		const db = await DatabaseProvider.getConnection();
 
 		let user = await this.resetPasswordValidity(token);
 
 		if (user == null) return false;
 
-		console.log(user);
-		console.log(newPassword);
+		// console.log(user);
+		// console.log(newPassword);
 		user.password = this._userService.hashPassword(newPassword);
 		user.resetPasswordExpiryDate = undefined;
 		user.resetPasswordToken = undefined;
 
 		let userUpdated = await db.getRepository(User).save(user);
 
-		console.log(userUpdated);
+		// console.log(userUpdated);
 
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;

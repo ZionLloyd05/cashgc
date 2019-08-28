@@ -12,6 +12,7 @@ require("reflect-metadata");
 const database_1 = require("./database");
 const config_1 = require("./config");
 const paypal = require("paypal-rest-sdk");
+const internetAvailable = require("internet-available");
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         /**
@@ -54,6 +55,16 @@ function startServer() {
             console.log("error");
             console.log(error);
         }
+        internetAvailable({
+            timeout: 4000,
+            retries: 10
+        })
+            .then(() => {
+            console.log("Internet available");
+        })
+            .catch(() => {
+            console.log("No internet");
+        });
     });
 }
 startServer();

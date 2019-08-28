@@ -54,6 +54,8 @@ changePwdForm.validate({
 $("#changePwdForm").submit(function (e) {
     e.preventDefault();
 
+    var csrfToken = $('#_csrf').val();
+
     if (changePwdForm.valid()) {
 
         var btn = $('#btnChangePwd');
@@ -190,8 +192,10 @@ $('#updateInfoForm').submit(function (e) {
 })
 
 var loadBanks = function () {
+
+    var csrfToken = $('#_csrf').val();
     $.ajax({
-        url: '/user/banks',
+        url: '/admin/banks',
         method: "GET",
         dataType: "json",
         header: {
@@ -206,6 +210,7 @@ var loadBanks = function () {
 
 var bindDataToSelect = function (banks) {
     var bankSelect = $('#bankname');
+    $('#bankname').empty();
     banks.forEach(bank => {
         bankSelect.append(
             `
@@ -257,7 +262,7 @@ $('#bankAccountFrm').submit(function (e) {
         }
 
         $.ajax({
-            url: "/user/bkaccount",
+            url: "/admin/bkaccount",
             method: "POST",
             dataType: "json",
             data: payload,
@@ -273,8 +278,10 @@ $('#bankAccountFrm').submit(function (e) {
 })
 
 var loadBankInfo = function () {
+
+    var csrfToken = $('#_csrf').val();
     $.ajax({
-        url: "/user/bkaccount",
+        url: "/admin/bkaccount",
         method: "GET",
         dataType: "json",
         headers: {
@@ -323,7 +330,7 @@ $('#walletFrm').submit(function (e) {
 
 
         $.ajax({
-            url: "/user/wallet",
+            url: "/admin/wallet",
             method: "POST",
             dataType: "json",
             data: payload,
@@ -340,15 +347,16 @@ $('#walletFrm').submit(function (e) {
 
 
 var loadWalletInfo = function () {
+
+    var csrfToken = $('#_csrf').val();
     $.ajax({
-        url: "/user/wallet",
+        url: "/admin/wallet",
         method: "GET",
         dataType: "json",
         headers: {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (res) {
-            console.log(res);
             if (res.data && res.data.lenght != 0) {
                 $('#wallet').val(res.data.wid);
                 $('#w_id').val(res.data.id);
