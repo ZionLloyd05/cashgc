@@ -119,7 +119,7 @@ export class UserController {
 		return transaction;
 	}
 	public async getUserTransactions(userId: number): Promise<any> {
-		let transactions = await this._tService.getUserTransactions(userId);
+		let transactions = await this._tService.getUserTransactionsAlone(userId);
 		return transactions;
 	}
 	public async getUserCodesByTransaction(

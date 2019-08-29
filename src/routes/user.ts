@@ -11,6 +11,7 @@ import * as multer from "multer";
 
 import * as csurf from "csurf";
 import { PaystackService } from "../services/paystack.service";
+import config from '../config';
 
 export class UserRoute implements IRoute {
 
@@ -315,8 +316,8 @@ export class UserRoute implements IRoute {
 				payment_method: "paypal"
 			},
 			redirect_urls: {
-				return_url: `${req.headers.host}/user/payment-success`,
-				cancel_url: `${req.headers.host}/user/payment-cancel`
+				return_url: `${config.server_host}/user/payment-success`,
+				cancel_url: `${config.server_host}/user/payment-cancel`
 			},
 			transactions: [
 				{
@@ -331,6 +332,8 @@ export class UserRoute implements IRoute {
 				}
 			]
 		};
+
+		console.log(create_payment_json);
 
 		paypal.payment.create(create_payment_json, function(error, payment) {
 			if (error) {

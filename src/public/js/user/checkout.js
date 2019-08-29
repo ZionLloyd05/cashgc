@@ -421,7 +421,7 @@ var initiateBankDepositProcessing = function () {
             } else if (response.status === "true") {
                 swal("Transaction has been posted", "Transaction will be reviewed and processed", "success")
                     .then(val => {
-                        // window.location.href = "/user/store";
+                        window.location.href = "/user/store";
                     })
             }
         })

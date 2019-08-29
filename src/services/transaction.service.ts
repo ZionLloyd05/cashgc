@@ -144,14 +144,29 @@ export class TransactionService {
 			.getRepository("transaction")
 			.createQueryBuilder("transaction")
 			.innerJoinAndSelect("transaction.user", "user")
-			.where({ user: userid })
 			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
 			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+			.where({ user: userid })
 			.orderBy({
 				"transaction.id": "DESC"
 			})
 			.getMany();
+		// console.log(transactions);
+		return transactions;
+	}
 
+	public async getUserTransactionsAlone(userid: number): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transactions = await db
+			.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.where({ user: userid })
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany();
+		// console.log(transactions);
 		return transactions;
 	}
 
