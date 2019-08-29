@@ -42,7 +42,7 @@ var onlineCheck = function () {
 var loadTransactionTable = function () {
     spinner.show();
     $.ajax({
-        url: "/user/transaction",
+        url: "/user/utransaction",
         method: "GET",
         dataType: "json",
         headers: {

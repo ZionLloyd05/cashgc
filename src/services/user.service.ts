@@ -288,7 +288,7 @@ export class UserService {
 		const { name, number } = account;
 
 		accountInDb.name = name;
-		accountInDb.number = parseInt(number);
+		accountInDb.number = number;
 
 		let updated = await accountRepo.save(accountInDb);
 
@@ -306,7 +306,7 @@ export class UserService {
 
 	public async getAdminAccount(): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
-		
+
 		let adminAccount = await db
 			.getRepository("bankaccount")
 			.createQueryBuilder("bankaccount")

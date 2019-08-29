@@ -119,6 +119,10 @@ export class UserController {
 		return transaction;
 	}
 	public async getUserTransactions(userId: number): Promise<any> {
+		let transactions = await this._tService.getUserTransactions(userId);
+		return transactions;
+	}
+	public async getUserTransactionsAlone(userId: number): Promise<any> {
 		let transactions = await this._tService.getUserTransactionsAlone(userId);
 		return transactions;
 	}
@@ -167,7 +171,9 @@ export class UserController {
 	}
 
 	public async getAccount(userId: number): Promise<any> {
-		return this._userService.getAccount(userId);
+		let account = await this._userService.getAccount(userId);
+		console.log(account);
+		return account;
 	}
 
 	/**

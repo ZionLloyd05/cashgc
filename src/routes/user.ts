@@ -1,5 +1,5 @@
-import { TransactionService } from './../services/transaction.service';
-import { Order } from './../models/Order';
+import { TransactionService } from "./../services/transaction.service";
+import { Order } from "./../models/Order";
 import { UserController } from "./../controllers/user.ctrl";
 import { GccController } from "./../controllers/gcc.ctrl";
 import { AuthService } from "./../services/auth.service";
@@ -11,10 +11,9 @@ import * as multer from "multer";
 
 import * as csurf from "csurf";
 import { PaystackService } from "../services/paystack.service";
-import config from '../config';
+import config from "../config";
 
 export class UserRoute implements IRoute {
-
 	private upload: any;
 	private storage: any;
 
@@ -48,7 +47,7 @@ export class UserRoute implements IRoute {
 	private _userController: UserController = DIContainer.resolve<UserController>(
 		UserController
 	);
-	
+
 	private _tService: TransactionService = DIContainer.resolve<
 		TransactionService
 	>(TransactionService);
@@ -109,6 +108,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/transactions", this.serveTransactionView.bind(this));
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.transactOperation.bind(this));
+		router.get("/user/utransaction", this.getTransaction.bind(this));
 		router.post("/user/pay", this.handlePayment.bind(this));
 
 		/**
@@ -133,7 +133,8 @@ export class UserRoute implements IRoute {
 		/**
 		 * Order Routes
 		 */
-		router.post("/user/order", 
+		router.post(
+			"/user/order",
 			this.upload.single("image"),
 			this.createOrder.bind(this)
 		);
@@ -153,7 +154,6 @@ export class UserRoute implements IRoute {
 		router.get("/user/isbtcset", this.isBitCoinSet.bind(this));
 		router.get("/user/isbankaccountset", this.isBankAccountSet.bind(this));
 	}
-
 
 	private serveDashboardView(req: Request, res: Response) {
 		res.render("user/store", {
@@ -290,6 +290,17 @@ export class UserRoute implements IRoute {
 				data: transactions
 			});
 		}
+	}
+
+	private async getTransaction(req: Request, res: Response) {
+		let userid = req.user.id;
+		let transactions = await this._userController.getUserTransactionsAlone(
+			userid
+		);
+		res.send({
+			status: "read",
+			data: transactions
+		});
 	}
 
 	private async serveTransactionView(req: Request, res: Response) {
@@ -506,7 +517,6 @@ export class UserRoute implements IRoute {
 			data: uacc
 		});
 	}
-	
 
 	private async saveWallet(req: Request, res: Response) {
 		let wallet = { ...req.body };
@@ -552,24 +562,31 @@ export class UserRoute implements IRoute {
 		let accnumber = req.query.accnumber;
 		let bankcode = req.query.code;
 
-		const response = await this._paystackService.resolveAccount(accnumber, bankcode);
-		
+		const response = await this._paystackService.resolveAccount(
+			accnumber,
+			bankcode
+		);
+
 		return res.send({
 			status: "read",
 			data: response
-		})
+		});
 	}
 
 	public async makeTransfer(req: Request, res: Response) {
 		let user = req.user;
-		let { amount, gcodes } = req.body
+		let { amount, gcodes } = req.body;
 
-		const response = await this._paystackService.makeTransfer(user, amount, gcodes);
+		const response = await this._paystackService.makeTransfer(
+			user,
+			amount,
+			gcodes
+		);
 
 		return res.send({
 			status: "create",
 			data: response
-		})
+		});
 	}
 
 	public async getCurrentRate(req: Request, res: Response) {
@@ -578,30 +595,28 @@ export class UserRoute implements IRoute {
 		return res.send({
 			status: "read",
 			data: response
-		})
+		});
 	}
 
 	public async createOrder(req: Request, res: Response) {
-
-		if(req.file){
+		if (req.file) {
 			let filePath = req.file.path;
-			let payload = { 
-				amount : Number(req.body.amount),
-				user : req.user,
-				receiptPath : filePath
-			}
+			let payload = {
+				amount: Number(req.body.amount),
+				user: req.user,
+				receiptPath: filePath
+			};
 
-			let newOrder = await this._userController.createOrder(payload)
+			let newOrder = await this._userController.createOrder(payload);
 			return res.send({
 				status: "true",
 				data: newOrder
-			})
-		}
-		else{
+			});
+		} else {
 			return res.send({
 				status: "false",
 				data: "Receipt is needed as proof of payment"
-			})
+			});
 		}
 	}
 
@@ -612,32 +627,33 @@ export class UserRoute implements IRoute {
 		return res.send({
 			status: "update",
 			data: response
-		})
+		});
 	}
 
-	public async canMakeTransaction(req: Request, res: Response){
-		
+	public async canMakeTransaction(req: Request, res: Response) {
 		let currentAmount = Number(req.body.totalAmount);
 		let userId = req.user.id;
 
 		// console.log(currentAmount);
-		let response = await this._tService.canMakeTransaction(userId, currentAmount);
+		let response = await this._tService.canMakeTransaction(
+			userId,
+			currentAmount
+		);
 		// console.log(response)
 		res.send({
 			status: "read",
 			data: response
-		})
+		});
 	}
 
-	
-	private async isBitCoinSet(req: Request, res: Response){
+	private async isBitCoinSet(req: Request, res: Response) {
 		let userId = req.user.id;
 		let wallet = await this._userController.getWallet(userId);
-	
+
 		res.send({
 			status: "read",
 			data: wallet
-		})
+		});
 	}
 
 	private async isBankAccountSet(req: Request, res: Response) {
@@ -647,10 +663,8 @@ export class UserRoute implements IRoute {
 		res.send({
 			status: "read",
 			data: account
-		})
+		});
 	}
-
-	
 
 	// public async getOrderOperation(req: Request, res: Response) {
 	// 	if(req.query && req.query.id){
