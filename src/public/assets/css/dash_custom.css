@@ -47,7 +47,7 @@
 @media only screen and (min-width: 480px) and (max-width: 767px) {
 
     /* your css goes here */
-    #cartTbl {
+    table {
         display: block;
         width: 100%;
         overflow-x: auto;
@@ -58,7 +58,7 @@
 @media only screen and (max-width: 479px) {
 
     /* your css goes here */
-    #cartTbl {
+    table {
         display: block;
         width: 100%;
         overflow-x: auto;
