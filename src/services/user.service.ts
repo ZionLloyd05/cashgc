@@ -304,6 +304,19 @@ export class UserService {
 		});
 	}
 
+	public async getAdminAccount(): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		
+		let adminAccount = await db
+			.getRepository("bankaccount")
+			.createQueryBuilder("bankaccount")
+			.innerJoinAndSelect("bankaccount.user", "user")
+			.innerJoinAndSelect("admin.user", "user")
+			.getOne();
+
+		return adminAccount;
+	}
+
 	/**   *
 	 * This is a helper function used for data encryption, password in this use case.
 	 * @param data: string | number;
