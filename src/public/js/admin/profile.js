@@ -1,6 +1,6 @@
 'use strict'
 $(document).ready(function () {
-    loadBanks()
+    loadBankInfo();
     generateCaptcha()
     loadWalletInfo();
 })
@@ -190,35 +190,6 @@ $('#updateInfoForm').submit(function (e) {
         })
     }
 })
-
-var loadBanks = function () {
-
-    var csrfToken = $('#_csrf').val();
-    $.ajax({
-        url: '/admin/banks',
-        method: "GET",
-        dataType: "json",
-        header: {
-            "X-CSRF-TOKEN": csrfToken
-        },
-        success: function (response) {
-            bindDataToSelect(response.data)
-            loadBankInfo();
-        }
-    })
-}
-
-var bindDataToSelect = function (banks) {
-    var bankSelect = $('#bankname');
-    $('#bankname').empty();
-    banks.forEach(bank => {
-        bankSelect.append(
-            `
-                <option value="${bank.name}">${bank.name}</option>
-            `
-        )
-    });
-}
 
 var bankAccountForm = $('#bankAccountFrm');
 
