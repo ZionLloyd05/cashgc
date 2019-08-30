@@ -179,6 +179,8 @@ $(document).ready(function () {
         })
         .then(res => res.json())
         .then(data => {
+
+          $("#proceedBtn").attr("disabled", false);
           btn.removeClass(
             "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
           );
@@ -207,9 +209,13 @@ $(document).ready(function () {
         })
         .then(res => res.json())
         .then(response => {
+          $("#proceedBtn").attr("disabled", false);
+          btn.removeClass(
+            "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
+          );
           var status = response.data.status;
           if (status === "failed") {
-            var error = response.date.data;
+            var error = response.data.data;
             swal("Something went wrong", error, "error");
           } else if (status === "success") {
             swal(

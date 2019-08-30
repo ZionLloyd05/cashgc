@@ -22,8 +22,11 @@ export class PaystackService {
 	);
 	private baseUrl;
 
+	private errors;
+
 	constructor() {
 		this.baseUrl = "https://api.paystack.co";
+		this.errors = [];
 	}
 
 	public async fetchBanks(): Promise<any> {
@@ -57,18 +60,30 @@ export class PaystackService {
 		accnumber: string,
 		bankcode: string
 	): Promise<any> {
-		const header = `Authorization: Bearer ${config.secret_key}`;
-
-		const res = await axios.get(
-			`${
-				this.baseUrl
-			}/bank/resolve?account_number=${accnumber}&bank_code=${bankcode}`,
-			{
-				headers: { Authorization: "Bearer " + config.secret_key }
+		let res_error = "";
+		const res = await axios({
+			method: "GET",
+			responseType: "json",
+			url: `${this.baseUrl}/bank/resolve?account_number=${accnumber}&bank_code=${bankcode}`,
+			headers: {
+				Authorization: "Bearer " + config.secret_key
 			}
-		);
-
-		return res.data;
+		}).catch(function(error) {
+			if (error.response) {
+				// console.log(error.response.data);
+				// console.log(error.response.status);
+				res_error = "Incorrect account credentials";
+			} else if (error.request) {
+				res_error = "No internet connection";
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.log("Error", error.message);
+				res_error = error.message;
+			}
+		});
+		res_error && console.log(res_error);
+		if (res_error == "") return res;
+		else return res_error;
 	}
 
 	// 	"type": "nuban",
@@ -78,6 +93,7 @@ export class PaystackService {
 	//    "bank_code": "044",
 	//    "currency": "NGN",
 	public async createReceipt(accPayload: any): Promise<any> {
+		console.log(config.secret_key);
 		const res = await axios.post(
 			`${this.baseUrl}/transferrecipient`,
 			accPayload,
@@ -91,11 +107,25 @@ export class PaystackService {
 
 	// {"source": "balance", "reason": "Holiday Flexing", "amount":3794800, "recipient": "RCP_gx2wn530m0i3w3m"}'
 	public async initiateTransfer(transferPayload: any): Promise<any> {
-		const res = await axios.post(`${this.baseUrl}/transfer`, transferPayload, {
-			headers: { Authorization: "Bearer " + config.secret_key }
-		});
-
-		return res.data;
+		let res_error = "";
+		const res = await axios
+			.post(`${this.baseUrl}/transfer`, transferPayload, {
+				headers: { Authorization: "Bearer " + config.secret_key }
+			})
+			.catch(function(error) {
+				if (error.response) {
+					res_error = "Your balance is not enough to fulfil this request";
+				} else if (error.request) {
+					res_error = "No internet connection";
+					return error.request;
+				} else {
+					// Something happened in setting up the request that triggered an Error
+					console.log("Error", error.message);
+				}
+			});
+		res_error && console.log(res_error);
+		if (res_error == "") return res.data;
+		else return res_error;
 	}
 
 	public nairaToKobo(amountInNaira: number): number {
@@ -123,16 +153,23 @@ export class PaystackService {
 
 			this.log(bankcode);
 
+			let uAccNumber = Number(userAccount.number);
 			// verify user's account a.k.a resolving account
+
 			let resolveResponse = await this.resolveAccount(
-				userAccount.number,
+				uAccNumber.toString(),
 				bankcode
 			);
 
-			this.log(resolveResponse);
+			if (typeof resolveResponse == "string") {
+				error = "Incorrect account credentials";
+				return { status: "failed", data: error };
+			}
 
-			if (resolveResponse.status && resolveResponse.status == true) {
-				let { account_name, account_number } = resolveResponse.data;
+			// this.log(resolveResponse);
+
+			if (resolveResponse.data && resolveResponse.data.status == true) {
+				let { account_name, account_number } = resolveResponse.data.data;
 
 				// create a transfer reciept
 				let recieptPayload = {
@@ -149,18 +186,25 @@ export class PaystackService {
 
 				if (recieptResponse.status && recieptResponse.status == true) {
 					// initiate a transfer
-					let amountInKobo = this.nairaToKobo(amountToTransfer);
+					let amountToTransferInNaira = await this._rService.convertDollarToNaira(
+						amountToTransfer
+					);
+					let amountInKobo = this.nairaToKobo(amountToTransferInNaira);
 
 					let transferPayload = {
 						source: "balance",
 						amount: amountInKobo,
 						recipient: recieptResponse.data.recipient_code
 					};
-
+					console.log("about to initiate transfer");
 					let transferResponse = await this.initiateTransfer(transferPayload);
 
-					this.log(transferResponse);
+					if (typeof transferResponse == "string") {
+						error = "Kindly contact the admin";
+						return { status: "failed", data: error };
+					}
 
+					console.log("Transfer initiated");
 					if (transferResponse.status && transferResponse.status == true) {
 						let amountInNaira = await this._rService.convertDollarToNaira(
 							amountToTransfer
