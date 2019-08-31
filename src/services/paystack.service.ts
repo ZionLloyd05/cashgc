@@ -60,6 +60,7 @@ export class PaystackService {
 		accnumber: string,
 		bankcode: string
 	): Promise<any> {
+		console.log(config.secret_key);
 		let res_error = "";
 		const res = await axios({
 			method: "GET",
@@ -70,8 +71,8 @@ export class PaystackService {
 			}
 		}).catch(function(error) {
 			if (error.response) {
-				// console.log(error.response.data);
-				// console.log(error.response.status);
+				console.log(error.response.data);
+				console.log(error.response.status);
 				res_error = "Incorrect account credentials";
 			} else if (error.request) {
 				res_error = "No internet connection";

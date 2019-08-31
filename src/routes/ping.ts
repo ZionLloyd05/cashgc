@@ -281,11 +281,11 @@ export class PingRoute implements IRoute {
 		// let response = await this._userService.getAll();
 		// let response = await this._tService.getUserTransactions(2);
 		let response = await this._paystackService.resolveAccount(
-			"20032257",
-			"057"
+			"0258999609",
+			"058"
 		);
 
-		// console.log(response);
+		// console.log("hhgh");
 		// // res.send({ response });
 
 		// res.send({ response });
