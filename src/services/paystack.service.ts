@@ -60,7 +60,8 @@ export class PaystackService {
 		accnumber: string,
 		bankcode: string
 	): Promise<any> {
-		console.log(config.secret_key);
+		// console.log(config.secret_key);
+		// console.log(accnumber + " " + bankcode);
 		let res_error = "";
 		const res = await axios({
 			method: "GET",
@@ -154,11 +155,9 @@ export class PaystackService {
 
 			this.log(bankcode);
 
-			let uAccNumber = Number(userAccount.number);
 			// verify user's account a.k.a resolving account
-
 			let resolveResponse = await this.resolveAccount(
-				uAccNumber.toString(),
+				userAccount.number,
 				bankcode
 			);
 
