@@ -240,7 +240,9 @@ function prepareCartInStore(data) {
             </div>
         `
     }
-    // console.log(citemMarkupBundle);
+    /* console.log(citemMarkupBundle);
+     jhjkhjhjkh
+     uhjkh'o*/
     cartItemBody.html(citemMarkupBundle);
 }
 

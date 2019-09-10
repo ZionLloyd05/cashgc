@@ -48,7 +48,7 @@ export class UserController {
 	public async saveUser(user: any): Promise<IUserDTO> {
 		if (user.id && user.id != null) {
 			// update user logic
-			console.log("updating user");
+			// console.log("updating user");
 			return await this._userService.update(user);
 		} else {
 			// create user logic
@@ -147,10 +147,10 @@ export class UserController {
 
 	public async updateTransaction(tid, operation) {
 		if (operation === "approve") {
-			console.log("approve");
+			// console.log("approve");
 			return await this._tService.approveBitcoinTransaction(tid);
 		} else if (operation === "decline") {
-			console.log("decline");
+			// console.log("decline");
 			return await this._tService.declineBitcoinTransaction(tid);
 		}
 	}
@@ -162,10 +162,10 @@ export class UserController {
 	public async saveAccount(account: any): Promise<any> {
 		// console.log(account);
 		if (account.id && account.id != "null") {
-			console.log("updating account");
+			// console.log("updating account");
 			return await this._userService.updateAccount(account);
 		} else {
-			console.log("creating account");
+			// console.log("creating account");
 			return await this._userService.createAccount(account);
 		}
 	}
@@ -183,10 +183,10 @@ export class UserController {
 	public async saveWallet(wallet: any): Promise<any> {
 		// console.log(wallet);
 		if (wallet.id && wallet.id != "null") {
-			console.log("updating wallet");
+			// console.log("updating wallet");
 			return await this._userService.updateWallet(wallet);
 		} else {
-			console.log("creating wallet");
+			// console.log("creating wallet");
 			return await this._userService.createWallet(wallet);
 		}
 	}

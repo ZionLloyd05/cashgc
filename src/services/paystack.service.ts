@@ -89,7 +89,8 @@ export class PaystackService {
 	}
 
 	// 	"type": "nuban",
-	//    "name": "Account 1029",
+	//    "name": "Account 10
+	// sfgdfgdf29",dldglsdfksfk
 	//    "description": "Customer1029 bank account",
 	//    "account_number": "01000000010",
 	//    "bank_code": "044",
@@ -116,12 +117,14 @@ export class PaystackService {
 			})
 			.catch(function(error) {
 				if (error.response) {
+					console.log(error.response);
 					res_error = "Your balance is not enough to fulfil this request";
 				} else if (error.request) {
 					res_error = "No internet connection";
+					console.log(error.request);
 					return error.request;
 				} else {
-					// Something happened in setting up the request that triggered an Error
+					// Somethingaskjdkj happened in setting up the request that triggered an Error
 					console.log("Error", error.message);
 				}
 			});
