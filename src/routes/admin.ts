@@ -131,6 +131,8 @@ export class AdminRoute implements IRoute {
 		router.get("/admin/bkaccount", this.getAccount.bind(this));
 		router.post("/admin/bkaccount", this.saveAccount.bind(this));
 
+		router.get("/admin/getUserAccount/:id", this.getUserAccount.bind(this));
+
 		/**
 		 * Bitcoin Wallet Route
 		 */
@@ -387,6 +389,15 @@ export class AdminRoute implements IRoute {
 
 	private async getAccount(req: Request, res: Response) {
 		const uacc = await this._userController.getAccount(req.user.id);
+
+		return res.send({
+			status: "read",
+			data: uacc
+		});
+	}
+
+	private async getUserAccount(req: Request, res: Response) {
+		const uacc = await this._userController.getAccount(req.params.id);
 
 		return res.send({
 			status: "read",

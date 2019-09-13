@@ -61,11 +61,13 @@ var bindTableToData = function (response) {
                 if (payment == 0) {
                     return "Paypal"
                 } else if (payment == 1) {
-                    return "AutoPayout"
+                    return "Auto Payout"
                 } else if (payment == 2) {
                     return "Bitcoin Wallet"
                 } else if (payment == 3) {
                     return "CashApp"
+                } else if (payment == 4) {
+                    return "Manual Payout"
                 }
             }
         }, {
@@ -86,9 +88,9 @@ var bindTableToData = function (response) {
                     //bitcoin transaction
                     return `
                     <span style="overflow: visible; position: relative; width: 110px;">
-                        <a id="approvebtc" data-id=${id} data-idx=${meta.row}
+                        <a id="approveTransaction" data-id=${id} data-idx=${meta.row}
                         title="Approve Bitcoin Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
-                        <a title="Decline Bitcoin Transaction" id="declinebtc" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
+                        <a title="Decline Bitcoin Transaction" id="declineTransaction" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
                         <a data-userid=${row.user.id} title="View User Wallet" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewWallet"><i class="la la-eye"></i></a>
                     </span>
                 `
@@ -101,8 +103,18 @@ var bindTableToData = function (response) {
                     } else {
                         return 'Processed'
                     }
+                } else if (row.payment == 4 && row.type == 1) {
+                    //manual payout transaction
+                    return `
+                    <span style="overflow: visible; position: relative; width: 110px;">
+                        <a id="approveTransaction" data-id=${id} data-idx=${meta.row}
+                        title="Approve Manual Payout Transaction" data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
+                        <a title="Decline Manual Payout Transaction" id="declineTransaction" data-idx=${meta.row} data-tid=${id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} class="la la-ban"></i></a>
+                        <a data-userid=${row.user.id} title="View Bank Details" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewUserAccount"><i class="la la-eye"></i></a>
+                    </span>
+                `
                 } else {
-                    return '-'
+                    return '-';
                 }
             }
         }]
@@ -110,6 +122,8 @@ var bindTableToData = function (response) {
     spinner.hide();
 }
 
+
+// show user wallet details
 $(document).on('click', '#viewWallet', function (e) {
     e.preventDefault();
     var userId = $(this).attr('data-userid')
@@ -129,7 +143,28 @@ $(document).on('click', '#viewWallet', function (e) {
 
 })
 
-$(document).on('click', '#approvebtc', function (e) {
+// show user account details
+$(document).on('click', '#viewUserAccount', function (e) {
+    e.preventDefault();
+    var userId = $(this).attr('data-userid')
+    // console.log(userId)
+
+    $.ajax({
+        url: `/admin/getUserAccount/${userId}`,
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            displayUserAccount(response.data)
+            // console.log(response.data)
+        }
+    })
+
+})
+
+$(document).on('click', '#approveTransaction', function (e) {
 
     var transactId = $(this).attr("data-tid");
     var rwIdx = $(this).attr("data-idx");
@@ -151,7 +186,7 @@ $(document).on('click', '#approvebtc', function (e) {
     })
 })
 
-$(document).on('click', '#declinebtc', function (e) {
+$(document).on('click', '#declineTransaction', function (e) {
 
     var transactId = $(this).attr("data-tid")
     var rwIdx = $(this).attr("data-idx");
@@ -222,4 +257,19 @@ function displayUserWallet(data) {
     `)
     }
     $("#walletModal").modal("show");
+}
+
+function displayUserAccount(data) {
+    $("#bankName").text("");
+    $("#accNumber").text("");
+    if (data) {
+        $("#bankName").text(data.name);
+        $("#accNumber").text(data.number);
+        $("#accountModal").modal("show");
+    } else {
+        $("#accountModal").append(`
+        <p>User has no account info!</p>
+    `)
+    }
+
 }

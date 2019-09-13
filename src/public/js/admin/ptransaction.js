@@ -61,11 +61,13 @@ var bindTableToData = function (response) {
                 if (payment == 0) {
                     return "Paypal"
                 } else if (payment == 1) {
-                    return "AutoPayout"
+                    return "Auto Payout"
                 } else if (payment == 2) {
                     return "Bitcoin Wallet"
                 } else if (payment == 3) {
                     return "CashApp"
+                } else if (payment == 4) {
+                    return "Manual Payout"
                 }
             }
         }, {

@@ -181,7 +181,6 @@ export class OrderService {
 	public async processOrder(orderId: number, user: any): Promise<any> {
 		// get order
 		let order = await this.getById(orderId);
-		console.log(order);
 
 		// set order isProcess == true
 		let response = await this.setOrderProcessToTrue(orderId);

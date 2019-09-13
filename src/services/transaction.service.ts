@@ -28,18 +28,10 @@ export class TransactionService {
 		let { payment, type } = payload;
 
 		if (payment === 2 && type === 1) {
-			console.log(payload);
+			// converting dollar to naira
 			payload.amount = await this._rService.convertDollarToNaira(
 				Number(payload.amount)
 			);
-			console.log(payload);
-			// confirm if transaction can fly
-			// let result = await this.canMakeTransaction(payload.user.id, payload.amount);
-			// console.log(result);
-			// if(!result){
-			// 	console.log("Limit reached");
-			// 	return null;
-			// }
 
 			//sales and payment with bitcoin
 			// payload.gcodes.forEach(codeId =>)
@@ -50,25 +42,27 @@ export class TransactionService {
 				payload.gcodes.forEach(async codeId => {
 					await this.setCodeToUsed(codeId);
 				});
+		}else if(payment === 4 && type === 1){
+			
+			// converting dollar to naira
+			payload.amount = await this._rService.convertDollarToNaira(
+				Number(payload.amount)
+			);
+			// set all coin to is used
+			payload.gcodes &&
+				payload.gcodes.forEach(async codeId => {
+					await this.setCodeToUsed(codeId);
+				});
+
 		} else if (payment === 1 && type === 1) {
-			// // confirm if transaction can fly
-			// let result = await this.canMakeTransaction(payload.user.id, payload.amount);
-			// console.log(result);
-			// if(!result){
-			// 	console.log("Limit reached");
-			// 	return null;
-			// }
-
-			//sales and payment with paystack
-			// console.log("sales and payment with paystack");
-
+			
 			// set all coin to is used
 			payload.gcodes &&
 				payload.gcodes.forEach(async codeId => {
 					await this.setCodeToUsed(codeId);
 				});
 		} else if (payment === 0 && type === 0) {
-			//buy and ofcourse payment with paypal
+			// buy and ofcourse payment with paypal
 			// console.log("buy and ofcourse payment with paypal");
 		} else if (payment === 3 && type === 0) {
 			// console.log("buy and pay with bank payment");

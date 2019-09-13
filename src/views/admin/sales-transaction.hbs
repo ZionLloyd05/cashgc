@@ -97,6 +97,54 @@
         </div>
     </div>
 
+
+    {{!-- Account Modal --}}
+    <div class="modal fade show" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel"
+        aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountModalLabel">User Account Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalAccBody">
+                    <div class="kt-widget-21__legends">
+                        <div class="kt-widget-21__legend mb-2">
+                            <i class="la la-bookmark"></i>
+                            <span>Bank Name : <span id="bankName"></span></span>
+                        </div>
+                        <div class="kt-widget-21__legend mb-2">
+                            <i class="la la-bookmark"></i>
+                            <span>Account Number : <span id="accNumber"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- Account Modal
+    <div class="modal fade show" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel"
+        aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AccountModalLabel">User Account Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="accountModalBody">
+                    <div class="modal-body" id="accountModalBody">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
     {{!-- Status Modal --}}
     <div class="modal fade show" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
         aria-modal="true">
@@ -117,5 +165,5 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-{{!-- <script src="/js/admin/stransaction.js"></script> --}}
-<script src="/dist/js/admin/stransaction.js"></script>
+<script src="/js/admin/stransaction.js"></script>
+{{!-- <script src="/dist/js/admin/stransaction.js"></script> --}}

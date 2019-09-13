@@ -15,29 +15,29 @@ $(document).ready(function () {
 var csrfToken = $('#_csrf').val();
 var spinner = $('#spinner');
 
-var onlineCheck = function () {
-    const proxyURL = "https://cors-anywhere.herokuapp.com/";
-    const requestURL = "https://res.cloudinary.com/zionlloyd/image/upload/v1566997408/Date.png";
-    let xhr = new XMLHttpRequest();
-    return new Promise((resolve, reject) => {
-        xhr.onload = () => {
-            // Set online status
-            resolve(true);
-        };
-        xhr.onerror = () => {
-            // Set online status
-            reject(false);
-        };
+// var onlineCheck = function () {
+//     const proxyURL = "https://cors-anywhere.herokuapp.com/";
+//     const requestURL = "https://res.cloudinary.com/zionlloyd/image/upload/v1566997408/Date.png";
+//     let xhr = new XMLHttpRequest();
+//     return new Promise((resolve, reject) => {
+//         xhr.onload = () => {
+//             // Set online status
+//             resolve(true);
+//         };
+//         xhr.onerror = () => {
+//             // Set online status
+//             reject(false);
+//         };
 
-        xhr.open('GET', proxyURL + requestURL, true);
-        xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
-        xhr.setRequestHeader('cache-control', 'max-age=0');
-        xhr.setRequestHeader('expires', '0');
-        xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
-        xhr.setRequestHeader('pragma', 'no-cache');
-        xhr.send();
-    });
-}
+//         xhr.open('GET', proxyURL + requestURL, true);
+//         xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
+//         xhr.setRequestHeader('cache-control', 'max-age=0');
+//         xhr.setRequestHeader('expires', '0');
+//         xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
+//         xhr.setRequestHeader('pragma', 'no-cache');
+//         xhr.send();
+//     });
+// }
 
 var loadTransactionTable = function () {
     spinner.show();
@@ -91,35 +91,22 @@ var bindTableToData = function (response) {
                     if (payment == 0) {
                         return "Paypal"
                     } else if (payment == 1) {
-                        return "Paystack"
+                        return "Auto Payout"
                     } else if (payment == 2) {
                         return "Bitcoin"
                     } else if (payment == 3) {
                         return "Bank"
+                    } else if (payment == 4) {
+                        return "Manual Payout"
                     }
                 }
+            }, {
+                data: "amount",
+                render: function (amount) {
+                    return amount.toLocaleString()
+                }
             }
-            // , {
-            //     data: "id",
-            //     render: function (id, type, row, meta) {
-            //         if (row.payment == 2) {
-            //             return `
-            //                 <span style="overflow: visible; position: relative; width: 110px;">
-            //                     <a id="approve" data-id=${id}
-            //                     title="Approve Transaction" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i id="edit" class="la la-check-square"></i></a>
-            //                     <a title="Decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-ban"></i></a>
-            //                     <a title="Decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a>
-            //                 </span>
-            //             `
-            //         } else {
-            //             return `
-            //             <span style="overflow: visible; position: relative; width: 110px;">
-            //                  <a title="Decline" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a>
-            //             </span>
-            //             `
-            //         }
-            //     }
-            // }
+
         ]
     })
     spinner.hide();

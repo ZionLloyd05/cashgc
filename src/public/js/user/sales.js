@@ -152,6 +152,12 @@ $(document).ready(function () {
         swal("Your Bank account has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
         return false;
       }
+    } else if (paymentOption == "manual") {
+      var bankAccount = $("#hasAccountSet").val();
+      if (bankAccount == "") {
+        swal("Your Bank account has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
     }
 
     var btn = $(this);
@@ -227,6 +233,41 @@ $(document).ready(function () {
             });
           }
         });
+    } else if (paymentOption === "manual"){
+      $("#proceedBtn").attr("disabled", true);
+
+      let transactionPayload = {
+        status: 2,
+        type: 1,
+        payment: 4,
+        gcodes: codesToSell,
+        amount: totalPrice
+      };
+
+      
+      fetch("/user/transaction", {
+        method: "POST",
+        body: JSON.stringify(transactionPayload),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+
+        $("#proceedBtn").attr("disabled", false);
+        btn.removeClass(
+          "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
+        );
+        swal(
+          "Transaction Posted Successfully!",
+          "Processing begins immediately.",
+          "success"
+        ).then(value => {
+          window.location.reload();
+        });
+      });
     }
   });
 });
