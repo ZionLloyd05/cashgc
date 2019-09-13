@@ -222,6 +222,36 @@ export class TransactionService {
 		return transactions;
 	}
 
+	public async getSalesTransaction(): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transactions = await db
+			.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.where({ type: "1" })
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany();
+
+		return transactions;
+	}
+
+	public async getPurchaseTransaction(): Promise<any[]> {
+		let db = await DatabaseProvider.getConnection();
+		let transactions = await db
+			.getRepository("transaction")
+			.createQueryBuilder("transaction")
+			.innerJoinAndSelect("transaction.user", "user")
+			.where({ type: "0" })
+			.orderBy({
+				"transaction.id": "DESC"
+			})
+			.getMany();
+
+		return transactions;
+	}
+
 	public async approveBitcoinTransaction(tid: number): Promise<any> {
 		let db = await DatabaseProvider.getConnection();
 

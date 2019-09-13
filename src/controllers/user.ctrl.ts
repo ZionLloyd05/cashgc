@@ -144,6 +144,17 @@ export class UserController {
 		let transactions = await this._tService.getAllTransaction();
 		return transactions;
 	}
+	public async getSalesTransaction(): Promise<any[]> {
+		let transactions = await this._tService.getSalesTransaction();
+		return transactions;
+	}
+	
+	public async getPurchaseTransaction(): Promise<any[]> {
+		let transactions = await this._tService.getPurchaseTransaction();
+		return transactions;
+	}
+	
+	
 
 	public async updateTransaction(tid, operation) {
 		if (operation === "approve") {

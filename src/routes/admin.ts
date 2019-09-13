@@ -1,5 +1,5 @@
-import { PaystackService } from './../services/paystack.service';
-import { UserService } from './../services/user.service';
+import { PaystackService } from "./../services/paystack.service";
+import { UserService } from "./../services/user.service";
 import { User } from "./../models/User";
 import { GiftCodeCategory } from "./../models/GiftCodeCategory";
 import { GccController } from "./../controllers/gcc.ctrl";
@@ -24,11 +24,10 @@ export class AdminRoute implements IRoute {
 	private _userService: UserService = DIContainer.resolve<UserService>(
 		UserService
 	);
-	
-	private _paystackService: PaystackService = DIContainer.resolve<
-	PaystackService
-	>(PaystackService);
 
+	private _paystackService: PaystackService = DIContainer.resolve<
+		PaystackService
+	>(PaystackService);
 
 	private upload: any;
 	private storage: any;
@@ -84,8 +83,8 @@ export class AdminRoute implements IRoute {
 		/**
 		 * Transaction Routes
 		 */
-		router.get("/admin/transaction", this.serveTransactionView.bind(this));
-		router.get("/admin/transactions", this.getAllTransaction.bind(this));
+		router.get("/admin/transaction/", this.serveTransactionView.bind(this));
+		router.get("/admin/transactions", this.getTransaction.bind(this));
 		router.post("/admin/transactions", this.updateTransaction.bind(this));
 
 		/**
@@ -132,7 +131,7 @@ export class AdminRoute implements IRoute {
 		router.get("/admin/bkaccount", this.getAccount.bind(this));
 		router.post("/admin/bkaccount", this.saveAccount.bind(this));
 
-			/**
+		/**
 		 * Bitcoin Wallet Route
 		 */
 		router.get("/admin/wallet", this.getWallet.bind(this));
@@ -181,11 +180,28 @@ export class AdminRoute implements IRoute {
 	}
 
 	private serveTransactionView(req: Request, res: Response) {
-		res.render("admin/transaction", {
+		let category = req.query.category;
+
+		if (category == "sales") this.serveSalesTransactionView(req, res);
+		else if (category == "purchase")
+			this.servePurchaseTransactionView(req, res);
+	}
+
+	private serveSalesTransactionView(req: Request, res: Response) {
+		res.render("admin/sales-transaction", {
 			title: "Transactions",
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
-			isTransaction: true
+			isSalesTransaction: true
+		});
+	}
+
+	private servePurchaseTransactionView(req: Request, res: Response) {
+		res.render("admin/purchase-transaction", {
+			title: "Transactions",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isPurchaseTransaction: true
 		});
 	}
 
@@ -269,8 +285,16 @@ export class AdminRoute implements IRoute {
 		});
 	}
 
-	private async getAllTransaction(req: Request, res: Response) {
-		let transactions = await this._userController.getAllTransaction();
+	private async getTransaction(req: Request, res: Response) {
+		let transactionCategory = req.query.category;
+
+		let transactions;
+		if (transactionCategory == "sales") {
+			transactions = await this._userController.getSalesTransaction();
+		} else if (transactionCategory == "purchase") {
+			transactions = await this._userController.getPurchaseTransaction();
+		}
+
 		return res.send({
 			status: "read",
 			data: transactions
@@ -369,8 +393,6 @@ export class AdminRoute implements IRoute {
 			data: uacc
 		});
 	}
-	
-
 
 	private async toggleStatus(req: Request, res: Response) {
 		let { isactive, id } = req.body;
@@ -444,14 +466,13 @@ export class AdminRoute implements IRoute {
 
 	private async getUsers(req: Request, res: Response) {
 		let response = await this._userController.getAllUsers();
-	
+
 		res.send({
 			status: "read",
 			data: response
 		});
 	}
 
-	
 	private async saveWallet(req: Request, res: Response) {
 		let wallet = { ...req.body };
 
@@ -473,5 +494,4 @@ export class AdminRoute implements IRoute {
 			data: uwallet
 		});
 	}
-
 }
