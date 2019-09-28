@@ -1,0 +1,33 @@
+NODE_ENV = development
+
+TYPE = 'mysql'
+HOST = 'localhost'
+DBPORT = 3306
+UNAME = 'zion'
+PASSWORD = 'zion'
+DATABASE = 'giftcodedb'
+
+SERVER_HOST = 'http://localhost:3000'
+
+PORT = 3000
+
+KEY = 'connect_dd'
+
+SECRET = 'dksjwerweii090wekrnjksdoijisjd09skkml'
+CLOUD_NAME=zionlloyd
+API_KEY=432858741981615
+API_SECRET=7anDqebobntOE90W1n5oQm0qJ5s
+
+MODE = 'live'
+
+CLIENT_ID = 'Ad6l88e3GpIJtHZq3SSaGM1QuqPZhH5_oRvDCR6pj8lLiEBZsblRaQr2A4Ploy9A46MgS7QQR6txhs3i'
+CLIENT_SECRET = 'EM5FoLsXkI1H_rwmaj0KbeYjKR6wd08U3XjlmHl1W5VEeiZb9HRAL31TNPM-I2__jdzibfweyCnTuXWF'
+
+SECRET_KEY = 'sk_test_726950d4b93ab3d7d9b1ca6f3d28375df237fcd4'
+SECRET_KEY__EE = 'sk_test_064e7800fb9479f58893a3cd7dfd7f09c80d8c2c'
+SECRET_KEY__EE = 'sk_live_2edbabb8a3b3c488e9fe282a6f6eb0c08b43ac1c'
+
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+pass=alagbala123**
+user=alagbaladamilola@gmail.com
