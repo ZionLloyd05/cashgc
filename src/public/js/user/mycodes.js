@@ -43,7 +43,7 @@ var formatData = function (data) {
             obj.push(payload)
         })
     })
-    console.log(obj)
+    // console.log(obj)
     return obj
 }
 
@@ -65,7 +65,7 @@ var bindTableToData = function (response) {
                 <div class="input-group input-group-sm">
                     <input type="text" class="form-control" value="${code}" id="id_${meta.row}" readonly>
                     <div class="input-group-append">
-                        <button class="btn btn-primary btnCopy" type="button" id="btnCopy">Copy</button>
+                        <button data-clipboard-text="${code}" class="btn btn-primary btnCopy" type="button">Copy</button>
                     </div>
                 </div>
                 `
@@ -90,15 +90,15 @@ var bindTableToData = function (response) {
     spinner.hide();
 }
 
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('btnCopy')) {
-        var btn = e.target;
-        var input = btn.parentNode.parentNode.children[0];
-        var inpId = input.getAttribute('id');
 
-        var copyText = document.getElementById(inpId);
-        copyText.select();
-        document.execCommand("copy");
-        $("#kt_toast_1").toast("show");
-    }
-}, false);
+var clipboard = new ClipboardJS('.btnCopy');
+
+clipboard.on('success', function (e) {
+    swal("Code Copied", "", "success");
+    e.clearSelection();
+});
+
+clipboard.on('error', function (e) {
+    console.error('Action:', e.action);
+    console.error('Trigger:', e.trigger);
+});

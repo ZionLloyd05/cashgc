@@ -16,7 +16,7 @@ export class BankAccount {
 	public name: string;
 
 	@Column()
-	public number: number;
+	public number: string;
 
 	@OneToOne(() => User)
 	@JoinColumn()

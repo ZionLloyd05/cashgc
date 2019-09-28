@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
 
     <title>{{title}}</title>
-    <meta name="description" content="Latest updates and statistic charts">
+    <meta name="description" content="Buy and Sales of Cash gift codes in exchange for money">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -32,6 +32,8 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
+        <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+
     <!--begin::Global Theme Styles(used by all pages) -->
     <link href="/assets/vendors/global/vendors.bundle.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/demo1/style.bundle.css" rel="stylesheet" type="text/css" />
@@ -41,7 +43,7 @@
     <!--end::Page Vendors Styles -->
 
     <!--begin::Layout Skins(used by all pages) -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link href="/assets/css/demo1/skins/header/base/light.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/demo1/skins/header/menu/light.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/demo1/skins/brand/navy.css" rel="stylesheet" type="text/css" />
@@ -49,7 +51,6 @@
     <link href="/assets/css/dash_custom.css" rel="stylesheet" type="text/css" />
     <!--end::Layout Skins -->
 
-    <link rel="shortcut icon" href="/assets/media/logos/favicon.ico" />
 </head>
 <!-- end::Head -->
 
@@ -71,10 +72,10 @@
             <button class="kt-header-mobile__toolbar-toggler kt-header-mobile__toolbar-toggler--left"
                 id="kt_aside_mobile_toggler"><span></span></button>
 
-            <button class="kt-header-mobile__toolbar-toggler" id="kt_header_mobile_toggler"><span></span></button>
+            {{!-- <button class="kt-header-mobile__toolbar-toggler" id="kt_header_mobile_toggler"><span></span></button> --}}
 
-            <button class="kt-header-mobile__toolbar-topbar-toggler" id="kt_header_mobile_topbar_toggler"><i
-                    class="flaticon-more"></i></button>
+            <a href="/logout" class="kt-header-mobile__toolbar-topbar-toggler" id="kt_header_mobile_topbar_toggler"><i
+                    class="flaticon2-power"></i></a>
         </div>
     </div>
     <!-- end:: Header Mobile -->
@@ -146,51 +147,46 @@
                                 </form>
                             </div>
                         </div>
-
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
 
-                            <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
-                                <div class="kt-header__topbar-user">
-                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-                                    <span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
-                                    {{!-- <img alt="Pic" src="/assets/media/users/300_25.jpg" /> --}}
-                                    <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                                    <span
-                                        class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
-                                </div>
-                            </div>
+							<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
+								<div class="kt-header__topbar-user">
+									<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
+									<span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
+									<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+									<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
+									<span
+										class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
+								</div>
+							</div>
 
-                            <div
-                                class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
-                                <div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
-                                    style="background-image: url('/assets/media/misc/head_bg_sm.jpg')">
-                                    <div class="kt-user-card__wrapper">
-                                        <div class="kt-user-card__pic">
-                                            <img alt="Pic" src="/assets/media/users/300_21.jpg" />
-                                        </div>
-                                        <div class="kt-user-card__details">
-                                            <div class="kt-user-card__name">{{user.firstname}} {{user.lastname}}</div>
-                                            <div class="kt-user-card__position">{{user.email}}</div>
-                                        </div>
-                                    </div>
-                                </div>
+							<div
+								class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
+								<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
+									style="background-image: url('/assets/media/head_bg_sm.jpg')">
+									<div class="kt-user-card__wrapper">
+										<div class="kt-user-card__pic">
+											<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+										</div>
+										<div class="kt-user-card__details">
+											<div class="kt-user-card__name" style="font-size:13px">{{user.firstname}} {{user.lastname}}</div>
+											{{!-- <div class="kt-user-card__position" style="font-size:13px">{{user.email}}</div> --}}
+										</div>
+									</div>
+								</div>
 
-                                <ul class="kt-nav kt-margin-b-10">
-                                    <li class="kt-nav__item">
-                                        <a href="/user/profile" class="kt-nav__link">
-                                            <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
-                                            <span class="kt-nav__link-text">My Profile</span>
-                                        </a>
-                                    </li>
-                                   
-                                    <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
-                                        <a href="custom/user/login-v1.html" target="_blank"
-                                            class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
-                                    </li>
-                                </ul>
-                            </div>
+								<ul class="kt-nav kt-margin-b-10">
+									<li class="kt-nav__item">
+										<a href="/logout" class="kt-nav__link">
+											<span class="kt-nav__link-icon"><i class="flaticon2-power"></i></span>
+											<span class="kt-nav__link-text">Sign Out</span>
+										</a>
+									</li>
+								</ul>
+							</div>
 
-                        </div>
+						</div>
+						<!--end: User Bar -->
                         <!--end: User Bar -->
                         <!--begin:: Quick Panel Toggler -->
                         <div class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
@@ -212,12 +208,9 @@
                         2019&nbsp;&copy;&nbsp;<a href="#" class="kt-link">CashGiftCode</a>
                     </div>
                     <div class="kt-footer__menu">
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Privacy</a>
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Terms</a>
-                        <a href="http://keenthemes.com/keen" target="_blank"
-                            class="kt-footer__menu-link kt-link">Condition</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Privacy</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Terms</a>
+                        <a href="/privacy" target="_blank" class="kt-footer__menu-link kt-link">Condition</a>
                     </div>
                 </div>
                 <!-- end:: Footer -->

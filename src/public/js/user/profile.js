@@ -1,6 +1,6 @@
 'use strict'
 $(document).ready(function () {
-    loadBanks()
+    loadBankInfo();
     generateCaptcha()
     loadWalletInfo();
 })
@@ -84,11 +84,10 @@ $("#changePwdForm").submit(function (e) {
 
                 btn.attr("disabled", false);
                 spinner.removeClass("spinner-grow spinner-grow-sm");
-                
-                if(response.data == "updated"){
+
+                if (response.data == "updated") {
                     window.location.href = "/logout";
-                }
-                else if(response.data == "incorrect credentials"){
+                } else if (response.data == "incorrect credentials") {
                     alert("Incorrect credentials");
                     return false;
                 }
@@ -189,32 +188,6 @@ $('#updateInfoForm').submit(function (e) {
         })
     }
 })
-
-var loadBanks = function () {
-    $.ajax({
-        url: '/user/banks',
-        method: "GET",
-        dataType: "json",
-        header: {
-            "X-CSRF-TOKEN": csrfToken
-        },
-        success: function (response) {
-            bindDataToSelect(response.data)
-            loadBankInfo();
-        }
-    })
-}
-
-var bindDataToSelect = function (banks) {
-    var bankSelect = $('#bankname');
-    banks.forEach(bank => {
-        bankSelect.append(
-            `
-                <option value="${bank.name}">${bank.name}</option>
-            `
-        )
-    });
-}
 
 var bankAccountForm = $('#bankAccountFrm');
 
@@ -349,9 +322,10 @@ var loadWalletInfo = function () {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (res) {
+            console.log(res);
             if (res.data && res.data.lenght != 0) {
-                $('#wallet').val(res.data[0].wid);
-                $('#w_id').val(res.data[0].id);
+                $('#wallet').val(res.data.wid);
+                $('#w_id').val(res.data.id);
             }
         }
     })

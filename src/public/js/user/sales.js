@@ -1,12 +1,14 @@
-$(document).ready(function() {
+$(document).ready(function () {
   getExchangeRate();
+  userHasBankDetailsSet();
+  userHasBitcoinWalletSet();
 
   var csrfToken = $("#_csrf").val();
 
   var postedCodes = [];
   var postedCodeIds = [];
 
-  $(document).on("click", "#verify", function(e) {
+  $(document).on("click", "#verify", function (e) {
     e.preventDefault();
     let btn = $(this);
     btn.addClass(
@@ -29,7 +31,7 @@ $(document).ready(function() {
       headers: {
         "X-CSRF-TOKEN": csrfToken
       },
-      success: function(res) {
+      success: function (res) {
         btn.removeClass(
           "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
         );
@@ -71,13 +73,14 @@ $(document).ready(function() {
             postedCodeIds.push(res.data.id);
           }
         }
-        console.log(postedCodes);
-        console.log(postedCodeIds);
+        // console.log(postedCodes);
+        // console.log(postedCodeIds);
+
       }
     });
   });
 
-  $(document).on("click", "#remove", function() {
+  $(document).on("click", "#remove", function () {
     var btn = $(this);
 
     var totalPriceSpan = $("#totalPrice2");
@@ -101,14 +104,11 @@ $(document).ready(function() {
       remove(postedCodeIds, codeId);
     }
 
-    console.log(postedCodes);
-    console.log(postedCodeIds);
-
     var parent = $(this).closest("#inputBody");
     parent.remove();
   });
 
-  $(document).on("click", "#addMore", function(e) {
+  $(document).on("click", "#addMore", function (e) {
     e.stopPropagation();
     var template = `
             <div id="inputBody" class="form-group">
@@ -116,7 +116,7 @@ $(document).ready(function() {
                     <input type="text" id="code" name="code" data-status="saint" class="form-control" placeholder="Enter Gift Code">
                     <div class="input-group-append">
                     <button class="btn btn-secondary" id="verify" type="button"><i
-                    class="fa fa-plus"></i>  <span class="kt-hidden-mobile">Redeem</span>   </button>
+                    class="fa fa-plus kt-hidden-mobile"></i>  <span class="">Redeem</span>   </button>
                     <button class="btn btn-secondary" data-code-pr="" id="remove" type="button"><i
                     class="fa fa-times"></i></button>
                 </div>
@@ -128,7 +128,7 @@ $(document).ready(function() {
     inputBody.append(template);
   });
 
-  $("#proceedBtn").click(function() {
+  $("#proceedBtn").click(function () {
     var codesToSell = postedCodeIds;
     var totalPrice = $("#totalPrice2").attr("data-pr2");
 
@@ -137,11 +137,33 @@ $(document).ready(function() {
       return false;
     }
 
+    var paymentOption = $("input[name='m_option_1']:checked").val();
+
+    // checking needed prerequisite for successful transaction
+    if (paymentOption == "bitcoin") {
+      var bitcoinWallet = $("#hasBitcoinSet").val();
+      if (bitcoinWallet == "") {
+        swal("Your Bitcoin wallet has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
+    } else if (paymentOption == "bank") {
+      var bankAccount = $("#hasAccountSet").val();
+      if (bankAccount == "") {
+        swal("Your Bank account has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
+    } else if (paymentOption == "manual") {
+      var bankAccount = $("#hasAccountSet").val();
+      if (bankAccount == "") {
+        swal("Your Bank account has not been set", "Kindly set your account by clicking the profile tab and filling the necessary information.", "error");
+        return false;
+      }
+    }
+
     var btn = $(this);
     btn.addClass(
       "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
     );
-    var paymentOption = $("input[name='m_option_1']:checked").val();
 
     if (paymentOption == "bitcoin") {
       $("#proceedBtn").attr("disabled", true);
@@ -154,15 +176,17 @@ $(document).ready(function() {
       };
 
       fetch("/user/transaction", {
-        method: "POST",
-        body: JSON.stringify(transactionPayload),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(transactionPayload),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          }
+        })
         .then(res => res.json())
         .then(data => {
+
+          $("#proceedBtn").attr("disabled", false);
           btn.removeClass(
             "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
           );
@@ -182,18 +206,22 @@ $(document).ready(function() {
       };
 
       fetch(`/user/transfer`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          }
+        })
         .then(res => res.json())
         .then(response => {
+          $("#proceedBtn").attr("disabled", false);
+          btn.removeClass(
+            "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
+          );
           var status = response.data.status;
           if (status === "failed") {
-            var error = response.date.data;
+            var error = response.data.data;
             swal("Something went wrong", error, "error");
           } else if (status === "success") {
             swal(
@@ -205,11 +233,46 @@ $(document).ready(function() {
             });
           }
         });
+    } else if (paymentOption === "manual"){
+      $("#proceedBtn").attr("disabled", true);
+
+      let transactionPayload = {
+        status: 2,
+        type: 1,
+        payment: 4,
+        gcodes: codesToSell,
+        amount: totalPrice
+      };
+
+      
+      fetch("/user/transaction", {
+        method: "POST",
+        body: JSON.stringify(transactionPayload),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+
+        $("#proceedBtn").attr("disabled", false);
+        btn.removeClass(
+          "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
+        );
+        swal(
+          "Transaction Posted Successfully!",
+          "Processing begins immediately.",
+          "success"
+        ).then(value => {
+          window.location.reload();
+        });
+      });
     }
   });
 });
 
-var getExchangeRate = function() {
+var getExchangeRate = function () {
   $.ajax({
     url: "/user/rate",
     method: "GET",
@@ -217,7 +280,7 @@ var getExchangeRate = function() {
     header: {
       "X-CSRF-TOKEN": csrfToken
     },
-    success: function(response) {
+    success: function (response) {
       if (response.status === "read") {
         $("#nairaAmount").attr("data-rate", response.data.localrate);
       }
@@ -225,7 +288,39 @@ var getExchangeRate = function() {
   });
 };
 
-var remove = function(arr, element) {
+var remove = function (arr, element) {
   var idx = arr.indexOf(element);
   arr.splice(idx, 1);
 };
+
+var userHasBankDetailsSet = function () {
+  $.ajax({
+    url: "/user/isbankaccountset",
+    method: "GET",
+    dataType: "json",
+    header: {
+      "X-CSRF-TOKEN": csrfToken
+    },
+    success: function (response) {
+      if (response.data != null) {
+        $('#hasAccountSet').val(response.data.number);
+      }
+    }
+  });
+}
+
+var userHasBitcoinWalletSet = function () {
+  $.ajax({
+    url: "/user/isbtcset",
+    method: "GET",
+    dataType: "json",
+    header: {
+      "X-CSRF-TOKEN": csrfToken
+    },
+    success: function (response) {
+      if (response.data != null) {
+        $('#hasBitcoinSet').val(response.data.wid);
+      }
+    }
+  });
+}

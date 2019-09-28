@@ -1,6 +1,14 @@
 var spinner = $('#spinner');
 $(document).ready(function () {
     loadCodeCategories();
+    // onlineCheck().then((res) => {
+    //     })
+    //     .catch(err => {
+    //         swal("You're not connected", "Click ok to reload the page", "error")
+    //             .then(val => {
+    //                 window.location.reload();
+    //             })
+    //     })
     // spinner.show();
 })
 
@@ -9,6 +17,25 @@ var csrfToken = $('#_csrf').val();
 
 var cartItemTotal = $('#cartItemTotal');
 var cartItemBody = $('#cartItemBody');
+
+
+var onlineCheck = function () {
+    const proxyURL = "https://cors-anywhere.herokuapp.com/";
+    const requestURL = "https://res.cloudinary.com/zionlloyd/image/upload/v1566997408/Date.png";
+    let xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+        xhr.onload = () => {
+            // Set online status
+            resolve(true);
+        };
+        xhr.onerror = () => {
+            // Set online status
+            reject(false);
+        };
+        xhr.open('GET', proxyURL + requestURL, true);
+        xhr.send();
+    });
+}
 
 
 var loadCodeCategories = function () {
@@ -50,8 +77,10 @@ function buildCodeCategory(data = []) {
     spinner.hide();
     storeBody.html(categoryBuilds);
 }
-
+// var totalForTransaction = 0;
 function addItemToCart(btnId, itemId) {
+
+    const MAX_TRANSACTION_LIMIT = 300;
 
     var cart = document.getElementById('cart_no');
     var totalPrice = document.getElementById('totalPrice');
@@ -68,17 +97,24 @@ function addItemToCart(btnId, itemId) {
 
     qty = Number(qty);
 
-    if (qty < 1)
+    let supposeTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
+    // console.log(newTotalPrice);
+
+    if (qty < 1) {
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
-    else {
+        return false;
+    } else if (supposeTotalPrice > MAX_TRANSACTION_LIMIT) {
+        swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
+        return false;
+    } else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
-        console.log("newTotalPrice => " + newTotalPrice)
+        // console.log("newTotalPrice => " + newTotalPrice)
         totalPrice.textContent = newTotalPrice.toLocaleString();
         totalPrice.setAttribute("data-pr", newTotalPrice)
-        console.log("totalPrice => " + totalPrice.textContent)
+        // console.log("totalPrice => " + totalPrice.textContent)
 
         var newCartCount = Number(cart.textContent) + qty;
-        console.log("newCartCount => " + newCartCount)
+        // console.log("newCartCount => " + newCartCount)
 
         cart.textContent = newCartCount.toString();
 
@@ -102,7 +138,7 @@ function addItemToCart(btnId, itemId) {
 }
 
 function reloadCartItem() {
-    console.log("reload cart item")
+    // console.log("reload cart item")
     // debugger
     fetch("/user/cartitem/", {
             method: 'GET',
@@ -120,7 +156,7 @@ function reloadCartItem() {
 }
 
 function prepareCartInStore(data) {
-    console.log("preparing in store")
+    // console.log("preparing in store")
     let {
         items,
         totalQuantity,

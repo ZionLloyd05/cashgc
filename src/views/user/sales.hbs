@@ -45,7 +45,27 @@
                                     </span>
                                 </span>
                                 <span class="kt-option__body">
-                                    Ensure that you account information is set in your profile
+                                    A payment gateway will be used to credit you immediately.
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="kt-option">
+                            <span class="kt-option__control">
+                                <span class="kt-radio kt-radio--bold kt-radio--brand">
+                                    <input type="radio" name="m_option_1" value="manual">
+                                    <span></span>
+                                </span>
+                            </span>
+                            <span class="kt-option__label">
+                                <span class="kt-option__head">
+                                    <span class="kt-option__title">
+                                        Manual Cash Transfer
+                                    </span>
+                                </span>
+                                <span class="kt-option__body">
+                                    We'll manually make a cash transfer to your set bank account
                                 </span>
                             </span>
                         </label>
@@ -115,7 +135,7 @@
                         <div class="kt-portlet__head-toolbar">
                             <button id="toCart" type="button" class="btn btn-brand" data-toggle="modal"
                                 data-target="#optionModal">
-                                <i class="flaticon2-cash-1"></i>
+                                <i class="la la-money"></i>
                                 <span class="kt-hidden-mobile">Get Paid</span>
                             </button>
                         </div>
@@ -130,7 +150,7 @@
                                         <div class="input-group-append">
                                             {{!-- <button class="btn btn-secondary" id="verify" type="button">Verify</button> --}}
                                             <button class="btn btn-secondary" id="verify" type="button"><i
-                                                    class="fa fa-plus"></i><span class="kt-hidden-mobile">Redeem</span>
+                                                    class="fa fa-plus kt-hidden-mobile"></i><span class="">Redeem</span>
                                             </button>
                                             <button class="btn btn-secondary" data-code-pr="" data-code-id=""
                                                 id="remove" type="button"><i class="fa fa-times"></i></button>
@@ -154,7 +174,10 @@
         </div>
 
     </div>
+    <input type="hidden" id="hasBitcoinSet" value="">
+    <input type="hidden" id="hasAccountSet" value="">
     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 </div>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{{!-- <script src="/js/user/sales.js"></script> --}}
 <script src="/dist/js/user/sales.js"></script>

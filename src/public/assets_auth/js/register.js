@@ -2,11 +2,18 @@
 $(document).ready(function () {
     $('#phoneCode').on('change', function () {
         var code = $(this).val();
+        var country = $('option:selected', this).attr('data-countryCode');
         $.ajax({
             url: "https://restcountries.eu/rest/v2/callingcode/" + code,
             method: "GET",
             dataType: "json",
             success: function (data) {
+                if (code == 1) {
+                    if (country == "US") {
+                        $('#country').val(data[1].name);
+                        return;
+                    }
+                }
                 $('#country').val(data[0].name);
             }
         })

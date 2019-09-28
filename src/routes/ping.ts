@@ -1,3 +1,4 @@
+import { AccountService } from "./../services/account.service";
 import { OrderItemService } from "./../services/orderItem.service";
 import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
@@ -58,6 +59,10 @@ export class PingRoute implements IRoute {
 		OrderItemService
 	>(OrderItemService);
 
+	private _accService: AccountService = DIContainer.resolve<AccountService>(
+		AccountService
+	);
+
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
 	}
@@ -77,8 +82,8 @@ export class PingRoute implements IRoute {
 		//     .getOne();
 		//   res.send(citem);
 		//   console.log(citem);
-		//   // res.send("ok");
-		
+		//   res.send("ok");
+
 		// } catch (error) {
 		//   console.log(error);
 		// }
@@ -260,8 +265,38 @@ export class PingRoute implements IRoute {
 		// };
 		// let response = await this._oService.processOrder(7, userp);
 
-		let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
+		// let response = await this._userService.updatePassword("lishabi@gmail.com", "lisha123", "lisha111");
+		// let email = "alagbaladamilola@gmail.com";
+		// let header = "localhost:3000";
+		// let token = "e552be23ad9196a5c146ef72f664b08fb9f0c8e9008a497434";
+		// let pwd= 'Dami111';
+		// let response = await this._accService.updatePassword(token, pwd);
 
-		res.send({response});
+		// let transaction = await this._tService.getUserTransactionsWithinLast24Hours(
+		// 	2
+		// );
+		// let response = this._tService.totalAmountInTransactions(transaction);
+
+		// let response = await this._tService.canMakeTransaction(4, 100);
+		// let response = await this._userService.getAll();
+		// let response = await this._tService.getUserTransactions(2);
+		// let response = await this._paystackService.resolveAccount(
+		// 	"0258999609",
+		// 	"058"
+		// );
+		let response = await this._tService.getSalesTransaction();
+
+		// console.log("hhgh");
+		// // res.send({ response });
+
+		// res.send({ response });
+		// if (typeof response == "string") {
+		// 	res.send({ response });
+		// 	return;
+		// }
+
+		// console.log(response.data);
+		// response.data && console.log(response.data.status);
+		res.send(response);
 	}
 }

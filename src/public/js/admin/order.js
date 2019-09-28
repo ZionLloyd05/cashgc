@@ -57,14 +57,18 @@ var bindTableToData = function (response) {
         }, {
             data: "id",
             render: function (id, type, row, meta) {
-                console.log(row)
-                return `
+                console.log(row.isProcessed)
+                if (row.isProcessed == true) {
+                    return "Order Processed"
+                } else {
+                    return `
                     <span style="overflow: visible; position: relative; width: 110px;">
                     <a title="View Full Details" data-id=${id} id="details" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewOrder"><i class="la la-eye"></i></a>
                         <a id="process" data-idx=${meta.row}
                         title="Process Order" data-tid=${id} data-uid=${row.transaction.user.id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
                     </span>
                 `
+                }
             }
         }]
     })

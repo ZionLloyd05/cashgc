@@ -26,7 +26,8 @@ enum Payment {
 	Paypal,
 	Paystack,
 	Bitcoin,
-	Bank
+	Bank,
+	Manual
 }
 
 @Entity()

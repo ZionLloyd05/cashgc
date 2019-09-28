@@ -1,5 +1,6 @@
-import { OrderItemService } from './../services/orderItem.service';
-import { OrderService } from './../services/order.service';
+import { AccountService } from "./../services/account.service";
+import { OrderItemService } from "./../services/orderItem.service";
+import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
 import { TransactionService } from "./../services/transaction.service";
 import { CartItem } from "./../models/CartItem";
@@ -33,6 +34,10 @@ export class UserController {
 		OrderItemService
 	>(OrderItemService);
 
+	private _accService: AccountService = DIContainer.resolve<AccountService>(
+		AccountService
+	);
+
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
 	}
@@ -43,7 +48,7 @@ export class UserController {
 	public async saveUser(user: any): Promise<IUserDTO> {
 		if (user.id && user.id != null) {
 			// update user logic
-			console.log("updating user");
+			// console.log("updating user");
 			return await this._userService.update(user);
 		} else {
 			// create user logic
@@ -56,12 +61,17 @@ export class UserController {
 		return await this._userService.getById(id);
 	}
 	public async getAllUsers(): Promise<IUserDTO[]> {
-		return await this._userService.getAll();
+		let users = await this._userService.getAll();
+		return users;
 	}
 
 	public async updatePassword(payload: any): Promise<any> {
-		const {currentPassword, newPassword, email} = payload;
-		return await this._userService.updatePassword(email, currentPassword, newPassword);
+		const { currentPassword, newPassword, email } = payload;
+		return await this._userService.updatePassword(
+			email,
+			currentPassword,
+			newPassword
+		);
 	}
 
 	/**
@@ -112,6 +122,10 @@ export class UserController {
 		let transactions = await this._tService.getUserTransactions(userId);
 		return transactions;
 	}
+	public async getUserTransactionsAlone(userId: number): Promise<any> {
+		let transactions = await this._tService.getUserTransactionsAlone(userId);
+		return transactions;
+	}
 	public async getUserCodesByTransaction(
 		userId: number,
 		tid: number
@@ -130,13 +144,24 @@ export class UserController {
 		let transactions = await this._tService.getAllTransaction();
 		return transactions;
 	}
+	public async getSalesTransaction(): Promise<any[]> {
+		let transactions = await this._tService.getSalesTransaction();
+		return transactions;
+	}
+	
+	public async getPurchaseTransaction(): Promise<any[]> {
+		let transactions = await this._tService.getPurchaseTransaction();
+		return transactions;
+	}
+	
+	
 
 	public async updateTransaction(tid, operation) {
 		if (operation === "approve") {
-			console.log("approve");
+			// console.log("approve");
 			return await this._tService.approveBitcoinTransaction(tid);
 		} else if (operation === "decline") {
-			console.log("decline");
+			// console.log("decline");
 			return await this._tService.declineBitcoinTransaction(tid);
 		}
 	}
@@ -148,16 +173,18 @@ export class UserController {
 	public async saveAccount(account: any): Promise<any> {
 		// console.log(account);
 		if (account.id && account.id != "null") {
-			console.log("updating account");
+			// console.log("updating account");
 			return await this._userService.updateAccount(account);
 		} else {
-			console.log("creating account");
+			// console.log("creating account");
 			return await this._userService.createAccount(account);
 		}
 	}
 
 	public async getAccount(userId: number): Promise<any> {
-		return this._userService.getAccount(userId);
+		let account = await this._userService.getAccount(userId);
+		console.log(account);
+		return account;
 	}
 
 	/**
@@ -167,16 +194,16 @@ export class UserController {
 	public async saveWallet(wallet: any): Promise<any> {
 		// console.log(wallet);
 		if (wallet.id && wallet.id != "null") {
-			console.log("updating wallet");
+			// console.log("updating wallet");
 			return await this._userService.updateWallet(wallet);
 		} else {
-			console.log("creating wallet");
+			// console.log("creating wallet");
 			return await this._userService.createWallet(wallet);
 		}
 	}
 
 	public async getWallet(userId: number): Promise<any> {
-		return this._userService.getWallet(userId);
+		return await this._userService.getWallet(userId);
 	}
 
 	/**
@@ -220,7 +247,7 @@ export class UserController {
 	 * Order Methods
 	 */
 	public async createOrder(orderPayload): Promise<any> {
-		return await this._oService.scaffoldOrder(orderPayload)
+		return await this._oService.scaffoldOrder(orderPayload);
 	}
 
 	public async toggleOrderStatus(orderId: number): Promise<any> {
@@ -249,4 +276,23 @@ export class UserController {
 	public async getOrderItemsByOrder(orderId: number): Promise<any> {
 		return await this._oItemService.getOrderItemsByOrder(orderId);
 	}
+
+	/**
+	 * Accounts
+	 */
+	public async forgotPassword(email: string, header: string): Promise<any> {
+		return await this._accService.forgotPassword(email, header);
+	}
+
+	public async updateResetPassword(token: string, newPassword: string) {
+		return await this._accService.updatePassword(token, newPassword);
+	}
+
+	public async confirmTokenValidity(token: string): Promise<any> {
+		return await this._accService.checkTokenValidity(token);
+	}
+
+	/**
+	 * Bank Account and Wallet Methods
+	 */
 }

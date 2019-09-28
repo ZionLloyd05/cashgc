@@ -1,3 +1,4 @@
+import { AccountService } from "./../services/account.service";
 import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
 import { PaystackService } from "../services/paystack.service";
@@ -22,11 +23,12 @@ DIContainer.bind<UserService>(UserService).toSelf();
 DIContainer.bind<UserController>(UserController).toSelf();
 DIContainer.bind<GCCService>(GCCService).toSelf();
 DIContainer.bind<AuthService>(AuthService).toSelf();
-// DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
+DIContainer.bind<GiftCodeService>(GiftCodeService).toSelf();
 DIContainer.bind<TransactionService>(TransactionService).toSelf();
 DIContainer.bind<PaystackService>(PaystackService).toSelf();
 DIContainer.bind<RateService>(RateService).toSelf();
 DIContainer.bind<OrderService>(OrderService).toSelf();
 DIContainer.bind<OrderItemService>(OrderItemService).toSelf();
+DIContainer.bind<AccountService>(AccountService).toSelf();
 
 export default DIContainer;
