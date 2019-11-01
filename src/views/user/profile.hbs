@@ -90,12 +90,12 @@
                                 </a>
                             </li>
                             <li class="kt-nav__separator"></li>
-                            {{!-- <li class="kt-nav__item">
-                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_account_information" role="tab" aria-selected="false">
+                            <li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_verify_email" role="tab" aria-selected="false">
                                 	<span class="kt-nav__link-icon"><i class="flaticon2-soft-icons-1"></i></span>
-                                    <span class="kt-nav__link-text">Acccount Information</span>
+                                    <span class="kt-nav__link-text">Verify My Account</span>
                                 </a>                                                 
-                            </li> --}}
+                            </li>
                             <li class="kt-nav__item">
                                 <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_change_password" role="tab" aria-selected="true">
 									<span class="kt-nav__link-icon"><i class="flaticon2-lock"></i></span>
@@ -415,6 +415,80 @@
 					</div>
 					<!--end: Bitcoin Information-->
 
+					<!--begin: Verify Email-->
+					<div class="tab-pane fade" id="kt_profile_tab_verify_email" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Verify Email<small>Click on the Send Verification Code button</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<div style="display: none;" class="kt-portlet__body" id="verifiedAcc">
+								<div class="kt-section kt-section--first">
+									<div class="kt-section__body">
+										<h4>Your account is verified!</h4>
+									</div>
+								</div>									
+							</div>
+							
+							<div class="kt-portlet__body" id="getCodeDiv">
+								<div class="kt-section kt-section--first">
+									<div class="kt-section__body">
+										<button type="submit" id="sendVerificationBtn" class="btn btn-brand">
+											<span id="verificationBtnSpinner" class="" role="status" aria-hidden="true"></span>
+											Send Verification Code
+										</button>
+										<input type="hidden" name="w_id" id="w_id" value="null">
+									</div>
+								</div>									
+							</div>
+
+
+							<form style="display: none;" class="kt-form kt-form--label-right" id="codeverifyFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="form-group row">
+												{{!-- <label class="col-xl-3 col-lg-3 col-form-label">Enter verification</label> --}}
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" name="" type="text" value="" placeholder="Enter Verification Code" id="token">
+												</div>
+											</div>
+											<a href="#" id="resendLinkBtn" class="kt-brand">Re-send Link</a>
+                                        	<input type="hidden" name="" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="verifyCodeBtn" class="btn btn-brand">
+													<span id="verifyAccBtn" class="" role="status" aria-hidden="true"></span>
+													Verify My Account
+												</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Bitcoin Information-->
+
 
 					<!--begin: Change Password -->
 					<div class="tab-pane fade" id="kt_profile_change_password" role="tabpanel">
@@ -556,5 +630,5 @@
 		</div>
     </div>
 </div>
-{{!-- <script src="/dist/js/user/profile.js"></script> --}}
-<script src="/js/user/profile.js"></script>
+<script src="/dist/js/user/profile.js"></script>
+{{!-- <script src="/js/user/profile.js"></script> --}}

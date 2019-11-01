@@ -32,7 +32,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-        <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
 
     <!--begin::Global Theme Styles(used by all pages) -->
     <link href="/assets/vendors/global/vendors.bundle.css" rel="stylesheet" type="text/css" />
@@ -149,44 +149,47 @@
                         </div>
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
 
-							<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
-								<div class="kt-header__topbar-user">
-									<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-									<span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
-									<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
-									<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-									<span
-										class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
-								</div>
-							</div>
+                            <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
+                                <div class="kt-header__topbar-user">
+                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
+                                    <span class="kt-header__topbar-username kt-hidden-mobile">{{user.lastname}}</span>
+                                    <img alt="Pic"
+                                        src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+                                    <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
+                                    <span
+                                        class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
+                                </div>
+                            </div>
 
-							<div
-								class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
-								<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
-									style="background-image: url('/assets/media/head_bg_sm.jpg')">
-									<div class="kt-user-card__wrapper">
-										<div class="kt-user-card__pic">
-											<img alt="Pic" src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
-										</div>
-										<div class="kt-user-card__details">
-											<div class="kt-user-card__name" style="font-size:13px">{{user.firstname}} {{user.lastname}}</div>
-											{{!-- <div class="kt-user-card__position" style="font-size:13px">{{user.email}}</div> --}}
-										</div>
-									</div>
-								</div>
+                            <div
+                                class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
+                                <div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile"
+                                    style="background-image: url('/assets/media/head_bg_sm.jpg')">
+                                    <div class="kt-user-card__wrapper">
+                                        <div class="kt-user-card__pic">
+                                            <img alt="Pic"
+                                                src="https://res.cloudinary.com/decloud23tech/image/upload/v1557816312/admin.png" />
+                                        </div>
+                                        <div class="kt-user-card__details">
+                                            <div class="kt-user-card__name" style="font-size:13px">{{user.firstname}}
+                                                {{user.lastname}}</div>
+                                            {{!-- <div class="kt-user-card__position" style="font-size:13px">{{user.email}}</div> --}}
+                                        </div>
+                                    </div>
+                                </div>
 
-								<ul class="kt-nav kt-margin-b-10">
-									<li class="kt-nav__item">
-										<a href="/logout" class="kt-nav__link">
-											<span class="kt-nav__link-icon"><i class="flaticon2-power"></i></span>
-											<span class="kt-nav__link-text">Sign Out</span>
-										</a>
-									</li>
-								</ul>
-							</div>
+                                <ul class="kt-nav kt-margin-b-10">
+                                    <li class="kt-nav__item">
+                                        <a href="/logout" class="kt-nav__link">
+                                            <span class="kt-nav__link-icon"><i class="flaticon2-power"></i></span>
+                                            <span class="kt-nav__link-text">Sign Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
 
-						</div>
-						<!--end: User Bar -->
+                        </div>
+                        <!--end: User Bar -->
                         <!--end: User Bar -->
                         <!--begin:: Quick Panel Toggler -->
                         <div class="kt-header__topbar-item kt-header__topbar-item--quick-panel">
@@ -740,6 +743,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" id="authverv" value="" />
     </div>
     <!-- end:: Quick Panel -->
 
@@ -802,7 +806,7 @@
     <!--begin::Page Scripts(used by this page) -->
     {{!-- <script src="/assets/js/demo1/pages/dashboard.js" type="text/javascript"></script> --}}
     <!--end::Page Scripts -->
-    <script src="/js/user/cart.js"></script>
+    <script src="/dist/js/user/cart.js"></script>
 </body>
 <!-- end::Body -->
 

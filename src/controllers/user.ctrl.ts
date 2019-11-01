@@ -148,13 +148,11 @@ export class UserController {
 		let transactions = await this._tService.getSalesTransaction();
 		return transactions;
 	}
-	
+
 	public async getPurchaseTransaction(): Promise<any[]> {
 		let transactions = await this._tService.getPurchaseTransaction();
 		return transactions;
 	}
-	
-	
 
 	public async updateTransaction(tid, operation) {
 		if (operation === "approve") {
@@ -290,6 +288,26 @@ export class UserController {
 
 	public async confirmTokenValidity(token: string): Promise<any> {
 		return await this._accService.checkTokenValidity(token);
+	}
+
+	public async sendToken(email: string, header: string): Promise<any> {
+		return await this._accService.sendVerificationCode(email, header);
+	}
+
+	public async verifyUser(token: string): Promise<any> {
+		return await this._accService.verifyAccount(token);
+	}
+
+	public async isEmailExist(email: string): Promise<boolean> {
+		return await this._userService.isExist(email);
+	}
+
+	public async isPhoneExist(phone: any): Promise<boolean> {
+		return await this._userService.getByPhone(phone);
+	}
+
+	public async isUserVerified(id: any): Promise<any> {
+		return await this._userService.isVerified(id);
 	}
 
 	/**

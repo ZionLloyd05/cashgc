@@ -63,6 +63,43 @@ export class UserService {
 		else return null;
 	}
 
+	public async isExist(email: string): Promise<boolean> {
+		const user = await this.getByEmail(email);
+		if (user) return true;
+		else return false;
+	}
+
+	public async isVerified(id: number): Promise<any> {
+		const user = await this.getById(id);
+
+		if(user.isVerified){
+			return true;
+		}
+
+		return false;
+	}
+
+	public async isPhoneExist(phone: string): Promise<boolean> {
+		const user = await this.getByPhone(phone);
+		if (user) return true;
+		else return false;
+	}
+
+	
+	public async getByPhone(phone: any): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		const userRepository = await db.getRepository("user");
+
+		const userInDb = await userRepository
+			.createQueryBuilder()
+			.where("user.phone like :phonenumber",  {phonenumber: '%' + phone + '%' })
+			.getOne();
+ 
+		if (userInDb) return userInDb;
+		else return null;
+	}
+
+
 	public async addToCart(
 		gccId: number,
 		userId: number,
@@ -174,12 +211,6 @@ export class UserService {
 			totalPrice
 		};
 		return itemBundle;
-	}
-
-	public async isExist(email: string): Promise<boolean> {
-		const user = await this.getByEmail(email);
-		if (user) return true;
-		else return false;
 	}
 
 	public async authenticate(

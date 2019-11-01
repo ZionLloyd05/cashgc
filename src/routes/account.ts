@@ -15,6 +15,9 @@ export class AccountRoute implements IRoute {
 
 		router.get("/account/reset/:token", this.serveResetView.bind(this));
 		router.post("/account/reset/:token", this.updatePassword.bind(this));
+
+		router.post("/account/sendtoken", this.sendToken.bind(this));
+		router.post("/account/verifyme/:token", this.verifyUser.bind(this));
 	}
 
 	private async serveResetView(req: Request, res: Response) {
@@ -46,6 +49,39 @@ export class AccountRoute implements IRoute {
 		);
 		if (response == true) {
 			res.redirect("/signin");
+		}
+	}
+
+	private async sendToken(req: Request, res: Response) {
+		let userEmail = req.user.email;
+		let header = req.headers.host;
+
+		let response = await this._userController.sendToken(userEmail, header);
+
+		if (response === true) {
+			res.send({
+				status: "success"
+			});
+		} else {
+			res.send({
+				status: "Account not found"
+			});
+		}
+	}
+	// next up --> test sending of token
+	private async verifyUser(req: Request, res: Response) {
+		let token = req.params.token;
+
+		let response = await this._userController.verifyUser(token);
+
+		if (response === true) {
+			res.send({
+				status: "success"
+			});
+		} else {
+			res.send({
+				status: "Something went wrong, try again"
+			});
 		}
 	}
 }

@@ -31,12 +31,20 @@ $("#signup").validate({
         },
         email: {
             required: true,
-            email: true
+            email: true,
+            remote: {
+                url: `/user/isemailexist`,
+                type: "post"
+            }
         },
-        telephone: {
+        phone: {
             required: true,
             digits: true,
-            maxlength: 12
+            maxlength: 12,
+            remote: {
+                url: '/user/isphoneexist',
+                type: "post"
+            }
         },
         password: {
             required: true,
@@ -58,11 +66,13 @@ $("#signup").validate({
         },
         email: {
             required: "Email is required",
-            email: "Invalid Email"
+            email: "Invalid Email",
+            remote: "Email has already been taken"
         },
-        telephone: {
+        phone: {
             required: "Phone number is required",
-            digits: "Phone must be digits"
+            digits: "Phone must be digits",
+            remote: "Phone number has been taken"
         },
         password: {
             required: "Password is required",

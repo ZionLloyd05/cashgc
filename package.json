@@ -14,6 +14,7 @@
   "dependencies": {
     "@babel/core": "^7.4.5",
     "@paypal/checkout-server-sdk": "^1.0.1",
+    "@sendgrid/mail": "^6.4.0",
     "@types/chai-http": "^4.2.0",
     "@types/connect-flash": "0.0.34",
     "@types/cors": "^2.8.5",

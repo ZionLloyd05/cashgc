@@ -57,6 +57,10 @@ export class UserRoute implements IRoute {
 	>(PaystackService);
 
 	initialize(router: Router): void {
+		
+		router.post("/user/isemailexist", this.isEmailUnique.bind(this));
+		router.post("/user/isphoneexist", this.isPhoneUnique.bind(this));
+
 		const csrfProtection = csurf();
 		router.use(csrfProtection);
 
@@ -128,6 +132,7 @@ export class UserRoute implements IRoute {
 		 */
 		router.get("/user/payment-success", this.executePayment.bind(this));
 		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
+		
 		// router.get("/user/successpage", this.serveSuccessView.bind(this));
 
 		/**
@@ -153,6 +158,7 @@ export class UserRoute implements IRoute {
 		router.post("/user/canmaketransaction", this.canMakeTransaction.bind(this));
 		router.get("/user/isbtcset", this.isBitCoinSet.bind(this));
 		router.get("/user/isbankaccountset", this.isBankAccountSet.bind(this));
+		router.get("/user/authcheck", this.isUserVerified.bind(this));
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -665,6 +671,33 @@ export class UserRoute implements IRoute {
 			data: account
 		});
 	}
+
+		
+	private async isEmailUnique(req: Request, res: Response){
+		let userEmail = req.body.email;
+		let isExist = await this._userController.isEmailExist(userEmail);
+
+		res.send(!isExist);
+	}
+
+	private async isPhoneUnique(req: Request, res: Response){
+		let userPhone = req.body.phone;
+		let isExist = await this._userController.isPhoneExist(userPhone);
+
+		res.send(!isExist);
+	}
+
+	private async isUserVerified(req: Request, res: Response){
+		let uid = req.user.id;
+
+		let verificationStatus = await this._userController.isUserVerified(uid);
+
+		res.send({
+			status: verificationStatus
+		})
+	}
+	
+
 
 	// public async getOrderOperation(req: Request, res: Response) {
 	// 	if(req.query && req.query.id){

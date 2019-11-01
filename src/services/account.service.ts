@@ -16,9 +16,7 @@ export class AccountService {
 	public async forgotPassword(email: string, header: string): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 		// 1. check if email exist
-		let user = await db.getRepository(User).findOne({
-			where: { email: email }
-		});
+		let user = await this._userService.getByEmail(email);
 
 		// console.log(user);
 
@@ -33,20 +31,19 @@ export class AccountService {
 		// console.log("true");
 
 		//2. set reset token and expiry
-		user.resetPasswordToken = crypto.randomBytes(25).toString("hex");
-
+		user.utoken = this.generateToken(25);
 		var now = new Date();
 		now.setMinutes(now.getMinutes() + 15); // timestamp
 		now = new Date(now); // Date object
-		user.resetPasswordExpiryDate = now; // 5 minutes from now
+		user.uTokenExpiryDate = now; // 5 minutes from now
 
 		await db.getRepository(User).save(user);
 
 		// console.log(user);
 
 		// 3. send token to email
-		const url = `${header}/account/reset/${user.resetPasswordToken}`;
-		const htmlContent = `<h3>Hello dear user,</h3><br/><p>Kindly click <a href="${url}"><b>here</b></a>, or copy and paste the link in your browser to reset your password,</p><br/>${url}<br/><p>From Cash GiftCode</p>`;
+		const url = `${header}/account/reset/${user.utoken}`;
+		const htmlContent = `<h3>Hello Dear User,</h3><br/><p>Kindly click <a href="${url}"><b>here</b></a>, or copy and paste the link in your browser to reset your password,</p><br/>${url}<br/><p>From Cash GiftCode</p>`;
 		const textContent = `Hi dear user, click on the link attached to reset your password. ${url} , From Cash GiftCode`;
 
 		let payload = {
@@ -58,12 +55,77 @@ export class AccountService {
 
 		// console.log(payload);
 
-		await this.sendPwdEmail(payload);
+		await this.sendEmail(payload);
 
 		return true;
 	}
 
-	public async resetPasswordValidity(token: string): Promise<any> {
+	public async sendVerificationCode(email: string, header: string) {
+		const db = await DatabaseProvider.getConnection();
+		// 1. check if email exist
+		let user = await this._userService.getByEmail(email);
+
+		// console.log(user);
+
+		let error = "";
+
+		if (!user) {
+			// console.log("false");
+			error = "Account does not exist";
+			console.log(error);
+			return false;
+		}
+
+		user.utoken = "CG" + this.generateToken(7);
+
+		var now = new Date();
+		now.setMinutes(now.getMinutes() + 15); // timestamp
+		now = new Date(now); // Date object
+		user.uTokenExpiryDate = now; // 5 minutes from now
+
+		await db.getRepository(User).save(user);
+
+		await db.getRepository(User).save(user);
+
+		// console.log(user);
+
+		// 3. send token to email
+		const token = user.utoken;
+		const htmlContent = `<h3>Hi dear user,</h3><br/><p>Here's your token : ${token}</p>`;
+		const textContent = `Hi dear user, Here's your token ${token} , From Cash GiftCode`;
+
+		let payload = {
+			user,
+			subject: "Email Verification Token",
+			htmlContent,
+			textContent
+		};
+
+		await this.sendEmail(payload);
+
+		return true;
+	}
+
+	public async verifyAccount(token: string): Promise<any> {
+		console.log(token);
+		const db = await DatabaseProvider.getConnection();
+
+		let user = await this.isTokenValid(token);
+		console.log(user);
+		if (user == null) return false;
+
+		user.isVerified = true;
+		user.utoken = "";
+		user.uTokenExpiryDate = "";
+
+		let userUpdated = await db.getRepository(User).save(user);
+		console.log(userUpdated);
+
+		if (Object.keys(userUpdated).length > 1) return true;
+		else return false;
+	}
+
+	public async isTokenValid(token: string): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 
 		var now = new Date();
@@ -73,21 +135,22 @@ export class AccountService {
 		let user = await db
 			.getRepository(User)
 			.createQueryBuilder("user")
-			.where({ resetPasswordToken: token })
+			.where({ utoken: token })
 			// .andWhere( 'resetPasswordExpires' > now )
 			.getOne();
 
-		let resetExpireTimeOut = user.resetPasswordExpiryDate;
+		console.log(user);
 
-		if (resetExpireTimeOut > now) {
-			return user;
-		} else {
-			return null;
+		if (user != null) {
+			let resetExpireTimeOut = user.uTokenExpiryDate;
+			if (resetExpireTimeOut > now) return user;
 		}
+
+		return null;
 	}
 
 	public async checkTokenValidity(token: string): Promise<any> {
-		let user = await this.resetPasswordValidity(token);
+		let user = await this.isTokenValid(token);
 
 		if (user == null) return false;
 
@@ -102,15 +165,15 @@ export class AccountService {
 		// console.log(newPassword);
 		const db = await DatabaseProvider.getConnection();
 
-		let user = await this.resetPasswordValidity(token);
+		let user = await this.isTokenValid(token);
 
 		if (user == null) return false;
 
 		// console.log(user);
 		// console.log(newPassword);
 		user.password = this._userService.hashPassword(newPassword);
-		user.resetPasswordExpiryDate = undefined;
-		user.resetPasswordToken = undefined;
+		user.resetPasswordExpiryDate = "";
+		user.resetPasswordToken = "";
 
 		let userUpdated = await db.getRepository(User).save(user);
 
@@ -120,10 +183,14 @@ export class AccountService {
 		else return false;
 	}
 
+	public generateToken(length: number): any {
+		if (length != null) return crypto.randomBytes(length).toString("hex");
+	}
+
 	/**
-	 * sendPwdEmail
+	 * sendEmail
 	 */
-	public async sendPwdEmail(payload) {
+	public async sendEmail(payload) {
 		const mail = new Mail();
 
 		await mail.send(payload);

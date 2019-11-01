@@ -27,6 +27,8 @@ export interface IUserDTO {
 	phone: string;
 
 	country: string;
+
+	isVerified?: boolean;
 }
 
 @Entity()
@@ -61,14 +63,13 @@ export class User implements IUserDTO {
 	public isVerified?: boolean;
 
 	@Column()
-	public resetPasswordToken?: string;
-
-	@Column('datetime')
-	public resetPasswordExpiryDate?: Date;
-
+	public password?: string;
 
 	@Column()
-	public password?: string;
+	public utoken?: string;
+
+	@Column("datetime")
+	public uTokenExpiryDate?: Date;
 
 	@OneToMany(type => CartItem, cartItem => cartItem.user)
 	public cartItems?: CartItem[];

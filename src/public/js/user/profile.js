@@ -1,9 +1,28 @@
 'use strict'
 $(document).ready(function () {
     loadBankInfo();
-    generateCaptcha()
+    generateCaptcha();
     loadWalletInfo();
+    confirmVerificationStatus();
 })
+
+function confirmVerificationStatus() {
+    $.ajax({
+        url: "/user/authcheck",
+        method: "get",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            console.log(response.status);
+            if (response.status == true) {
+                $('#verifiedAcc').show("fadeIn");
+                $('#getCodeDiv').hide("fadeOut");
+            }
+        }
+    })
+}
 
 var generateCaptcha = function () {
     let num11 = document.getElementById('num11')
@@ -322,7 +341,7 @@ var loadWalletInfo = function () {
             "X-CSRF-TOKEN": csrfToken
         },
         success: function (res) {
-            console.log(res);
+
             if (res.data && res.data.lenght != 0) {
                 $('#wallet').val(res.data.wid);
                 $('#w_id').val(res.data.id);
@@ -330,3 +349,63 @@ var loadWalletInfo = function () {
         }
     })
 }
+
+$(document).on('click', '#sendVerificationBtn', function () {
+
+    var spinner = $('#verificationBtnSpinner');
+    spinner.addClass("spinner-grow spinner-grow-sm");
+    $(this).attr("disabled", true);
+
+    $.ajax({
+        url: "/account/sendtoken",
+        method: "POST",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (res) {
+            spinner.removeClass("spinner-grow spinner-grow-sm");
+            $(this).attr("disabled", false);
+            if (res.status == "success") {
+                $('#getCodeDiv').hide('fadeOut');
+                $('#codeverifyFrm').show('fadeIn');
+            } else {
+                swal('Verification Failed', 'Account does not exist', 'error');
+            }
+        }
+    })
+})
+
+$(document).on('click', '#resendLinkBtn', function () {
+    $('#getCodeDiv').show('fadeIn');
+    $('#codeverifyFrm').hide('fadeOut');
+})
+
+$(document).on('click', '#verifyCodeBtn', function () {
+    var spinner = $('#verifyAccBtn');
+    spinner.addClass("spinner-grow spinner-grow-sm");
+    $(this).attr("disabled", true);
+    var token = $('#token').val();
+
+    $.ajax({
+        url: `/account/verifyme/${token}`,
+        method: "POST",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (res) {
+
+            spinner.removeClass("spinner-grow spinner-grow-sm");
+            $(this).removeAttr("disabled");
+            if (res.status == "success") {
+                swal('Verification Successful', 'Your account has been verified', 'success')
+                    .then(val => {
+                        window.location = '/user/store';
+                    })
+            } else {
+                swal('Verification Failed', 'Kindly try again', 'error');
+            }
+        }
+    })
+})

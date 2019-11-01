@@ -1,7 +1,8 @@
 "use strict"
 
 $(document).ready(function () {
-    loadUserCartItem()
+    loadUserCartItem();
+    confirmVerificationStatus();
 })
 
 var csrfToken = $('#_csrf').val();
@@ -16,6 +17,27 @@ var currentCartItem = [];
 
 var isTouched = false;
 var cartResponse = '';
+
+function confirmVerificationStatus() {
+    $.ajax({
+        url: "/user/authcheck",
+        method: "get",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            console.log(response.status);
+            if (response.status != true) {
+                swal("Account not verified", "Your account has to be verified to make transactions, click ok to verify now.", "info")
+                    .then(val => {
+                        window.location = '/user/profile';
+                    })
+            }
+            authField.val("0123");
+        }
+    })
+}
 
 var loadUserCartItem = function () {
     spinner.show();

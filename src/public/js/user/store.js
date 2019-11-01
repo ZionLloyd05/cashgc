@@ -1,15 +1,12 @@
 var spinner = $('#spinner');
+
+var authField;
 $(document).ready(function () {
+    authField = $('#authverv');
+    if (authField.val() != "0123")
+        confirmVerificationStatus();
     loadCodeCategories();
-    // onlineCheck().then((res) => {
-    //     })
-    //     .catch(err => {
-    //         swal("You're not connected", "Click ok to reload the page", "error")
-    //             .then(val => {
-    //                 window.location.reload();
-    //             })
-    //     })
-    // spinner.show();
+
 })
 
 var cart = $("#cart_no");
@@ -17,6 +14,27 @@ var csrfToken = $('#_csrf').val();
 
 var cartItemTotal = $('#cartItemTotal');
 var cartItemBody = $('#cartItemBody');
+
+function confirmVerificationStatus() {
+    $.ajax({
+        url: "/user/authcheck",
+        method: "get",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            console.log(response.status);
+            if (response.status != true) {
+                swal("Account not verified", "Your account has to be verified to make transactions, click ok to verify now.", "info")
+                    .then(val => {
+                        window.location = '/user/profile';
+                    })
+            }
+            authField.val("0123");
+        }
+    })
+}
 
 
 var onlineCheck = function () {
