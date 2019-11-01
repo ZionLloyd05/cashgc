@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+  confirmVerificationStatus();
   getExchangeRate();
   userHasBankDetailsSet();
   userHasBitcoinWalletSet();
@@ -7,6 +9,28 @@ $(document).ready(function () {
 
   var postedCodes = [];
   var postedCodeIds = [];
+
+  function confirmVerificationStatus() {
+    $.ajax({
+        url: "/user/authcheck",
+        method: "get",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            console.log(response.status);
+            if (response.status != true) {
+                swal("Account not verified", "Your account has to be verified to make transactions, click ok to verify now.", "info")
+                    .then(val => {
+                        window.location = '/user/profile';
+                    })
+            }
+            authField.val("0123");
+        }
+    })
+}
+
 
   $(document).on("click", "#verify", function (e) {
     e.preventDefault();
@@ -233,7 +257,7 @@ $(document).ready(function () {
             });
           }
         });
-    } else if (paymentOption === "manual"){
+    } else if (paymentOption === "manual") {
       $("#proceedBtn").attr("disabled", true);
 
       let transactionPayload = {
@@ -244,30 +268,30 @@ $(document).ready(function () {
         amount: totalPrice
       };
 
-      
-      fetch("/user/transaction", {
-        method: "POST",
-        body: JSON.stringify(transactionPayload),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
 
-        $("#proceedBtn").attr("disabled", false);
-        btn.removeClass(
-          "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
-        );
-        swal(
-          "Transaction Posted Successfully!",
-          "Processing begins immediately.",
-          "success"
-        ).then(value => {
-          window.location.reload();
+      fetch("/user/transaction", {
+          method: "POST",
+          body: JSON.stringify(transactionPayload),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+          $("#proceedBtn").attr("disabled", false);
+          btn.removeClass(
+            "kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary"
+          );
+          swal(
+            "Transaction Posted Successfully!",
+            "Processing begins immediately.",
+            "success"
+          ).then(value => {
+            window.location.reload();
+          });
         });
-      });
     }
   });
 });
