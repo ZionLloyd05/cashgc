@@ -367,6 +367,7 @@ $(document).on('click', '#sendVerificationBtn', function () {
             spinner.removeClass("spinner-grow spinner-grow-sm");
             $(this).attr("disabled", false);
             if (res.status == "success") {
+                swal('Token Sent to you email', "If you don't get it immediately, wait for few seconds before you request for a re-send", "success");
                 $('#getCodeDiv').hide('fadeOut');
                 $('#codeverifyFrm').show('fadeIn');
             } else {
