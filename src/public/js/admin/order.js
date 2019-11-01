@@ -46,7 +46,7 @@ var bindTableToData = function (response) {
                 if (isProcessed == true) {
                     return "<span class='kt-badge kt-badge--success kt-badge--inline'>Processed</span>"
                 } else if (isProcessed == false) {
-                    return "<span class='kt-badge kt-badge--warning kt-badge--inline'>Pending</span>"
+                    return "<span class='kt-badge kt-badge--warning kt-badge--inline'>Not Processed</span>"
                 }
             }
         }, {
@@ -57,7 +57,6 @@ var bindTableToData = function (response) {
         }, {
             data: "id",
             render: function (id, type, row, meta) {
-                console.log(row.isProcessed)
                 if (row.isProcessed == true) {
                     return "Order Processed"
                 } else {
@@ -65,7 +64,7 @@ var bindTableToData = function (response) {
                     <span style="overflow: visible; position: relative; width: 110px;">
                     <a title="View Full Details" data-id=${id} id="details" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md" id="viewOrder"><i class="la la-eye"></i></a>
                         <a id="process" data-idx=${meta.row}
-                        title="Process Order" data-tid=${id} data-uid=${row.transaction.user.id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
+                        title="Process Order" data-oid=${id} data-tid=${row.transaction.id} data-uid=${row.transaction.user.id} style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i data-idx=${meta.row} id="edit" class="la la-check-square"></i></a>
                     </span>
                 `
                 }
@@ -78,12 +77,12 @@ var bindTableToData = function (response) {
 $(document).on('click', '#process', function () {
     $("#statusModal").modal("show")
     var btn = $(this)
-    var tid = btn.attr("data-tid")
-    var uid = btn.attr("data-tid")
+    var oid = btn.attr("data-oid")
+    var uid = btn.attr("data-uid")
     var rwIdx = btn.attr("data-idx")
 
     let payload = {
-        tid,
+        oid,
         uid
     }
 
@@ -103,7 +102,7 @@ $(document).on('click', '#process', function () {
                 swal("Order was process successfully", "Order has been processed and  giftcode has been sent.", "success");
                 updateTableRow(data, rwIdx)
             } else {
-                swal("Order failed to process", "Something is wrong", "error");
+                swal("Order failed to process", data, "error");
             }
             console.log(response)
         })

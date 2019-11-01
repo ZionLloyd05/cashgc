@@ -42,8 +42,7 @@ export class TransactionService {
 				payload.gcodes.forEach(async codeId => {
 					await this.setCodeToUsed(codeId);
 				});
-		}else if(payment === 4 && type === 1){
-			
+		} else if (payment === 4 && type === 1) {
 			// converting dollar to naira
 			payload.amount = await this._rService.convertDollarToNaira(
 				Number(payload.amount)
@@ -53,9 +52,7 @@ export class TransactionService {
 				payload.gcodes.forEach(async codeId => {
 					await this.setCodeToUsed(codeId);
 				});
-
 		} else if (payment === 1 && type === 1) {
-			
 			// set all coin to is used
 			payload.gcodes &&
 				payload.gcodes.forEach(async codeId => {
@@ -246,7 +243,7 @@ export class TransactionService {
 		return transactions;
 	}
 
-	public async approveBitcoinTransaction(tid: number): Promise<any> {
+	public async approveTransaction(tid: number): Promise<any> {
 		let db = await DatabaseProvider.getConnection();
 
 		await createQueryBuilder("Transaction")
@@ -263,7 +260,7 @@ export class TransactionService {
 		return newTransaction;
 	}
 
-	public async declineBitcoinTransaction(tid: number): Promise<any> {
+	public async declineTransaction(tid: number): Promise<any> {
 		let db = await DatabaseProvider.getConnection();
 
 		await createQueryBuilder("Transaction")
@@ -276,7 +273,7 @@ export class TransactionService {
 			relations: ["user"],
 			where: { id: tid }
 		});
-
+		console.log(newTransaction);
 		return newTransaction;
 	}
 

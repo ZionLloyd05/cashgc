@@ -155,12 +155,13 @@ export class UserController {
 	}
 
 	public async updateTransaction(tid, operation) {
+		console.log(operation);
 		if (operation === "approve") {
 			// console.log("approve");
-			return await this._tService.approveBitcoinTransaction(tid);
+			return await this._tService.approveTransaction(tid);
 		} else if (operation === "decline") {
 			// console.log("decline");
-			return await this._tService.declineBitcoinTransaction(tid);
+			return await this._tService.declineTransaction(tid);
 		}
 	}
 

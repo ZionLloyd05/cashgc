@@ -181,36 +181,43 @@ export class OrderService {
 	public async processOrder(orderId: number, user: any): Promise<any> {
 		// get order
 		let order = await this.getById(orderId);
+		console.log(order.transaction.status);
+		if (order.transaction.status != 1) {
+			// set order isProcess == true
+			let response = await this.setOrderProcessToTrue(orderId);
+			console.log(response);
 
-		// set order isProcess == true
-		let response = await this.setOrderProcessToTrue(orderId);
-		console.log(response);
+			if (typeof response === "string") {
+				return response;
+			}
 
-		if (typeof response === "string") {
-			return response;
-		}
+			try {
+				// set transaction status == success
+				await this._tService.setTransactionStatusToSuccess(
+					order.transaction.id
+				);
 
-		try {
-			// set transaction status == success
-			await this._tService.setTransactionStatusToSuccess(order.transaction.id);
+				// generate codes
+				// get cart item
+				let cartItem = [];
 
-			// generate codes
-			// get cart item
-			let cartItem = [];
+				let orderItem = await this._oItemService.getOrderItemsByOrder(orderId);
 
-			let orderItem = await this._oItemService.getOrderItemsByOrder(orderId);
+				let genCodes = await this._gcService.generateCodes(orderItem);
 
-			let genCodes = await this._gcService.generateCodes(orderItem);
+				await this._tService.updateTransactionWithGcodes(
+					genCodes,
+					order.transaction.id
+				);
 
-			await this._tService.updateTransactionWithGcodes(
-				genCodes,
-				order.transaction.id
-			);
+				let updatedOrder = await this.getById(orderId);
 
-			let updatedOrder = await this.getById(orderId);
-
-			return updatedOrder;
-		} catch (error) {
+				return updatedOrder;
+			} catch (error) {
+				return error;
+			}
+		} else {
+			let error = "Transaction for this order has been declined";
 			return error;
 		}
 	}

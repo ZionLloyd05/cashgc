@@ -1,9 +1,6 @@
 "use strict"
 $(document).ready(function () {
     loadTransactionTable();
-    // $("#kt_toast_1").toast({
-    //     delay: 10e3
-    // })
 })
 
 var csrfToken = $('#_csrf').val();
@@ -49,7 +46,7 @@ var bindTableToData = function (response) {
                 if (status == 0) {
                     return "<span class='kt-badge kt-badge--success kt-badge--inline'>Success</span>"
                 } else if (status == 1) {
-                    return "<span class='kt-badge kt-badge--danger kt-badge--inline'>Failed</span>"
+                    return "<span class='kt-badge kt-badge--danger kt-badge--inline'>Declined</span>"
                 } else if (status == 2) {
                     return "<span class='kt-badge kt-badge--warning kt-badge--inline'>Pending</span>"
                 }
@@ -96,9 +93,9 @@ var bindTableToData = function (response) {
                 `
                 } else if (row.payment == 3 && row.type == 0) {
                     //bank order transaction
-                    if (row.status == 2) {
+                    if (row.status != 0) {
                         return `
-                            <a href="/admin/orders">Process Transaction</a>
+                            <a href="/admin/orders"><i class="fas fa-check"></i></a> | <i data-tid=${id} data-idx=${meta.row} data-state=${row.status} class="kt-brand fas fa-ban" style="cursor:pointer;" id="decline"></i>
                         `
                     } else {
                         return 'Processed'
@@ -111,6 +108,34 @@ var bindTableToData = function (response) {
     })
     spinner.hide();
 }
+
+$(document).on('click', '#decline', function () {
+
+    var transactId = $(this).attr("data-tid");
+    var rwIdx = $(this).attr("data-idx");
+    var state = $(this).attr("data-state");
+
+    if (state == 1) {
+        swal("Transaction declined already!", "", "error");
+        return;
+    }
+
+    $.ajax({
+        url: `/admin/transactions/?tid=${transactId}&operation=decline`,
+        method: "POST",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            let data = response.data
+            // console.log(data)
+            swal("Transaction declined!", "", "success")
+
+            updateTableRow(data, rwIdx)
+        }
+    })
+})
 
 $(document).on('click', '#viewWallet', function (e) {
     e.preventDefault();

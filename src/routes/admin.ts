@@ -462,12 +462,12 @@ export class AdminRoute implements IRoute {
 	}
 
 	private async processOrder(req: Request, res: Response) {
-		let { tid, uid } = req.body;
+		let {uid, oid } = req.body;
 
 		let user = new User();
 		user.id = uid;
 
-		let response = await this._userController.processOrder(tid, user);
+		let response = await this._userController.processOrder(oid, user);
 
 		return res.send({
 			status: "true",
