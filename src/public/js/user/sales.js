@@ -1,6 +1,10 @@
+var authField;
 $(document).ready(function () {
-
-  confirmVerificationStatus();
+  authField = $('#authverv');
+  console.log(authField.val());
+  console.log(authField.val() != "0123");
+  if (authField.val() != "0123")
+    confirmVerificationStatus();
   getExchangeRate();
   userHasBankDetailsSet();
   userHasBitcoinWalletSet();
@@ -12,24 +16,24 @@ $(document).ready(function () {
 
   function confirmVerificationStatus() {
     $.ajax({
-        url: "/user/authcheck",
-        method: "get",
-        dataType: "json",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken
-        },
-        success: function (response) {
-            console.log(response.status);
-            if (response.status != true) {
-                swal("Account not verified", "Your account has to be verified to make transactions, click ok to verify now.", "info")
-                    .then(val => {
-                        window.location = '/user/profile';
-                    })
-            }
-            authField.val("0123");
+      url: "/user/authcheck",
+      method: "get",
+      dataType: "json",
+      headers: {
+        "X-CSRF-TOKEN": csrfToken
+      },
+      success: function (response) {
+        console.log(response.status);
+        if (response.status != true) {
+          swal("Account not verified", "Your account has to be verified to make transactions, click ok to verify now.", "info")
+            .then(val => {
+              window.location = '/user/profile';
+            })
         }
+        authField.val("0123");
+      }
     })
-}
+  }
 
 
   $(document).on("click", "#verify", function (e) {
@@ -62,6 +66,9 @@ $(document).ready(function () {
 
         if (res.status == "invalid") {
           span.text("The gift code is invalid");
+          span.show();
+        } else if (res.status == "not activated") {
+          span.text("Valid, but Inactive Code");
           span.show();
         } else if (res.status == "used") {
           btn.text("Used");

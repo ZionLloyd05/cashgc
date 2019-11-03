@@ -38,6 +38,7 @@ var bindTableToData = function (response) {
         }, {
             data: "receiptUrl",
             render: function (imageUrl) {
+                P
                 return "<a href=" + imageUrl + " target='_blank' class='kt-font-bold kt-font-primary'>View Image</a>"
             }
         }, {

@@ -1,3 +1,4 @@
+import { SharedService } from './../services/shared.service';
 import { AccountService } from "./../services/account.service";
 import { OrderService } from "./../services/order.service";
 import { RateService } from "./../services/rate.service";
@@ -30,5 +31,6 @@ DIContainer.bind<RateService>(RateService).toSelf();
 DIContainer.bind<OrderService>(OrderService).toSelf();
 DIContainer.bind<OrderItemService>(OrderItemService).toSelf();
 DIContainer.bind<AccountService>(AccountService).toSelf();
+DIContainer.bind<SharedService>(SharedService).toSelf();
 
 export default DIContainer;

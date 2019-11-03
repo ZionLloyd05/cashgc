@@ -1,3 +1,4 @@
+import { SharedService } from './shared.service';
 import { UserService } from "./user.service";
 import { DatabaseProvider } from "./../database/index";
 import { User } from "../models/User";
@@ -11,6 +12,10 @@ import { injectable } from "inversify";
 export class AccountService {
 	private _userService: UserService = DIContainer.resolve<UserService>(
 		UserService
+	);
+
+	private _sharedService: SharedService = DIContainer.resolve<SharedService>(
+		SharedService
 	);
 
 	public async forgotPassword(email: string, header: string): Promise<any> {
@@ -31,7 +36,7 @@ export class AccountService {
 		// console.log("true");
 
 		//2. set reset token and expiry
-		user.utoken = this.generateToken(25);
+		user.utoken = this._sharedService.generateToken(25);
 		var now = new Date();
 		now.setMinutes(now.getMinutes() + 15); // timestamp
 		now = new Date(now); // Date object
@@ -76,7 +81,7 @@ export class AccountService {
 			return false;
 		}
 
-		user.utoken = "CG" + this.generateToken(7);
+		user.utoken = "CG_" + this._sharedService.generateToken(7);
 
 		var now = new Date();
 		now.setMinutes(now.getMinutes() + 15); // timestamp
@@ -182,11 +187,7 @@ export class AccountService {
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;
 	}
-
-	public generateToken(length: number): any {
-		if (length != null) return crypto.randomBytes(length).toString("hex");
-	}
-
+	
 	/**
 	 * sendEmail
 	 */

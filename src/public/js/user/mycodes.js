@@ -71,6 +71,14 @@ var bindTableToData = function (response) {
                 `
             }
         }, {
+            data: "isActivated",
+            render: function (isActivated) {
+                if (isActivated == "true")
+                    return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Activate</span>`
+                else
+                    return `<span class="kt-badge  kt-badge--danger kt-badge--inline kt-badge--pill">Inactive</span>`
+            }
+        }, {
             data: "date",
             render: function (date, type, row, meta) {
                 return moment(date).format('LLL');

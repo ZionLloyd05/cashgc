@@ -7,7 +7,6 @@ import config from "../config";
 @injectable()
 export class GCCService {
 	private cloudinary: any;
-
 	/**
 	 *
 	 */
@@ -87,7 +86,7 @@ export class GCCService {
 
 	public async uploadImage(filePath: any): Promise<string> {
 		const result = await cloudinary.uploader.upload(filePath);
-		console.log(result)
+		console.log(result);
 		return result.secure_url;
 	}
 

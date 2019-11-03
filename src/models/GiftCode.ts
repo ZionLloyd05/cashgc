@@ -25,6 +25,9 @@ export class GiftCode {
 	@Column()
 	public dateUsed?: Date;
 
+	@Column({ default: false })
+	public isActivated: boolean;
+
 	@ManyToMany(type => Transaction)
 	public transactions?: Transaction[];
 

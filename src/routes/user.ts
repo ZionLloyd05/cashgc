@@ -467,6 +467,11 @@ export class UserRoute implements IRoute {
 				status: "used"
 			});
 		}
+		else if(gcInDb && gcInDb.isUsed == false && gcInDb.isActivated == false){
+			return res.send({
+				status: "not activated"
+			});
+		}
 		return res.send({
 			status: "valid",
 			data: gcInDb

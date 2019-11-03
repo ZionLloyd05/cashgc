@@ -284,7 +284,9 @@ export class PingRoute implements IRoute {
 		// 	"0258999609",
 		// 	"058"
 		// );
-		let response = await this._tService.getSalesTransaction();
+		var payload = [2, 3, 4, 5];
+
+		let response = await this._gcService.bulkActivation(payload);
 
 		// console.log("hhgh");
 		// // res.send({ response });
@@ -297,6 +299,7 @@ export class PingRoute implements IRoute {
 
 		// console.log(response.data);
 		// response.data && console.log(response.data.status);
+
 		res.send(response);
 	}
 }

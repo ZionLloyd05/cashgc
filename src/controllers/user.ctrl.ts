@@ -111,6 +111,14 @@ export class UserController {
 		return gcInDb;
 	}
 
+	
+	/**
+	 * Bulk action on gift codes
+	 */
+	public async bulkAction(payload: any[], operation): Promise<any> {
+		return await this._gcService.bulkActivation(payload, operation);
+	}
+
 	/**
 	 * Transaction Methods
 	 */

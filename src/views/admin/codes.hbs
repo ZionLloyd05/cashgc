@@ -38,6 +38,33 @@
                     </div>
 
                     <div class="kt-portlet__body">
+                        <div class="kt-form kt-fork--label-right kt-margin-b-10">
+                            <div class="row align-items-center">
+                                <div class="col-xl-8 order-2 order-xl-1">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+                                            <div class="kt-form__group kt-form__group--inline">
+                                                <div class="kt-form__control">
+                                                    <select class="form-control" id="actionSelect">
+                                                        <option>Select Action</option>
+                                                        <option value="activate">Bulk Code Activation</option>
+                                                        <option value="deactivate">Bulk Code Deactivation</option>
+                                                    </select>
+                                                </div>
+                                                <div class="kt-input-icon kt-input-icon--left runActionBtn">
+                                                    <input type="submit" class="form-control" value="Run Action"
+                                                        id="runAction">
+                                                    <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                                                        <span><i class="la la-cogs"></i></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="kt-portlet__content">
 
                             <table class="table table-striped- table-bordered table-hover" id="codeTbl">
@@ -46,6 +73,7 @@
                                         <th>S/N</th>
                                         <th>Code Title</th>
                                         <th>Code</th>
+                                        <th>State</th>
                                         <th>Date Created</th>
                                         <th>Status</th>
                                         <th>Transact Type</th>
@@ -66,9 +94,12 @@
             </div>
         </div>
     </div>
-    <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+    <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}" />
 </div>
 
+<link type="text/css" href="/vendor/Datatable/dataTables.css" rel="stylesheet" />
+<script type="text/javascript" src="/vendor/Datatable/dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
-<script src="/dist/js/admin/codes.js"></script>
+{{!-- <script src="/dist/js/admin/codes.js"></script> --}}
+<script src="/js/admin/codes.js"></script>

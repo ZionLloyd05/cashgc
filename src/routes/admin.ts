@@ -97,6 +97,7 @@ export class AdminRoute implements IRoute {
 		 */
 		router.get("/admin/giftcodes", this.serveCodeView.bind(this));
 		router.get("/admin/codesbytransaction", this.getAllCodes.bind(this));
+		router.post("/admin/bulkactivation", this.bulkAction.bind(this));
 
 		/**
 		 * Users Routes
@@ -138,6 +139,11 @@ export class AdminRoute implements IRoute {
 		 */
 		router.get("/admin/wallet", this.getWallet.bind(this));
 		router.post("/admin/wallet", this.saveWallet.bind(this));
+
+		/**
+		 * Payout Vendor Route
+		 */
+		router.get("/admin/payout-vendor", this.servePayoutVendorView.bind(this));
 
 		/**
 		 * Miscellenous Route
@@ -213,6 +219,15 @@ export class AdminRoute implements IRoute {
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
 			isCodes: true
+		});
+	}
+
+	private servePayoutVendorView(req: Request, res: Response) {
+		res.render("admin/vendor", {
+			title: "Payout Vendors",
+			layout: "adminLayout",
+			csrfToken: req.csrfToken(),
+			isPayout: true
 		});
 	}
 
@@ -503,6 +518,17 @@ export class AdminRoute implements IRoute {
 		return res.send({
 			status: "read",
 			data: uwallet
+		});
+	}
+
+	private async bulkAction(req: Request, res: Response){
+		let {payload, operation} = req.body;
+
+		let response = await this._userController.bulkAction(payload, operation);
+		console.log(response);
+		return res.send({
+			status: "done",
+			data: response
 		});
 	}
 }
