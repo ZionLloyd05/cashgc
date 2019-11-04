@@ -49,7 +49,7 @@
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
-    "mysql": "*",
+    "mysql": "^2.17.1",
     "node-inspect": "^1.11.5",
     "nodemailer": "^4.7.0",
     "nodemon": "^1.19.0",
