@@ -1,3 +1,4 @@
+import { PayoutVendor } from "./../models/PayoutVendor";
 import { OrderItem } from "./../models/OrderItem";
 import { Order } from "./../models/Order";
 import { Wallet } from "./../models/Wallet";
@@ -67,7 +68,8 @@ export class DatabaseProvider {
 				Wallet,
 				Rate,
 				Order,
-				OrderItem
+				OrderItem,
+				PayoutVendor
 			],
 			synchronize: true
 			// logging: true

@@ -42,12 +42,12 @@
                                             <label>Vendor Category</label>
                                             <div class="kt-radio-inline">
                                                 <label class="kt-radio kt-radio--brand" name="radio5">
-                                                    <input type="radio" selected name="manual" value="manual"
+                                                    <input type="radio" selected name="pvendor" value="Manual"
                                                         id="manual"> Manual
                                                     <span></span>
                                                 </label>
                                                 <label class="kt-radio kt-radio--brand" name="radio5">
-                                                    <input type="radio" name="auto" value="auto" id="auto">
+                                                    <input type="radio" name="pvendor" value="Auto" id="auto">
                                                     Auto
                                                     <span></span>
                                                 </label>
@@ -104,7 +104,7 @@
                         <div class="kt-portlet__head-toolbar">
                             <div class="kt-portlet__head-group">
                                 <a href="#" class="btn btn-default btn-bold btn-upper btn-font-sm" data-toggle="modal"
-                                    data-target="#categoryModal">
+                                    data-target="#payoutvendorModal">
                                     <i class="flaticon2-add-1"></i>
                                     New Payout Vendor
                                 </a>
@@ -142,5 +142,5 @@
     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
-{{!-- <script src="/dist/js/admin/vendor.js"></script> --}}
-<script src="/js/admin/vendor.js"></script>
+<script src="/dist/js/admin/payoutvendor.js"></script>
+{{!-- <script src="/js/admin/payoutvendor.js"></script> --}}

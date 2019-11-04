@@ -144,6 +144,9 @@ export class AdminRoute implements IRoute {
 		 * Payout Vendor Route
 		 */
 		router.get("/admin/payout-vendor", this.servePayoutVendorView.bind(this));
+		router.get("/admin/payoutvendor", this.getPayoutVendors.bind(this));
+		router.post("/admin/payoutvendor", this.saveVendor.bind(this));
+		router.delete("/admin/payoutvendor", this.removPayoutVendor.bind(this));
 
 		/**
 		 * Miscellenous Route
@@ -223,7 +226,7 @@ export class AdminRoute implements IRoute {
 	}
 
 	private servePayoutVendorView(req: Request, res: Response) {
-		res.render("admin/vendor", {
+		res.render("admin/payout-vendor", {
 			title: "Payout Vendors",
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
@@ -531,4 +534,45 @@ export class AdminRoute implements IRoute {
 			data: response
 		});
 	}
+
+	private async getPayoutVendors(req: Request, res: Response){
+		const pvendors = await this._userController.getAllVendors();
+
+		return res.send({
+			status: "read",
+			data: pvendors
+		});
+	}
+
+	private async saveVendor(req: Request, res: Response){
+		console.log(req.body)
+
+		let payload = req.body;
+		
+		let vendor = await this._userController.saveVendor(payload);
+
+		if(payload.id == null){
+			return res.send({
+				status: "create",
+				data: vendor
+			});
+		}else{
+			return res.send({
+				status: "update",
+				data: vendor
+			});
+		}
+	}
+
+	private async removPayoutVendor(req: Request, res: Response){
+		let pvId = req.query.id;
+
+		let response = await this._userController.removeVendor(pvId);
+
+		return res.send({
+			status: "true",
+			data: response
+		});
+	}
+	
 }

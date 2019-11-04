@@ -1,9 +1,7 @@
 "use strict";
 $(document).ready(function () {
     loadCategoryTable();
-    $("#kt_toast_1").toast({
-        delay: 10e3
-    })
+
 })
 
 var csrfToken = $('#_csrf').val();
@@ -114,8 +112,7 @@ $("#save").click(function (e) {
                         "imageUrl": data.image
                     }).draw();
 
-                    $("#toastTitle").text("Code Category Created");
-                    $("#toastBody").text("The code category was successfully created.");
+                    swal('Code Category Created', '', 'success');
 
                 } else if (response.status == "updated") {
                     let data = response.data;
@@ -142,12 +139,9 @@ $("#save").click(function (e) {
                     table.cell(currentRow, 0).data(rwIdx + 1) //this is to set the S/N field
                     table.draw(false)
 
-                    $("#toastTitle").text("Code Category Modified");
-                    $("#toastBody").text("Code category was successfully updated.");
+                    swal('Code Category Modified', '', 'success');
                 }
 
-                $("#kt_toast_1").toast("show");
-                console.log(response)
                 btnSpinner.hide();
                 clearInputs();
             })

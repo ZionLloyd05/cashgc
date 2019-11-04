@@ -6,10 +6,10 @@ import {
 	JoinColumn
 } from "typeorm";
 
-enum Category {
-	Auto,
-	Manual
-}
+// enum Category {
+// 	Auto,
+// 	Manual
+// }
 
 @Entity()
 export class PayoutVendor {
@@ -23,8 +23,8 @@ export class PayoutVendor {
 	public slug?: string;
 
 	@Column()
-	public category: Category;
+	public category: string;
 
-	@Column({ default: false })
+	@Column()
 	public isAvailable: boolean;
 }

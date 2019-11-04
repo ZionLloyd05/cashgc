@@ -1,3 +1,4 @@
+import { PayoutVendorService } from "./../services/payoutvendor.service";
 import { AccountService } from "./../services/account.service";
 import { OrderItemService } from "./../services/orderItem.service";
 import { OrderService } from "./../services/order.service";
@@ -37,6 +38,10 @@ export class UserController {
 	private _accService: AccountService = DIContainer.resolve<AccountService>(
 		AccountService
 	);
+
+	private _payoutvendorService: PayoutVendorService = DIContainer.resolve<
+		PayoutVendorService
+	>(PayoutVendorService);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -111,7 +116,6 @@ export class UserController {
 		return gcInDb;
 	}
 
-	
 	/**
 	 * Bulk action on gift codes
 	 */
@@ -322,4 +326,22 @@ export class UserController {
 	/**
 	 * Bank Account and Wallet Methods
 	 */
+
+	/**
+	 * Payout Vendor Methods
+	 */
+	public async getAllVendors(): Promise<any> {
+		return await this._payoutvendorService.getAllVendor();
+	}
+
+	public async saveVendor(payload: any): Promise<any> {
+		if(payload.id == null)
+			return await this._payoutvendorService.createVendor(payload);
+		else
+			return await this._payoutvendorService.updateVendor(payload);
+	}
+
+	public async removeVendor(pvId: number): Promise<any> {
+		return await this._payoutvendorService.removePayoutVendor(pvId);
+	}
 }
