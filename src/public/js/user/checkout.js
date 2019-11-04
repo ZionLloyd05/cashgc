@@ -1,4 +1,3 @@
-
 var authField;
 $(document).ready(function () {
     authField = $('#authverv');
@@ -23,7 +22,7 @@ var cartResponse = '';
 
 function loadVendors() {
     $.ajax({
-        url: "/user/payoutvendors",
+        url: "/user/paymentvendors",
         method: "get",
         dataType: "json",
         headers: {
@@ -31,13 +30,13 @@ function loadVendors() {
         },
         success: function (response) {
             if (response.data != null) {
-               buildVendors(response.data);
+                buildVendors(response.data);
             }
         }
     })
 }
 
-function buildVendors(payload){
+function buildVendors(payload) {
     var vendors = document.getElementById("vendor_section");
 
     var template = "";

@@ -1,10 +1,9 @@
-
 <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
 
     <!-- begin:: Subheader -->
     <div class="kt-subheader mb-3 mt-3 kt-grid__item" id="kt_subheader">
         <div class="kt-subheader__main">
-            <h3 class="kt-subheader__title">Payout Vendors</h3>
+            <h3 class="kt-subheader__title">Payment Vendors</h3>
 
             <span class="kt-subheader__separator kt-hidden"></span>
             <div class="kt-subheader__breadcrumbs">
@@ -24,21 +23,22 @@
         <div class="kt-section__content kt-section__content--border">
 
             <!-- Modal -->
-            <div class="modal fade" data-backdrop="static" id="payoutvendorModal" tabindex="-1" role="dialog"
-                aria-labelledby="payoutvendorModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal fade" data-backdrop="static" id="paymentvendorModal" tabindex="-1" role="dialog"
+                aria-labelledby="paymentvendorModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="payoutvendorModalLabel">New Payout Vendor</h5>
+                            <h5 class="modal-title" id="paymentvendorModalLabel">New Payment Vendor</h5>
                         </div>
-                        <form id="payoutvendorFrm">
+                        <form id="paymentvendorFrm">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <input type="text" name="name" id="name" required class="form-control"
-                                        placeholder="Payout Vendor Name">
+                                        placeholder="Payment Vendor Name">
                                 </div>
-                                 <div class="form-group">
-                                    <textarea id="info" name="info" class="form-control" placeholder="Add extra information"></textarea>
+                                <div class="form-group">
+                                    <textarea id="info" name="info" class="form-control"
+                                        placeholder="Add extra information"></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -108,9 +108,9 @@
                         <div class="kt-portlet__head-toolbar">
                             <div class="kt-portlet__head-group">
                                 <a href="#" class="btn btn-default btn-bold btn-upper btn-font-sm" data-toggle="modal"
-                                    data-target="#payoutvendorModal">
+                                    data-target="#paymentvendorModal">
                                     <i class="flaticon2-add-1"></i>
-                                    New Payout Vendor
+                                    New Payment Vendor
                                 </a>
                             </div>
                         </div>
@@ -148,6 +148,6 @@
 </div>
 <!-- Main Quill library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
-<script src="/dist/js/admin/payoutvendor.js"></script>
-{{!-- <script src="/js/admin/payoutvendor.js"></script> --}}
+<script src="/dist/js/admin/paymentvendor.js"></script>
+{{!-- <script src="/js/admin/paymentvendor.js"></script> --}}
 <script src="https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js"></script>

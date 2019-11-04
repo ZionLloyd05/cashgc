@@ -1,4 +1,4 @@
-import { PayoutVendor } from "./../models/PayoutVendor";
+import { PaymentVendorService } from "./../services/PaymentVendor.service";
 import { SharedService } from "./../services/shared.service";
 import { AccountService } from "./../services/account.service";
 import { OrderService } from "./../services/order.service";
@@ -33,6 +33,6 @@ DIContainer.bind<OrderService>(OrderService).toSelf();
 DIContainer.bind<OrderItemService>(OrderItemService).toSelf();
 DIContainer.bind<AccountService>(AccountService).toSelf();
 DIContainer.bind<SharedService>(SharedService).toSelf();
-DIContainer.bind<PayoutVendor>(PayoutVendor).toSelf();
+DIContainer.bind<PaymentVendorService>(PaymentVendorService).toSelf();
 
 export default DIContainer;

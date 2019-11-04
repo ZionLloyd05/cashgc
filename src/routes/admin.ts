@@ -143,10 +143,10 @@ export class AdminRoute implements IRoute {
 		/**
 		 * Payout Vendor Route
 		 */
-		router.get("/admin/payout-vendor", this.servePayoutVendorView.bind(this));
-		router.get("/admin/payoutvendor", this.getPayoutVendors.bind(this));
-		router.post("/admin/payoutvendor", this.saveVendor.bind(this));
-		router.delete("/admin/payoutvendor", this.removPayoutVendor.bind(this));
+		router.get("/admin/payment-vendor", this.servePaymentVendorView.bind(this));
+		router.get("/admin/paymentvendor", this.getPaymentVendors.bind(this));
+		router.post("/admin/paymentvendor", this.saveVendor.bind(this));
+		router.delete("/admin/paymentvendor", this.removePaymentVendor.bind(this));
 		
 
 		/**
@@ -226,8 +226,8 @@ export class AdminRoute implements IRoute {
 		});
 	}
 
-	private servePayoutVendorView(req: Request, res: Response) {
-		res.render("admin/payout-vendor", {
+	private servePaymentVendorView(req: Request, res: Response) {
+		res.render("admin/payment-vendor", {
 			title: "Payout Vendors",
 			layout: "adminLayout",
 			csrfToken: req.csrfToken(),
@@ -536,7 +536,7 @@ export class AdminRoute implements IRoute {
 		});
 	}
 
-	private async getPayoutVendors(req: Request, res: Response){
+	private async getPaymentVendors(req: Request, res: Response){
 
 		var id = req.query.id;
 		let response;
@@ -572,7 +572,7 @@ export class AdminRoute implements IRoute {
 		}
 	}
 
-	private async removPayoutVendor(req: Request, res: Response){
+	private async removePaymentVendor(req: Request, res: Response){
 		let pvId = req.query.id;
 
 		let response = await this._userController.removeVendor(pvId);

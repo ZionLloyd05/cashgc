@@ -4,7 +4,7 @@ var editor;
 $(document).ready(function () {
     loadPayoutTable();
 
-    CKEDITOR.replace( 'info' );
+    CKEDITOR.replace('info');
 })
 
 var csrfToken = $('#_csrf').val();
@@ -12,7 +12,7 @@ var spinner = $('#spinner');
 
 var loadPayoutTable = function () {
     $.ajax({
-        url: "/admin/payoutvendor",
+        url: "/admin/paymentvendor",
         method: "GET",
         dataType: "json",
         headers: {
@@ -27,7 +27,7 @@ var loadPayoutTable = function () {
 
 var vendorTbl;
 var bindTableToData = function (response) {
-   
+
     vendorTbl = $("#vendorTbl").DataTable({
         aaData: response.data,
         aoColumns: [{
@@ -82,7 +82,7 @@ $(document).on('click', '#delete', function () {
     var rwId = $(this).attr("data-id");
     var rwIdx = $(this).attr("data-idx")
 
-    fetch(`/admin/payoutvendor?id=${rwId}`, {
+    fetch(`/admin/paymentvendor?id=${rwId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -92,7 +92,7 @@ $(document).on('click', '#delete', function () {
         .then(res => res.json())
         .then(response => {
             swal("Payout Vendor deleted successfully", "", "success")
-                // debugger;
+            // debugger;
             let table = $('#vendorTbl').DataTable();
             table.row(rwIdx).remove().draw();
         })
@@ -107,18 +107,18 @@ $("#save").click(function (e) {
 
     var category = $('input[name=pvendor]:checked').val();
     var isAvailable = $('input[name=isAvailable]:checked').val();
-    
+
     if (isAvailable == "true") isAvailable = true
     else isAvailable = false;
-    
+
     var name = $('#name').val();
     var info = CKEDITOR.instances.info.getData();
     var id = $('#id').val();
-    if(id == "null") id = null
+    if (id == "null") id = null
 
 
     var payload = {
-    	id,
+        id,
         name,
         category,
         isAvailable,
@@ -127,7 +127,7 @@ $("#save").click(function (e) {
 
     console.log(payload);
 
-    fetch('/admin/payoutvendor', {
+    fetch('/admin/paymentvendor', {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
@@ -185,11 +185,12 @@ $("#save").click(function (e) {
             btnSpinner.hide();
         })
 })
+
 function clearInputs() {
     $('#name').val("");
     $("#id").val("null");
     CKEDITOR.instances.info.setData('')
-    $('#payoutvendorModal').modal('hide');
+    $('#paymentvendorModal').modal('hide');
 }
 
 $(document).on("click", "#edit", function (e) {
@@ -232,24 +233,24 @@ $(document).on("click", "#edit", function (e) {
         $("#manual").prop("checked", true);
     }
 
-    
-    $("#payoutvendorModalLabel").text("Edit Code Category");
-    $("#payoutvendorModal").modal("show");  
 
-    fetch('/admin/payoutvendor?id='+id, {
-        method: 'GET',
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken
-        }
-    }).then(res => res.json())
-    .then(response => {
-       setData(response.data.info);
-    });
-      
+    $("#paymentvendorModalLabel").text("Edit Code Category");
+    $("#paymentvendorModal").modal("show");
+
+    fetch('/admin/paymentvendor?id=' + id, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
+            }
+        }).then(res => res.json())
+        .then(response => {
+            setData(response.data.info);
+        });
+
 })
 
-function setData(str){
+function setData(str) {
     CKEDITOR.instances.info.setData(str)
 }
 

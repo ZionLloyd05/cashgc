@@ -1,4 +1,4 @@
-import { PayoutVendorService } from "./../services/payoutvendor.service";
+import { PaymentVendorService } from "../services/paymentvendor.service";
 import { AccountService } from "./../services/account.service";
 import { OrderItemService } from "./../services/orderItem.service";
 import { OrderService } from "./../services/order.service";
@@ -39,9 +39,9 @@ export class UserController {
 		AccountService
 	);
 
-	private _payoutvendorService: PayoutVendorService = DIContainer.resolve<
-		PayoutVendorService
-	>(PayoutVendorService);
+	private _payoutvendorService: PaymentVendorService = DIContainer.resolve<
+		PaymentVendorService
+	>(PaymentVendorService);
 
 	constructor(@inject(UserService) userService: UserService) {
 		this._userService = userService;
@@ -343,13 +343,12 @@ export class UserController {
 	}
 
 	public async saveVendor(payload: any): Promise<any> {
-		if(payload.id == null)
+		if (payload.id == null)
 			return await this._payoutvendorService.createVendor(payload);
-		else
-			return await this._payoutvendorService.updateVendor(payload);
+		else return await this._payoutvendorService.updateVendor(payload);
 	}
 
 	public async removeVendor(pvId: number): Promise<any> {
-		return await this._payoutvendorService.removePayoutVendor(pvId);
+		return await this._payoutvendorService.removePaymentVendor(pvId);
 	}
 }

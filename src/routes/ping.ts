@@ -9,7 +9,7 @@ import { Transaction } from "./../models/Transaction";
 import { GiftCodeService } from "./../services/gc.service";
 import { UserService } from "./../services/user.service";
 import { createQueryBuilder } from "typeorm";
-import { PayoutVendorService } from "./../services/payoutvendor.service";
+import { PaymentVendorService } from "../services/paymentvendor.service";
 import { CartItem } from "./../models/CartItem";
 import { GiftCode } from "./../models/GiftCode";
 import { GCCService } from "./../services/gcc.service";
@@ -63,11 +63,10 @@ export class PingRoute implements IRoute {
 	private _accService: AccountService = DIContainer.resolve<AccountService>(
 		AccountService
 	);
-	
-	private _payoutvendorService: PayoutVendorService = DIContainer.resolve<
-		PayoutVendorService
-	>(PayoutVendorService);
 
+	private _payoutvendorService: PaymentVendorService = DIContainer.resolve<
+		PaymentVendorService
+	>(PaymentVendorService);
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));

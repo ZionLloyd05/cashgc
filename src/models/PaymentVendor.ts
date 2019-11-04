@@ -12,7 +12,7 @@ import {
 // }
 
 @Entity()
-export class PayoutVendor {
+export class PaymentVendor {
 	@PrimaryGeneratedColumn()
 	public id?: number;
 
