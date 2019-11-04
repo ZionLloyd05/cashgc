@@ -159,6 +159,7 @@ export class UserRoute implements IRoute {
 		router.get("/user/isbtcset", this.isBitCoinSet.bind(this));
 		router.get("/user/isbankaccountset", this.isBankAccountSet.bind(this));
 		router.get("/user/authcheck", this.isUserVerified.bind(this));
+		router.get("/user/payoutvendors", this.getPayoutVendors.bind(this))
 	}
 
 	private serveDashboardView(req: Request, res: Response) {
@@ -702,6 +703,14 @@ export class UserRoute implements IRoute {
 		})
 	}
 	
+
+	private async getPayoutVendors(req: Request, res: Response) {
+		let response = await this._userController.getAllActiveVendors();
+
+		res.send({
+			data: response
+		})
+	}
 
 
 	// public async getOrderOperation(req: Request, res: Response) {

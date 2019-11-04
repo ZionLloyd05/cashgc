@@ -28,15 +28,16 @@ export class PayoutVendorService {
 	public async createVendor(vendorPayload: PayoutVendor): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 
-		let newPaymentVendor = new PayoutVendor();
-		let { name, category, isAvailable } = vendorPayload;
+		let newpayoutVendor = new PayoutVendor();
+		let { name, category, isAvailable, info } = vendorPayload;
 
-		newPaymentVendor.name = name;
-		newPaymentVendor.category = category;
-		newPaymentVendor.isAvailable = isAvailable;
-		newPaymentVendor.slug = this.createSlug(name);
+		newpayoutVendor.name = name;
+		newpayoutVendor.category = category;
+		newpayoutVendor.info = info;
+		newpayoutVendor.isAvailable = isAvailable;
+		newpayoutVendor.slug = this.createSlug(name);
 
-		return await db.getRepository("PayoutVendor").save(newPaymentVendor);
+		return await db.getRepository("PayoutVendor").save(newpayoutVendor);
     }
     
     public async updateVendor(vendorPayload): Promise<any> {
@@ -45,9 +46,10 @@ export class PayoutVendorService {
 
 		let payoutVendorInDb = await this.getPVendorById(vendorPayload.id);
 
-		let { name, category, isAvailable } = vendorPayload;
+		let { name, category, isAvailable, info } = vendorPayload;
 
 		payoutVendorInDb.name = name;
+		payoutVendorInDb.info = info;
 		payoutVendorInDb.category = category;
 		payoutVendorInDb.isAvailable = isAvailable;
 
@@ -58,21 +60,39 @@ export class PayoutVendorService {
 		const db = await DatabaseProvider.getConnection();
 		const pvRepo = db.getRepository(PayoutVendor);
 
-		let paymentVendorToRemove = await this.getPVendorById(pvId);
-		await pvRepo.remove(paymentVendorToRemove);
+		let payoutVendorToRemove = await this.getPVendorById(pvId);
+		await pvRepo.remove(payoutVendorToRemove);
 	}
 
 
 	public async getAllVendor(): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
-		return await db
+		const vendors = await db
 			.getRepository("PayoutVendor")
 			.createQueryBuilder("PayoutVendor")
 			.orderBy({
 				"PayoutVendor.id": "DESC"
 			})
-			.getMany();
-	}
+            .getMany();
+        // console.log(vendors)
+        return vendors;
+    }
+    
+    public async getAllActiveVendors(): Promise<any> {
+        let db = await DatabaseProvider.getConnection();
+		let vendors = await db
+			.getRepository("PayoutVendor")
+			.createQueryBuilder("PayoutVendor")
+            .where({ isAvailable: true })
+            .andWhere("PayoutVendor.category = :category")
+            .setParameters({ category: "Manual" })
+			.orderBy({
+				"PayoutVendor.id": "DESC"
+			})
+            .getMany();
+            
+        return vendors
+    }
 
 	private createSlug(vendorName: string): string {
 		var sub = vendorName.substring(0, 3).toLowerCase();

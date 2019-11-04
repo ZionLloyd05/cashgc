@@ -1,6 +1,10 @@
 "use strict";
+var editor;
+
 $(document).ready(function () {
     loadPayoutTable();
+
+    CKEDITOR.replace( 'info' );
 })
 
 var csrfToken = $('#_csrf').val();
@@ -23,7 +27,7 @@ var loadPayoutTable = function () {
 
 var vendorTbl;
 var bindTableToData = function (response) {
-    // console.log(response);
+   
     vendorTbl = $("#vendorTbl").DataTable({
         aaData: response.data,
         aoColumns: [{
@@ -45,6 +49,8 @@ var bindTableToData = function (response) {
                 }
             }
         }, {
+            data: "info"
+        }, {
             data: "isAvailable",
             render: function (isAvailable, type, row, meta) {
                 if (isAvailable) {
@@ -57,10 +63,12 @@ var bindTableToData = function (response) {
             data: "id",
             render: function (id, type, row, meta) {
                 return `
+            
                     <span style="overflow: visible; position: relative; width: 110px;">
                         <a id="edit" data-name=${row.name} data-slug=${row.slug} data-category=${row.category} data-state=${row.isAvailable} data-idx=${meta.row} data-id=${id} data-status=${row.isAvailable} 
                         title="Edit details" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i id="edit" class="la la-edit"></i></a>
                         <a title="Delete" data-idx=${meta.row} data-id=${id} id="delete" style='cursor:pointer' class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-trash"></i></a>
+                        
                     </span>
                 `
             }
@@ -104,6 +112,7 @@ $("#save").click(function (e) {
     else isAvailable = false;
     
     var name = $('#name').val();
+    var info = CKEDITOR.instances.info.getData();
     var id = $('#id').val();
     if(id == "null") id = null
 
@@ -112,7 +121,8 @@ $("#save").click(function (e) {
     	id,
         name,
         category,
-        isAvailable
+        isAvailable,
+        info
     }
 
     console.log(payload);
@@ -135,6 +145,7 @@ $("#save").click(function (e) {
                     "id": data.id,
                     "name": data.name,
                     "slug": data.slug,
+                    "info": data.info,
                     "category": data.category,
                     "isAvailable": data.isAvailable,
                 }).draw();
@@ -159,6 +170,7 @@ $("#save").click(function (e) {
                 tempData["id"] = data.id;
                 tempData["name"] = data.name;
                 tempData["slug"] = data.slug;
+                tempData["info"] = data.info;
                 tempData["category"] = data.category;
                 tempData["isAvailable"] = data.isAvailable;
 
@@ -176,6 +188,7 @@ $("#save").click(function (e) {
 function clearInputs() {
     $('#name').val("");
     $("#id").val("null");
+    CKEDITOR.instances.info.setData('')
     $('#payoutvendorModal').modal('hide');
 }
 
@@ -191,15 +204,15 @@ $(document).on("click", "#edit", function (e) {
         editBtn = edit;
     }
 
-    console.log(editBtn)
-    console.log(editBtn.attr)
-
     // assign attrribute to modal controls
     var idx = editBtn.attr("data-idx");
     $("#save").attr("data-idx", idx);
 
     var id = editBtn.attr('data-id');
     $('#id').val(id);
+
+    // var info = $('#data_info').val();
+    CKEDITOR.instances.info.setData('Loading contents...');
 
     var name = editBtn.attr('data-name');
     $('#name').val(name);
@@ -221,8 +234,24 @@ $(document).on("click", "#edit", function (e) {
 
     
     $("#payoutvendorModalLabel").text("Edit Code Category");
-    $("#payoutvendorModal").modal("show");    
+    $("#payoutvendorModal").modal("show");  
+
+    fetch('/admin/payoutvendor?id='+id, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+        }
+    }).then(res => res.json())
+    .then(response => {
+       setData(response.data.info);
+    });
+      
 })
+
+function setData(str){
+    CKEDITOR.instances.info.setData(str)
+}
 
 $("#modalClose").on('click', function () {
     clearInputs();

@@ -334,6 +334,14 @@ export class UserController {
 		return await this._payoutvendorService.getAllVendor();
 	}
 
+	public async getAllActiveVendors(): Promise<any> {
+		return await this._payoutvendorService.getAllActiveVendors();
+	}
+
+	public async getVendor(id: number): Promise<any> {
+		return await this._payoutvendorService.getPVendorById(id);
+	}
+
 	public async saveVendor(payload: any): Promise<any> {
 		if(payload.id == null)
 			return await this._payoutvendorService.createVendor(payload);

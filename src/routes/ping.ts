@@ -9,6 +9,7 @@ import { Transaction } from "./../models/Transaction";
 import { GiftCodeService } from "./../services/gc.service";
 import { UserService } from "./../services/user.service";
 import { createQueryBuilder } from "typeorm";
+import { PayoutVendorService } from "./../services/payoutvendor.service";
 import { CartItem } from "./../models/CartItem";
 import { GiftCode } from "./../models/GiftCode";
 import { GCCService } from "./../services/gcc.service";
@@ -62,6 +63,11 @@ export class PingRoute implements IRoute {
 	private _accService: AccountService = DIContainer.resolve<AccountService>(
 		AccountService
 	);
+	
+	private _payoutvendorService: PayoutVendorService = DIContainer.resolve<
+		PayoutVendorService
+	>(PayoutVendorService);
+
 
 	initialize(router: Router): void {
 		router.get("/ping", this.ping.bind(this));
@@ -286,7 +292,7 @@ export class PingRoute implements IRoute {
 		// );
 		var payload = [2, 3, 4, 5];
 
-		// let response = await this._gcService.bulkActivation(payload);
+		let response = await this._userController.getAllActiveVendors();
 
 		// console.log("hhgh");
 		// // res.send({ response });
@@ -300,6 +306,6 @@ export class PingRoute implements IRoute {
 		// console.log(response.data);
 		// response.data && console.log(response.data.status);
 
-		// res.send(response);
+		res.send(response);
 	}
 }

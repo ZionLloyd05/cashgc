@@ -1,3 +1,4 @@
+
 <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
 
     <!-- begin:: Subheader -->
@@ -35,6 +36,9 @@
                                 <div class="form-group">
                                     <input type="text" name="name" id="name" required class="form-control"
                                         placeholder="Payout Vendor Name">
+                                </div>
+                                 <div class="form-group">
+                                    <textarea id="info" name="info" class="form-control" placeholder="Add extra information"></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -122,6 +126,7 @@
                                         <th>Name</th>
                                         <th>Slug</th>
                                         <th>Category</th>
+                                        <th>Extra Info</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -141,6 +146,8 @@
     </div>
     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 </div>
+<!-- Main Quill library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 <script src="/dist/js/admin/payoutvendor.js"></script>
 {{!-- <script src="/js/admin/payoutvendor.js"></script> --}}
+<script src="https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js"></script>

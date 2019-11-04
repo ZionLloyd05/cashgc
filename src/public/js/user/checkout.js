@@ -1,8 +1,11 @@
-"use strict"
 
+var authField;
 $(document).ready(function () {
+    authField = $('#authverv');
+    if (authField.val() != "0123")
+        confirmVerificationStatus();
     loadUserCartItem();
-    confirmVerificationStatus();
+    loadVendors()
 })
 
 var csrfToken = $('#_csrf').val();
@@ -17,6 +20,41 @@ var currentCartItem = [];
 
 var isTouched = false;
 var cartResponse = '';
+
+function loadVendors() {
+    $.ajax({
+        url: "/user/payoutvendors",
+        method: "get",
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            if (response.data != null) {
+               buildVendors(response.data);
+            }
+        }
+    })
+}
+
+function buildVendors(payload){
+    var vendors = document.getElementById("vendor_section");
+
+    var template = "";
+    payload.forEach(vendor => {
+        template += `
+            <h6 class="kt-widget-13__title" href="#">${vendor.name} Payment Information</h6>
+            <div class="kt-widget-21__legends">
+                <div class="kt-widget-21__legend mb-2">
+                    <i class="la la-bookmark"></i>
+                    ${vendor.info}
+                </div>
+            </div>
+        `
+    })
+
+    vendors.innerHTML = template;
+}
 
 function confirmVerificationStatus() {
     $.ajax({
@@ -334,6 +372,8 @@ $(document).on('click', '#minus', function () {
 })
 
 $(document).on('click', '#proceedBtn', function () {
+    var btn = $(this);
+    btn.addClass('kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark');
     var totalAmount = Number($('#cartTotalAmount').attr("data-pr"));
 
     // check if transaction can be made
@@ -362,6 +402,7 @@ $(document).on('click', '#proceedBtn', function () {
         },
         success: function (response) {
             displayTransactionBox(response.data)
+            btn.removeClass('kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark');
         }
     })
 

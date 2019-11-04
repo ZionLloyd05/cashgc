@@ -27,4 +27,7 @@ export class PayoutVendor {
 
 	@Column()
 	public isAvailable: boolean;
+
+	@Column()
+	public info: string;
 }

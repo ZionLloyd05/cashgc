@@ -147,6 +147,7 @@ export class AdminRoute implements IRoute {
 		router.get("/admin/payoutvendor", this.getPayoutVendors.bind(this));
 		router.post("/admin/payoutvendor", this.saveVendor.bind(this));
 		router.delete("/admin/payoutvendor", this.removPayoutVendor.bind(this));
+		
 
 		/**
 		 * Miscellenous Route
@@ -536,11 +537,18 @@ export class AdminRoute implements IRoute {
 	}
 
 	private async getPayoutVendors(req: Request, res: Response){
-		const pvendors = await this._userController.getAllVendors();
+
+		var id = req.query.id;
+		let response;
+
+		if(id == null)
+			response = await this._userController.getAllVendors();
+		else
+			response = await this._userController.getVendor(id);
 
 		return res.send({
 			status: "read",
-			data: pvendors
+			data: response
 		});
 	}
 
