@@ -1,4 +1,4 @@
-import { PaymentVendorService } from "./../services/PaymentVendor.service";
+import { PaymentVendorService } from "./../services/paymentvendor.service";
 import { SharedService } from "./../services/shared.service";
 import { AccountService } from "./../services/account.service";
 import { OrderService } from "./../services/order.service";
