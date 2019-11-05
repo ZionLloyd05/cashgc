@@ -54,6 +54,11 @@ export class UserService {
 		return await db.getRepository(User).find();
 	}
 
+	public async getAllUsersCount(): Promise<any> {
+		var users = await this.getAll();
+		return users.length;
+	}
+
 	public async getByEmail(email: string): Promise<User> {
 		const db = await DatabaseProvider.getConnection();
 
@@ -72,7 +77,7 @@ export class UserService {
 	public async isVerified(id: number): Promise<any> {
 		const user = await this.getById(id);
 
-		if(user.isVerified){
+		if (user.isVerified) {
 			return true;
 		}
 
@@ -85,20 +90,18 @@ export class UserService {
 		else return false;
 	}
 
-	
 	public async getByPhone(phone: any): Promise<any> {
 		const db = await DatabaseProvider.getConnection();
 		const userRepository = await db.getRepository("user");
 
 		const userInDb = await userRepository
 			.createQueryBuilder()
-			.where("user.phone like :phonenumber",  {phonenumber: '%' + phone + '%' })
+			.where("user.phone like :phonenumber", { phonenumber: "%" + phone + "%" })
 			.getOne();
- 
+
 		if (userInDb) return userInDb;
 		else return null;
 	}
-
 
 	public async addToCart(
 		gccId: number,

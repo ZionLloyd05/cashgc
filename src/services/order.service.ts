@@ -221,4 +221,18 @@ export class OrderService {
 			return error;
 		}
 	}
+
+	public async getAllPendingOrdersCount(): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+		let orders = await db
+			.getRepository("order")
+			.createQueryBuilder("order")
+			.where("order.isProcessed = :status", { status: 0 })
+			.orderBy({
+				"order.id": "DESC"
+			})
+			.getMany();
+
+		return orders.length;
+	}
 }

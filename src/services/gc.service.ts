@@ -77,6 +77,18 @@ export class GiftCodeService {
 		return await gcRepository.findOne(id);
 	};
 
+	getAllCodes = async () => {
+		const db = await DatabaseProvider.getConnection();
+
+		const gcRepository = await db.getRepository(GiftCode);
+		return await gcRepository.find();
+	}
+
+	getAllCodesCount = async () => {
+		var codes = await this.getAllCodes();
+		return codes.length;
+	}
+
 	getGCbyCode = async (token: string): Promise<any> | null => {
 		const db = await DatabaseProvider.getConnection();
 		console.log(token);

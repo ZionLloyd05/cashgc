@@ -277,6 +277,10 @@ export class UserController {
 		return await this._oService.processOrder(orderId, user);
 	}
 
+	public async getAllPendingOrdersCount(): Promise<any> {
+		return await this._oService.getAllPendingOrdersCount();
+	}
+
 	/**
 	 * Order Item Methods
 	 */
@@ -350,5 +354,29 @@ export class UserController {
 
 	public async removeVendor(pvId: number): Promise<any> {
 		return await this._payoutvendorService.removePaymentVendor(pvId);
+	}
+
+	/**
+	 * Metrics
+	 */
+
+	public async sendMetrics(): Promise<any> {
+		//  user
+		// pending order
+		// code generated
+		// current exchange rate
+		let result = [];
+
+		let allUserPromise = this._userService.getAllUsersCount();
+		let pendingOrdersPromise = this._oService.getAllPendingOrdersCount();
+		let codesGeneratedPromise = this._gcService.getAllCodesCount();
+		let activeRatePromise = this._rService.getActiveRate();
+
+		return await Promise.all([
+			allUserPromise,
+			pendingOrdersPromise,
+			codesGeneratedPromise,
+			activeRatePromise
+		]);
 	}
 }

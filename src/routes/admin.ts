@@ -153,6 +153,7 @@ export class AdminRoute implements IRoute {
 		 * Miscellenous Route
 		 */
 		router.get("/admin/banks", this.fetchBanks.bind(this));
+		router.get("/admin/analytics", this.sendMetrics.bind(this));
 	}
 
 	private serveUserView(req: Request, res: Response) {
@@ -576,6 +577,16 @@ export class AdminRoute implements IRoute {
 		let pvId = req.query.id;
 
 		let response = await this._userController.removeVendor(pvId);
+
+		return res.send({
+			status: "true",
+			data: response
+		});
+	}
+
+	private async sendMetrics(req: Request, res: Response){
+		
+		let response = await this._userController.sendMetrics();
 
 		return res.send({
 			status: "true",

@@ -37,7 +37,7 @@
 					<div class="kt-portlet__body kt-portlet__body--fluid">
 						<div class="kt-widget-20">
 							<div class="kt-widget-20__title">
-								<div class="kt-widget-20__label"><small>#</small>360</div>
+								<div class="kt-widget-20__label"><small>#</small><span id="rate"></span></div>
 								<img class="kt-widget-20__bg" src="assets/media/misc/iconbox_bg.png" alt="bg">
 							</div>
 							<div class="kt-widget-20__data">
@@ -78,7 +78,7 @@
 					<div class="kt-portlet__body kt-portlet__body--fluid">
 						<div class="kt-widget-20">
 							<div class="kt-widget-20__title">
-								<div class="kt-widget-20__label">17</div>
+								<div class="kt-widget-20__label" id="pending">17</div>
 								<img class="kt-widget-20__bg" src="assets/media/misc/iconbox_bg.png" alt="bg">
 							</div>
 							<div class="kt-widget-20__data">
@@ -119,7 +119,7 @@
 					<div class="kt-portlet__body kt-portlet__body--fluid">
 						<div class="kt-widget-20">
 							<div class="kt-widget-20__title">
-								<div class="kt-widget-20__label">17M</div>
+								<div class="kt-widget-20__label" id="user">17</div>
 								<img class="kt-widget-20__bg" src="assets/media/misc/iconbox_bg.png" alt="bg">
 							</div>
 							<div class="kt-widget-20__data">
@@ -162,7 +162,7 @@
 					<div class="kt-portlet__body kt-portlet__body--fluid">
 						<div class="kt-widget-20">
 							<div class="kt-widget-20__title">
-								<div class="kt-widget-20__label">175</div>
+								<div class="kt-widget-20__label" id="codes">175</div>
 								<img class="kt-widget-20__bg" src="assets/media/misc/iconbox_bg.png" alt="bg">
 							</div>
 							<div class="kt-widget-20__data">
@@ -195,4 +195,5 @@
 
 	<input type="hidden" name="_csrf" id="_csrf" value="{{csrf}}">
 </div>
-<script src="/dist/js/user/store.js"></script>
+{{!-- <script src="/dist/js/user/store.js"></script> --}}
+<script src="/js/admin/index.js"></script>

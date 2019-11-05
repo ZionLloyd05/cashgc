@@ -291,7 +291,8 @@ export class PingRoute implements IRoute {
 		// );
 		var payload = [2, 3, 4, 5];
 
-		let response = await this._userController.getAllActiveVendors();
+		let response = await this._userController.sendMetrics();
+		// console.log(response);
 
 		// console.log("hhgh");
 		// // res.send({ response });
