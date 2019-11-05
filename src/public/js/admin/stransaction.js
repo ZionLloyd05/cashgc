@@ -65,7 +65,7 @@ var bindTableToData = function (response) {
                 } else if (payment == 2) {
                     return "Bitcoin Wallet"
                 } else if (payment == 3) {
-                    return "CashApp"
+                    return "Manual Payout"
                 } else if (payment == 4) {
                     return "Manual Payout"
                 }

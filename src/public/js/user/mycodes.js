@@ -37,6 +37,7 @@ var formatData = function (data) {
                 title: code.giftCodeCategory.title,
                 code: code.code,
                 date: code.createdAt,
+                isActivated: code.isActivated,
                 status: (code.isUsed == true) ? "Used" : "Not Used",
                 type: transactType
             }
@@ -73,7 +74,8 @@ var bindTableToData = function (response) {
         }, {
             data: "isActivated",
             render: function (isActivated) {
-                if (isActivated == "true")
+
+                if (isActivated == true)
                     return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Activate</span>`
                 else
                     return `<span class="kt-badge  kt-badge--danger kt-badge--inline kt-badge--pill">Inactive</span>`
