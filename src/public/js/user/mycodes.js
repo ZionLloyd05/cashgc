@@ -76,7 +76,7 @@ var bindTableToData = function (response) {
             render: function (isActivated) {
 
                 if (isActivated == true)
-                    return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Activate</span>`
+                    return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Active</span>`
                 else
                     return `<span class="kt-badge  kt-badge--danger kt-badge--inline kt-badge--pill">Inactive</span>`
             }
