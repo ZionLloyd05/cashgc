@@ -29,10 +29,13 @@ var formatData = function (data) {
     var obj = []
 
     data.forEach(transaction => {
+
         var transactType = "";
         (transaction.type == 0) ? transactType = "Purchase": transactType = "Sales";
         transaction.giftCodes.forEach(code => {
+            console.log(code);
             var payload = {
+                transactionref: transaction.reference,
                 title: code.giftCodeCategory.title,
                 code: code.code,
                 date: code.createdAt,
@@ -67,6 +70,8 @@ var bindTableToData = function (response) {
             render: function (id, type, row, meta) {
                 return `${meta.row + 1}`;
             },
+        }, {
+            data: "transactionref"
         }, {
             data: "title"
         }, {
