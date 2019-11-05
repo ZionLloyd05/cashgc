@@ -33,7 +33,7 @@ var formatData = function (data) {
         var transactType = "";
         (transaction.type == 0) ? transactType = "Purchase": transactType = "Sales";
         transaction.giftCodes.forEach(code => {
-            console.log(code);
+            // console.log(code);
             var payload = {
                 transactionref: transaction.reference,
                 title: code.giftCodeCategory.title,
