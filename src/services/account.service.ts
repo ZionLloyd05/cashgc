@@ -60,7 +60,11 @@ export class AccountService {
 
 		// console.log(payload);
 
-		await this.sendEmail(payload);
+		await this.sendEmail(payload)
+		.catch(err => {
+			console.log(err);
+			return false;
+		})
 
 		return true;
 	}
