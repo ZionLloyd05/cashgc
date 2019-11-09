@@ -48,7 +48,7 @@ export default async ({ app }: { app: express.Application }) => {
 		connectionLimit : 1000,
 		connectTimeout  : 60 * 60 * 1000,
 		acquireTimeout  : 60 * 60 * 1000,
-		timeout         : 60 * 60 * 1000,
+		timeout         : 60 * 60 * 100000,
 		host: process.env.HOST,
 		port: process.env.DBPORT,
 		user: process.env.UNAME,
