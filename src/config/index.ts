@@ -79,5 +79,10 @@ export default {
 	 */
 	secret_key: process.env.SECRET_KEY,
 
-	server_host: process.env.SERVER_HOST
+	server_host: process.env.SERVER_HOST,
+
+	/**
+	 * Postmark token
+	 */
+	postmark_token: process.env.POSTMARKTOKEN
 };
