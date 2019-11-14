@@ -1,4 +1,3 @@
-import * as nodemailer from "nodemailer";
 import * as path from "path";
 import * as bluebird from "bluebird";
 import { promisify } from "promisify";

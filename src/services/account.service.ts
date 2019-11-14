@@ -116,11 +116,11 @@ export class AccountService {
 	}
 
 	public async verifyAccount(token: string): Promise<any> {
-		console.log(token);
+
 		const db = await DatabaseProvider.getConnection();
 
 		let user = await this.isTokenValid(token);
-		console.log(user);
+
 		if (user == null) return false;
 
 		user.isVerified = true;
@@ -128,7 +128,6 @@ export class AccountService {
 		user.uTokenExpiryDate = "";
 
 		let userUpdated = await db.getRepository(User).save(user);
-		console.log(userUpdated);
 
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;
@@ -145,10 +144,7 @@ export class AccountService {
 			.getRepository(User)
 			.createQueryBuilder("user")
 			.where({ utoken: token })
-			// .andWhere( 'resetPasswordExpires' > now )
 			.getOne();
-
-		console.log(user);
 
 		if (user != null) {
 			let resetExpireTimeOut = user.uTokenExpiryDate;
@@ -170,23 +166,17 @@ export class AccountService {
 		token: string,
 		newPassword: string
 	): Promise<any> {
-		// console.log(token);
-		// console.log(newPassword);
 		const db = await DatabaseProvider.getConnection();
 
 		let user = await this.isTokenValid(token);
 
 		if (user == null) return false;
 
-		// console.log(user);
-		// console.log(newPassword);
 		user.password = this._userService.hashPassword(newPassword);
 		user.resetPasswordExpiryDate = "";
 		user.resetPasswordToken = "";
 
 		let userUpdated = await db.getRepository(User).save(user);
-
-		// console.log(userUpdated);
 
 		if (Object.keys(userUpdated).length > 1) return true;
 		else return false;
