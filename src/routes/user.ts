@@ -11,6 +11,7 @@ import * as multer from "multer";
 
 import * as csurf from "csurf";
 import { PaystackService } from "../services/paystack.service";
+import { PayPalService } from "../services/paypal.service";
 import config from "../config";
 
 export class UserRoute implements IRoute {
@@ -55,6 +56,10 @@ export class UserRoute implements IRoute {
 	private _paystackService: PaystackService = DIContainer.resolve<
 		PaystackService
 	>(PaystackService);
+
+	private _payPalService: PayPalService = DIContainer.resolve<
+	PayPalService
+>(PayPalService);
 
 	initialize(router: Router): void {
 		
@@ -113,7 +118,7 @@ export class UserRoute implements IRoute {
 		router.post("/user/transaction", this.postTransaction.bind(this));
 		router.get("/user/transaction", this.transactOperation.bind(this));
 		router.get("/user/utransaction", this.getTransaction.bind(this));
-		router.post("/user/pay", this.handlePayment.bind(this));
+		router.post("/user/verify-paypal-transaction", this.handlePayment.bind(this));
 
 		/**
 		 * Bank Account Route
@@ -130,7 +135,7 @@ export class UserRoute implements IRoute {
 		/**
 		 * Payments Route
 		 */
-		router.get("/user/payment-success", this.executePayment.bind(this));
+		// router.get("/user/payment-success", this.executePayment.bind(this));
 		router.get("/user/payment-cancel", this.cancelPayment.bind(this));
 		
 		// router.get("/user/successpage", this.serveSuccessView.bind(this));
@@ -319,132 +324,148 @@ export class UserRoute implements IRoute {
 		});
 	}
 
+	private async handlePayment(req: Request, res: Response){
+		console.log(req.body);
+		let {orderID, totalAmount} = req.body;
+		console.log(orderID)
+		console.log(totalAmount)
+
+		let transaction = await this._payPalService.handleRequest(req.user, orderID, totalAmount)
+		
+		if(typeof transaction == "string")
+		{
+			res.send({status: "failed", data: transaction})
+		}
+		
+		res.send({status: "success", data: transaction})
+	}
+
 	/**
 	 * TODO
 	 * Make paypal service to abstract it's functionalities
 	 */
-	private async handlePayment(req: Request, res: Response) {
-		var { items, totalAmount } = req.body;
+	// private async handlePayment(req: Request, res: Response) {
+	// 	var { items, totalAmount } = req.body;
 
-		this.itemTotalAmount = totalAmount;
+	// 	this.itemTotalAmount = totalAmount;
 
-		var create_payment_json = {
-			intent: "sale",
-			payer: {
-				payment_method: "paypal"
-			},
-			redirect_urls: {
-				return_url: `${config.server_host}/user/payment-success`,
-				cancel_url: `${config.server_host}/user/payment-cancel`
-			},
-			transactions: [
-				{
-					item_list: {
-						items: items
-					},
-					amount: {
-						currency: "USD",
-						total: totalAmount
-					},
-					description: "This is the payment description."
-				}
-			]
-		};
+	// 	var create_payment_json = {
+	// 		intent: "sale",
+	// 		payer: {
+	// 			payment_method: "paypal"
+	// 		},
+	// 		redirect_urls: {
+	// 			return_url: `${config.server_host}/user/payment-success`,
+	// 			cancel_url: `${config.server_host}/user/payment-cancel`
+	// 		},
+	// 		transactions: [
+	// 			{
+	// 				item_list: {
+	// 					items: items
+	// 				},
+	// 				amount: {
+	// 					currency: "USD",
+	// 					total: totalAmount
+	// 				},
+	// 				description: "This is the payment description."
+	// 			}
+	// 		]
+	// 	};
 
-		console.log(create_payment_json);
+	// 	console.log(create_payment_json);
 
-		paypal.payment.create(create_payment_json, function(error, payment) {
-			if (error) {
-				console.log(error.response.details);
-				res.send(error);
-			} else {
-				for (let i = 0; i < payment.links.length; i++) {
-					if (payment.links[i].rel === "approval_url") {
-						res.send({
-							status: "create",
-							data: payment.links[i].href
-						});
-					}
-				}
-			}
-		});
-	}
+	// 	paypal.payment.create(create_payment_json, function(error, payment) {
+	// 		if (error) {
+	// 			console.log(error.response.details);
+	// 			res.send(error);
+	// 		} else {
+	// 			for (let i = 0; i < payment.links.length; i++) {
+	// 				if (payment.links[i].rel === "approval_url") {
+	// 					res.send({
+	// 						status: "create",
+	// 						data: payment.links[i].href
+	// 					});
+	// 				}
+	// 			}
+	// 		}
+	// 	});
+	// }
 
-	private async executePayment(req: Request, res: Response) {
-		const payerId = req.query.PayerID;
-		const paymentId = req.query.paymentId;
+	// private async executePayment(req: Request, res: Response) {
+	// 	const payerId = req.query.PayerID;
+	// 	const paymentId = req.query.paymentId;
 
-		const execute_payment_json = {
-			payer_id: payerId,
-			transactions: [
-				{
-					amount: {
-						currency: "USD",
-						total: this.itemTotalAmount
-					}
-				}
-			]
-		};
+	// 	const execute_payment_json = {
+	// 		payer_id: payerId,
+	// 		transactions: [
+	// 			{
+	// 				amount: {
+	// 					currency: "USD",
+	// 					total: this.itemTotalAmount
+	// 				}
+	// 			}
+	// 		]
+	// 	};
 
-		paypal.payment.execute(
-			paymentId,
-			execute_payment_json,
-			async (error, payment) => {
-				if (error) {
-					//	@TODO
-					// Save transaction and set status to failed
-					console.log(error.response);
-					res.render("user/payment-confirmation", {
-						title: "Payment",
-						layout: "userLayout",
-						isStore: true,
-						isPaymentSuccessful: false
-					});
-				} else {
-					console.log("Get Payment Response");
-					console.log(JSON.stringify(payment));
+	// 	paypal.payment.execute(
+	// 		paymentId,
+	// 		execute_payment_json,
+	// 		async (error, payment) => {
+	// 			if (error) {
+	// 				//	@TODO
+	// 				// Save transaction and set status to failed
+	// 				console.log(error.response);
+	// 				res.render("user/payment-confirmation", {
+	// 					title: "Payment",
+	// 					layout: "userLayout",
+	// 					isStore: true,
+	// 					isPaymentSuccessful: false
+	// 				});
+	// 			} else {
+	// 				console.log("Get Payment Response");
+	// 				console.log(JSON.stringify(payment));
 
-					//get current user cart item
-					const itemBundle = await this._userController.getCartItems(req.user);
-					console.log(itemBundle);
-					const userCartItems = itemBundle.items;
+	// 				//get current user cart item
+	// 				const itemBundle = await this._userController.getCartItems(req.user);
+	// 				console.log(itemBundle);
+	// 				const userCartItems = itemBundle.items;
 
-					// scaffold codes
-					const codes = await this._userController.scaffoldCodes(userCartItems);
-					let gcodes = codes;
-					// //save transaction(gcodes)
-					let transactionPayload = {
-						status: 0,
-						type: 0,
-						payment: 0,
-						gcodes,
-						paymentRef: paymentId,
-						user: req.user,
-						amount: itemBundle.totalPrice
-					};
+	// 				// scaffold codes
+	// 				const codes = await this._userController.scaffoldCodes(userCartItems);
+	// 				let gcodes = codes;
+	// 				// //save transaction(gcodes)
+	// 				let transactionPayload = {
+	// 					status: 0,
+	// 					type: 0,
+	// 					payment: 0,
+	// 					gcodes,
+	// 					paymentRef: paymentId,
+	// 					user: req.user,
+	// 					amount: itemBundle.totalPrice
+	// 				};
 
-					let transaction = await this._userController.createTransaction(
-						transactionPayload
-					);
+	// 				let transaction = await this._userController.createTransaction(
+	// 					transactionPayload
+	// 				);
 
-					// clear cart items
-					const userId = req.user.id;
-					await this._userController.clearCart(userId);
+	// 				// clear cart items
+	// 				const userId = req.user.id;
+	// 				await this._userController.clearCart(userId);
 
-					//pass the transaction id and payment id to payment success page
-					res.render("user/payment-confirmation", {
-						title: "Payment",
-						layout: "userLayout",
-						isStore: true,
-						isPaymentSuccessful: true,
-						transactId: transaction.id,
-						paymentId: transaction.paymentRef,
-						csrfToken: req.csrfToken()
-					});
-				}
-			}
-		);
-	}
+	// 				//pass the transaction id and payment id to payment success page
+	// 				res.render("user/payment-confirmation", {
+	// 					title: "Payment",
+	// 					layout: "userLayout",
+	// 					isStore: true,
+	// 					isPaymentSuccessful: true,
+	// 					transactId: transaction.id,
+	// 					paymentId: transaction.paymentRef,
+	// 					csrfToken: req.csrfToken()
+	// 				});
+	// 			}
+	// 		}
+	// 	);
+	// }
 
 	private cancelPayment(req: Request, res: Response) {
 		res.render("user/payment-confirmation", {

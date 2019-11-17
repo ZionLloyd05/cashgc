@@ -491,33 +491,252 @@ var initiateBankDepositProcessing = function () {
         })
 }
 
+// $("input[name='m_option_1']").on('click', function () {
+//     var paymentOption = $("input[name='m_option_1']:checked").val();
+//     var paymentInfoSpan = $("#paymentInfoSpan");
+
+//     if (paymentOption === "bank") {
+//         paymentInfoSpan.show("slideIn")
+//     } else if (paymentOption === "paypal") {
+//         paymentInfoSpan.hide("fadeOut")
+//     }
+// })
+
+// $("#triggerPay").on('click', function () {
+//     var totalAmount = Number($('#cartTotalAmount').attr("data-pr"))
+
+//     if (totalAmount <= 0) {
+//         swal("Your cart is empty", "", "error");
+//         return false;
+//     }
+
+//     $("#optionModal").modal("hide")
+//     $('#statusModal').modal("show")
+//     var paymentOption = $("input[name='m_option_1']:checked").val();
+
+//     if (paymentOption === "paypal") {
+
+//         initiatePayPalPayment();
+//     } else if (paymentOption === "bank") {
+//         initiateBankDepositProcessing();
+//     }
+// })
+
+
+
+// =========================== Code Generation Methods =====================
+
+var buildPaymentButtons = function () {
+    // disble proceed button
+    $('#triggerPay').attr("disabled", true)
+    var totalAmount = $('#cartTotalAmount').attr("data-pr")
+
+    var items = []
+
+    currentCartItem.forEach(item => {
+        var arr = []
+        var {
+            id,
+            quantity,
+            total,
+            createdAt
+        } = item
+        var newItemForm = {
+            "name": item.giftCodeCategory.title,
+            "sku": "gcode",
+            "price": item.giftCodeCategory.sellingPrice,
+            "currency": "USD",
+            "quantity": quantity
+        }
+        items.push(newItemForm)
+    })
+
+    $('#paypal-button-container').empty();
+
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+
+        style: {
+            color: 'blue',
+            label: 'pay',
+        },
+
+        // Set up the transaction
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: totalAmount
+                    }
+                }]
+            });
+        },
+
+        onClick: function () {
+            $("#spinner4Row").show();
+        },
+
+        // Finalize the transaction
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                // Show a success message to the buyer
+                console.log(details);
+                console.log('Transaction completed by ' + details.payer.name.given_name + '!');
+                // Call your server to save the transaction
+                $("#spinner4Row").hide();
+                $("#spinner3Row").show();
+                fetch('/user/verify-paypal-transaction', {
+                        method: 'post',
+                        headers: {
+                            'content-type': 'application/json',
+                            "X-CSRF-TOKEN": csrfToken
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID,
+                            totalAmount
+                        })
+                    }).then(res => res.json())
+                    .then(res => {
+                        console.log(res)
+                        initiateCodeGeneration(res)
+                    })
+            });
+        }
+
+
+    }).render('#paypal-button-container');
+
+}
+
+var spinner2 = $("#spinner2");
+var headTitle = $('#head_title');
+
+var initiateCodeGeneration = function (res) {
+
+    if (res.status == "success") {
+        let transaction = res.data;
+        loadCodeTable(transaction.id)
+
+    } else if (res.status === "false") {
+        swal('Payment Failed', 'Kindly try again or reach the admin.', 'error')
+            .then(val => {
+                window.location.href = "/user/store";
+            })
+    }
+}
+
+var loadCodeTable = function (tid) {
+    $.ajax({
+        url: `/user/transaction?tid=${tid}`,
+        method: "GET",
+        dataType: "json",
+        header: {
+            "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            var data = response.data;
+            var formattedData = formatData(data);
+            bindToCodeTable(formattedData);
+        }
+    })
+}
+
+
+var formatData = function (data) {
+    var obj = []
+
+    data.forEach(transaction => {
+        var transactType = "";
+        (transaction.type == 0) ? transactType = "Purchase": transactType = "Sales";
+        transaction.giftCodes.forEach(code => {
+            var payload = {
+                title: code.giftCodeCategory.title,
+                code: code.code,
+                date: code.createdAt,
+                status: (code.isUsed == true) ? "Used" : "Not Used",
+                type: transactType
+            }
+            obj.push(payload)
+        })
+    })
+    console.log(obj)
+    return obj
+}
+
+
+var codeTbl;
+var bindToCodeTable = function (response) {
+    codeTbl = $("#codeTbl").DataTable({
+        aaData: response,
+        aoColumns: [{
+            data: "id",
+            render: function (id, type, row, meta) {
+                return meta.row + 1;
+            },
+        }, {
+            data: "title"
+        }, {
+            data: "code",
+            render: function (code, type, row, meta) {
+                return `
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" value="${code}" id="id_${meta.row}" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btnCopy" type="button" id="btnCopy">Copy</button>
+                    </div>
+                </div>
+                `
+            }
+        }, {
+            data: "date",
+            render: function (date, type, row, meta) {
+                return moment(date).format('LLL');
+            }
+        }]
+    })
+    spinner2.hide();
+    headTitle.text("Gift Codes")
+    $("#optionModal").modal("hide")
+    $("#codeModal").modal("show")
+}
+// =========================== / Code Generation Methods =====================
+
+
+var initiateCreditCardPayment = function () {
+
+}
+
 $("input[name='m_option_1']").on('click', function () {
     var paymentOption = $("input[name='m_option_1']:checked").val();
     var paymentInfoSpan = $("#paymentInfoSpan");
+    var cardPaymentSpan = $('#cardPaymentSpan');
 
     if (paymentOption === "bank") {
         paymentInfoSpan.show("slideIn")
+        cardPaymentSpan.hide("fadeOut")
     } else if (paymentOption === "paypal") {
         paymentInfoSpan.hide("fadeOut")
+        cardPaymentSpan.hide("fadeOut")
+    } else if (paymentOption === "paypalcard") {
+        buildPaymentButtons()
+        paymentInfoSpan.hide("fadeOut")
+        cardPaymentSpan.show("slideIn")
     }
 })
 
 $("#triggerPay").on('click', function () {
-    var totalAmount = Number($('#cartTotalAmount').attr("data-pr"))
-
-    if (totalAmount <= 0) {
-        swal("Your cart is empty", "", "error");
-        return false;
-    }
 
     $("#optionModal").modal("hide")
     $('#statusModal').modal("show")
     var paymentOption = $("input[name='m_option_1']:checked").val();
 
     if (paymentOption === "paypal") {
-
-        initiatePayPalPayment();
+        // initiatePayPalPayment();
     } else if (paymentOption === "bank") {
         initiateBankDepositProcessing();
     }
+})
+
+$("#closeCodeModal").on('click', function () {
+    window.location.href = "/user/my-codes";
 })

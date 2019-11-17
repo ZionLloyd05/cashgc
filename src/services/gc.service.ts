@@ -4,12 +4,21 @@ import { GiftCode } from "./../models/GiftCode";
 import * as crypto from "crypto";
 import { injectable } from "inversify";
 import { createQueryBuilder } from "typeorm";
+import { UserService } from "./../services/user.service";
+import DIContainer from "../container/DIContainer";
+import { TransactionService } from "./../services/transaction.service";
 
 @injectable()
 export class GiftCodeService {
 	/**
 	 *
 	 */
+	private _userService: UserService = DIContainer.resolve<UserService>(
+		UserService
+	);
+	private _tService: TransactionService = DIContainer.resolve<
+		TransactionService
+	>(TransactionService);
 	constructor() {}
 
 	create = (code: string, gc: GiftCodeCategory) => {
@@ -82,12 +91,12 @@ export class GiftCodeService {
 
 		const gcRepository = await db.getRepository(GiftCode);
 		return await gcRepository.find();
-	}
+	};
 
 	getAllCodesCount = async () => {
 		var codes = await this.getAllCodes();
 		return codes.length;
-	}
+	};
 
 	getGCbyCode = async (token: string): Promise<any> | null => {
 		const db = await DatabaseProvider.getConnection();
@@ -146,6 +155,41 @@ export class GiftCodeService {
 		});
 
 		return error;
+	};
+
+	scaffoldUserCode = async (user: any, paymentId: any): Promise<any> => {
+		/**2.
+		 * scaffold the gift codes
+		 */
+		//get current user cart item
+		const itemBundle = await this._userService.getCartItem(user);
+		console.log(itemBundle);
+		const userCartItems = itemBundle.items;
+
+		// scaffold codes
+		const codes = await this.generateCodes(userCartItems);
+		let gcodes = codes;
+		console.log(gcodes);
+		// //save transaction(gcodes)
+		let transactionPayload = {
+			status: 0,
+			type: 0,
+			payment: 0,
+			gcodes,
+			paymentRef: paymentId,
+			user,
+			amount: itemBundle.totalPrice
+		};
+
+		let transaction = await this._tService.createTransaction(
+			transactionPayload
+		);
+
+		// clear cart items
+		const userId = user.id;
+		await this._userService.clearCart(userId);
+
+		return transaction;
 	};
 
 	/**
