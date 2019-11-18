@@ -43,6 +43,10 @@ function startServer() {
                 process.exit(1);
                 return;
             }
+            // console.log(config.environment);
+            // console.log(config.environment === "production");
+            // console.log(config.environment === "production");
+            // console.log(config.environment == "production");
             console.log("-------------------------------------------------------");
             console.log(" ( :  Server listening on port: ", config_1.default.port, " : ) ");
             console.log("-------------------------------------------------------");

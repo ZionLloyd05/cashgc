@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import * as checkoutNodeJssdk from "@paypal/checkout-server-sdk";
 
+import config from "../config";
 import DIContainer from "../container/DIContainer";
 import { GiftCodeService } from "./../services/gc.service";
 
@@ -63,16 +64,19 @@ export class PayPalService {
 		let clientId = process.env.PAYPAL_CLIENT_ID;
 		let clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-		if (process.env.NODE_ENV === "production") {
+		// console.log(config.environment === "production");
+
+		if (config.environment === "production") {
 			console.log("production");
 			return new checkoutNodeJssdk.core.LiveEnvironment(clientId, clientSecret);
+		} else if (config.environment === "development") {
+			console.log("sandbox");
+			return new checkoutNodeJssdk.core.SandboxEnvironment(
+				clientId,
+				clientSecret
+			);
 		}
 
-		console.log("sandbox");
-		console.log(clientId, clientSecret);
-		return new checkoutNodeJssdk.core.SandboxEnvironment(
-			clientId,
-			clientSecret
-		);
+		return {error: "environment unknown"};
 	}
 }
