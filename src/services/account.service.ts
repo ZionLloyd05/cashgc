@@ -125,7 +125,7 @@ export class AccountService {
 
 		user.isVerified = true;
 		user.utoken = "";
-		user.uTokenExpiryDate = "";
+		user.uTokenExpiryDate = "1990-10-02 10:00:00";
 
 		let userUpdated = await db.getRepository(User).save(user);
 
@@ -173,8 +173,8 @@ export class AccountService {
 		if (user == null) return false;
 
 		user.password = this._userService.hashPassword(newPassword);
-		user.resetPasswordExpiryDate = "";
-		user.resetPasswordToken = "";
+		user.uTokenExpiryDate = "1990-10-02 10:00:00";
+		user.utoken = "";
 
 		let userUpdated = await db.getRepository(User).save(user);
 
