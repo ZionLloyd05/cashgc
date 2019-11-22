@@ -45,13 +45,16 @@ export class Transaction {
 	@Column("enum", { enum: Payment })
 	public payment: Payment;
 
-	@ManyToOne(type => User, user => user.transactions)
+	@ManyToOne(
+		type => User,
+		user => user.transactions
+	)
 	public user: User;
 
 	@Column("enum", { enum: Type })
 	public type: Type;
 
-	@Column()
+	@Column({ default: "nil" })
 	public paymentRef?: String;
 
 	@Column()

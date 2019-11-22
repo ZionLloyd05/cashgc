@@ -7,6 +7,7 @@ import { createQueryBuilder } from "typeorm";
 import { UserService } from "./../services/user.service";
 import DIContainer from "../container/DIContainer";
 import { TransactionService } from "./../services/transaction.service";
+import { SharedService } from "./../services/shared.service";
 
 @injectable()
 export class GiftCodeService {
@@ -19,6 +20,10 @@ export class GiftCodeService {
 	private _tService: TransactionService = DIContainer.resolve<
 		TransactionService
 	>(TransactionService);
+
+	private _sharedService: SharedService = DIContainer.resolve<SharedService>(
+		SharedService
+	);
 	constructor() {}
 
 	create = (code: string, gc: GiftCodeCategory) => {
@@ -156,6 +161,16 @@ export class GiftCodeService {
 
 		return error;
 	};
+
+	// generateSingleCode = async (): Promise<any> => {
+
+	// }
+
+	// generateCodeByAdmin = async (user: any, codeLength: number): Promise<any> => {
+	// 	if(codeLength != 0){
+
+	// 	}
+	// }
 
 	scaffoldUserCode = async (user: any, paymentId: any): Promise<any> => {
 		/**2.
