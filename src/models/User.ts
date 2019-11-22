@@ -65,16 +65,22 @@ export class User implements IUserDTO {
 	@Column()
 	public password?: string;
 
-	@Column()
+	@Column({ default: "nil" })
 	public utoken?: string;
 
-	@Column("datetime")
+	@Column({ default: "1990-10-10 10:00:00" })
 	public uTokenExpiryDate?: Date;
 
-	@OneToMany(type => CartItem, cartItem => cartItem.user)
+	@OneToMany(
+		type => CartItem,
+		cartItem => cartItem.user
+	)
 	public cartItems?: CartItem[];
 
-	@OneToMany(type => Transaction, transaction => transaction.user)
+	@OneToMany(
+		type => Transaction,
+		transaction => transaction.user
+	)
 	public transactions?: Transaction[];
 
 	@CreateDateColumn()

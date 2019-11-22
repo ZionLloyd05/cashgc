@@ -22,7 +22,7 @@ export class GiftCode {
 	@Column({ default: false })
 	public isUsed: boolean;
 
-	@Column()
+	@Column({ default: "1990-10-10 10:00:00"})
 	public dateUsed?: Date;
 
 	@Column({ default: false })
