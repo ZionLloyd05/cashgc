@@ -267,7 +267,10 @@ export class UserService {
 		const accountRepo = await db.getRepository(BankAccount);
 
 		let newbkAccount = await new BankAccount();
-		newbkAccount = { ...payload };
+		
+		newbkAccount.name = payload.name;
+		newbkAccount.number = payload.number;
+		newbkAccount.user = payload.user;
 
 		return await accountRepo.save(newbkAccount);
 	}
