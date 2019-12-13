@@ -283,7 +283,9 @@ export class UserService {
 		const walletRepo = await db.getRepository(Wallet);
 
 		let newWallet = await new Wallet();
-		newWallet = { ...payload };
+		
+		newWallet.wid = payload.wid;
+		newWallet.user = payload.user;
 
 		return await walletRepo.save(newWallet);
 	}
