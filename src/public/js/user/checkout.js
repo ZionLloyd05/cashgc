@@ -145,7 +145,7 @@ var bindTableToData = function (response) {
 
 
 $(document).on('click', '#add', function () {
-    const MAX_TRANSACTION_LIMIT = 300;
+    const MAX_TRANSACTION_LIMIT = 500;
 
     var currentQuantity = Number(cartQuantitySpan.attr('data-qty'))
     var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'))

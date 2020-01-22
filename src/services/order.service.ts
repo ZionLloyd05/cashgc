@@ -59,12 +59,15 @@ export class OrderService {
 
 			try {
 				receiptUrl = await this.uploadImage(filePath);
+				console.log(receiptUrl);
 			} catch (error) {
 				return error;
 			}
 
 			newOrder = { ...orderPayload };
 			newOrder.receiptUrl = receiptUrl;
+
+			console.log(newOrder);
 
 			return await orderRepo.save(newOrder);
 		} else {

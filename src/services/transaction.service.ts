@@ -17,7 +17,7 @@ export class TransactionService {
 	 *
 	 */
 	constructor() {
-		this.MAXIMUM_TRANSACTION_AMOUNT = 500;
+		this.MAXIMUM_TRANSACTION_AMOUNT = 1000;
 	}
 
 	public async createTransaction(payload: any): Promise<Transaction> {
