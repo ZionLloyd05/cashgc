@@ -98,7 +98,7 @@ function buildCodeCategory(data = []) {
 // var totalForTransaction = 0;
 function addItemToCart(btnId, itemId) {
 
-    const MAX_TRANSACTION_LIMIT = 300;
+    const MAX_TRANSACTION_LIMIT = 500;
 
     var cart = document.getElementById('cart_no');
     var totalPrice = document.getElementById('totalPrice');
@@ -122,7 +122,7 @@ function addItemToCart(btnId, itemId) {
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
         return false;
     } else if (supposeTotalPrice > MAX_TRANSACTION_LIMIT) {
-        swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
+        swal("Maximum transaction limit is $500", "Single transaction cannot exceed $300", "error");
         return false;
     } else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
