@@ -154,7 +154,7 @@ $(document).on('click', '#add', function () {
 
     if (supposedNewPrice > MAX_TRANSACTION_LIMIT) {
         // console.log("cannot");
-        swal("Maximum transaction limit is $300", "Single transaction cannot exceed $300", "error");
+        swal("Maximum transaction limit is $500", "Single transaction cannot exceed $500", "error");
         return false;
     }
 
@@ -413,7 +413,7 @@ var displayTransactionBox = function (canProceedWithTransaction) {
         $("#optionModal").modal("show")
     else {
         // console.log("error")
-        swal("Transacion quota reached for today", "Cannot go beyond $500 transaction per day", "error");
+        swal("Transacion quota reached for today", "Cannot go beyond $1000 transaction per day", "error");
         return false;
     }
 }
@@ -489,7 +489,7 @@ var initiateBankDepositProcessing = function () {
                     .then(val => {
                         $("#optionModal").modal("show")
                     })
-            } else if (response.status === "true") {                
+            } else if (response.status === "true") {
                 $('#statusModal').modal("hide")
                 swal("Transaction has been posted", "Transaction will be reviewed and processed", "success")
                     .then(val => {
@@ -498,39 +498,6 @@ var initiateBankDepositProcessing = function () {
             }
         })
 }
-
-// $("input[name='m_option_1']").on('click', function () {
-//     var paymentOption = $("input[name='m_option_1']:checked").val();
-//     var paymentInfoSpan = $("#paymentInfoSpan");
-
-//     if (paymentOption === "bank") {
-//         paymentInfoSpan.show("slideIn")
-//     } else if (paymentOption === "paypal") {
-//         paymentInfoSpan.hide("fadeOut")
-//     }
-// })
-
-// $("#triggerPay").on('click', function () {
-//     var totalAmount = Number($('#cartTotalAmount').attr("data-pr"))
-
-//     if (totalAmount <= 0) {
-//         swal("Your cart is empty", "", "error");
-//         return false;
-//     }
-
-//     $("#optionModal").modal("hide")
-//     $('#statusModal').modal("show")
-//     var paymentOption = $("input[name='m_option_1']:checked").val();
-
-//     if (paymentOption === "paypal") {
-
-//         initiatePayPalPayment();
-//     } else if (paymentOption === "bank") {
-//         initiateBankDepositProcessing();
-//     }
-// })
-
-
 
 // =========================== Code Generation Methods =====================
 

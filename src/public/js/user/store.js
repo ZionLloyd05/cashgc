@@ -122,7 +122,7 @@ function addItemToCart(btnId, itemId) {
         swal("Invalid Quantity", "Negative quantity cannot be added to cart!", "error")
         return false;
     } else if (supposeTotalPrice > MAX_TRANSACTION_LIMIT) {
-        swal("Maximum transaction limit is $500", "Single transaction cannot exceed $300", "error");
+        swal("Maximum transaction limit is $500", "Single transaction cannot exceed $500", "error");
         return false;
     } else {
         let newTotalPrice = Number(totalPriceValue) + (Number(itemPrice) * qty);
