@@ -85,7 +85,7 @@ export class AccountService {
 			return false;
 		}
 
-		user.utoken = "CG_" + this._sharedService.generateToken(7);
+		user.utoken = this._sharedService.generateToken(6);
 
 		var now = new Date();
 		now.setMinutes(now.getMinutes() + 15); // timestamp
