@@ -690,12 +690,14 @@ $("input[name='m_option_1']").on('click', function () {
         paymentInfoSpan.show("slideIn")
         cardPaymentSpan.hide("fadeOut")
     } else if (paymentOption === "paypal") {
-        paymentInfoSpan.hide("fadeOut")
-        cardPaymentSpan.hide("fadeOut")
+        // paymentInfoSpan.hide("fadeOut")
+        //cardPaymentSpan.hide("fadeOut")
+        swal("Service not available", "We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.", "error");
     } else if (paymentOption === "paypalcard") {
-        buildPaymentButtons()
-        paymentInfoSpan.hide("fadeOut")
-        cardPaymentSpan.show("slideIn")
+        swal("Service not available", "We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.", "error");
+        //buildPaymentButtons()
+        //paymentInfoSpan.hide("fadeOut")
+        //cardPaymentSpan.show("slideIn")
     }
 })
 
