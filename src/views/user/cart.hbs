@@ -35,7 +35,7 @@
                         <label class="kt-option">
                             <span class="kt-option__control">
                                 <span class="kt-radio kt-radio--bold kt-radio--brand">
-                                    <input type="radio" name="m_option_1" value="paypalcard">
+                                    <input type="radio" name="m_option_1" value="onlinepay">
                                     <span></span>
                                 </span>
                             </span>
@@ -46,7 +46,7 @@
                                     </span>
                                 </span>
                                 <span class="kt-option__body">
-                                    Pay via Credit/Debit cards or Paypal account.
+                                    Pay via Card / Bank / Ussd.
                                 </span>
                             </span>
                         </label>
@@ -308,10 +308,15 @@
     </div>
 </div>
 
-<input type="hidden" id="_csrf" value="{{csrfToken}}">
+<input type="hidden" id="_csrf" value="{{csrfToken}}" />
+<input type="hidden" id="fname" value="{{user.firstname}} {{user.lastname}}" />
+<input type="hidden" id="email" value="{{user.email}}" />
+<input type="hidden" id="phone" value="{{user.phone}}" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script
     src="https://www.paypal.com/sdk/js?client-id=AZwIcLbk8r9iNqYMUmRn84qywrHVWDThXS3oBNHYzUON3VoRtjcz6HMXtoVaeP6HHqACoUe5UjKqE0H5&currency=USD"></script>
-
-{{!-- <script src="/js/user/checkout.js"></script> --}}
-<script src="/dist/js/user/checkout.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/node-uuid/1.4.8/uuid.min.js"
+    integrity="sha512-rV0Q1QWodkoLjts/qP2XHtjvUPTmN46k4eH0lzOR3mDui8a0YnL/uqydipXA9mQ2wG6J4imL0BO6/26rcFho7Q=="
+    crossorigin="anonymous"></script>
+<script src="/js/user/checkout.js"></script>
+{{!-- <script src="/dist/js/user/checkout.js"></script> --}}

@@ -1,414 +1,436 @@
-import { RateService } from "./rate.service";
-import { GiftCode } from "./../models/GiftCode";
-import { DatabaseProvider } from "./../database/index";
-import { Transaction } from "./../models/Transaction";
-import { injectable } from "inversify";
-import { createQueryBuilder } from "typeorm";
-import DIContainer from "../container/DIContainer";
+import { RateService } from './rate.service';
+import { GiftCode } from './../models/GiftCode';
+import { DatabaseProvider } from './../database/index';
+import { Transaction } from './../models/Transaction';
+import { injectable } from 'inversify';
+import { createQueryBuilder } from 'typeorm';
+import DIContainer from '../container/DIContainer';
 
 @injectable()
 export class TransactionService {
-	private _rService: RateService = DIContainer.resolve<RateService>(
-		RateService
-	);
+  private _rService: RateService = DIContainer.resolve<RateService>(
+    RateService
+  );
 
-	private MAXIMUM_TRANSACTION_AMOUNT: number;
-	/**
-	 *
-	 */
-	constructor() {
-		this.MAXIMUM_TRANSACTION_AMOUNT = 1000;
-	}
+  private MAXIMUM_TRANSACTION_AMOUNT: number;
+  /**
+   *
+   */
+  constructor() {
+    this.MAXIMUM_TRANSACTION_AMOUNT = 1000;
+  }
 
-	public async createTransaction(payload: any): Promise<Transaction> {
-		const db = await DatabaseProvider.getConnection();
-		var transaction = new Transaction();
-		let giftCodesArr: GiftCode[] = [];
+  public async createTransaction(payload: any): Promise<Transaction> {
+    const db = await DatabaseProvider.getConnection();
+    var transaction = new Transaction();
+    let giftCodesArr: GiftCode[] = [];
 
-		let { payment, type } = payload;
+    let { payment, type } = payload;
 
-		if (payment === 2 && type === 1) {
-			// converting dollar to naira
-			payload.amount = await this._rService.convertDollarToNaira(
-				Number(payload.amount)
-			);
+    if (payment === 2 && type === 1) {
+      // converting dollar to naira
+      payload.amount = await this._rService.convertDollarToNaira(
+        Number(payload.amount)
+      );
 
-			//sales and payment with bitcoin
-			// payload.gcodes.forEach(codeId =>)
-			console.log("sales and payment with bitcoin");
+      //sales and payment with bitcoin
+      // payload.gcodes.forEach(codeId =>)
+      console.log('sales and payment with bitcoin');
 
-			// set all coin to is used
-			payload.gcodes &&
-				payload.gcodes.forEach(async codeId => {
-					await this.setCodeToUsed(codeId);
-				});
-		} else if (payment === 4 && type === 1) {
-			// converting dollar to naira
-			payload.amount = await this._rService.convertDollarToNaira(
-				Number(payload.amount)
-			);
-			// set all coin to is used
-			payload.gcodes &&
-				payload.gcodes.forEach(async codeId => {
-					await this.setCodeToUsed(codeId);
-				});
-		} else if (payment === 1 && type === 1) {
-			// set all coin to is used
-			payload.gcodes &&
-				payload.gcodes.forEach(async codeId => {
-					await this.setCodeToUsed(codeId);
-				});
-		} else if (payment === 0 && type === 0) {
-			// buy and ofcourse payment with paypal
-			// console.log("buy and ofcourse payment with paypal");
-		} else if (payment === 3 && type === 0) {
-			// console.log("buy and pay with bank payment");
-		}
+      // set all coin to is used
+      payload.gcodes &&
+        payload.gcodes.forEach(async (codeId) => {
+          await this.setCodeToUsed(codeId);
+        });
+    } else if (payment === 4 && type === 1) {
+      // converting dollar to naira
+      payload.amount = await this._rService.convertDollarToNaira(
+        Number(payload.amount)
+      );
+      // set all coin to is used
+      payload.gcodes &&
+        payload.gcodes.forEach(async (codeId) => {
+          await this.setCodeToUsed(codeId);
+        });
+    } else if (payment === 1 && type === 1) {
+      // set all coin to is used
+      payload.gcodes &&
+        payload.gcodes.forEach(async (codeId) => {
+          await this.setCodeToUsed(codeId);
+        });
+    } else if (payment === 0 && type === 0) {
+      // buy and ofcourse payment with paypal
+      // console.log("buy and ofcourse payment with paypal");
+    } else if (payment === 3 && type === 0) {
+      // console.log("buy and pay with bank payment");
+    }
 
-		payload.gcodes &&
-			payload.gcodes.forEach(codeId => {
-				let giftCode = new GiftCode();
-				giftCode.id = codeId;
-				giftCodesArr.push(giftCode);
-			});
+    payload.gcodes &&
+      payload.gcodes.forEach((codeId) => {
+        let giftCode = new GiftCode();
+        giftCode.id = codeId;
+        giftCodesArr.push(giftCode);
+      });
 
-		let newPayload = {
-			status: payload.status,
-			type: payload.type,
-			giftCodes: giftCodesArr,
-			user: payload.user,
-			payment: payload.payment,
-			paymentRef: payload.paymentRef,
-			amount: payload.amount
-		};
+    let newPayload = {
+      status: payload.status,
+      type: payload.type,
+      giftCodes: giftCodesArr,
+      user: payload.user,
+      payment: payload.payment,
+      paymentRef: payload.paymentRef,
+      amount: payload.amount,
+    };
 
-		transaction = { ...newPayload };
-		return await db.getRepository("Transaction").save(transaction);
-	}
+    transaction = { ...newPayload };
+    return await db.getRepository('Transaction').save(transaction);
+  }
 
-	public async updateTransactionWithGcodes(gcodes: any, transactionId: number) {
-		let db = await DatabaseProvider.getConnection();
-		let giftCodesArr: GiftCode[] = [];
+  public async updateTransactionWithGcodes(gcodes: any, transactionId: number) {
+    let db = await DatabaseProvider.getConnection();
+    let giftCodesArr: GiftCode[] = [];
 
-		let transactionInDb = await this.getTransactionById(transactionId);
-		// console.log(transactionInDb);
+    let transactionInDb = await this.getTransactionById(transactionId);
+    // console.log(transactionInDb);
 
-		if (gcodes.length > 0) {
-			gcodes.forEach(codeId => {
-				let giftCode = new GiftCode();
-				giftCode.id = codeId;
-				giftCodesArr.push(giftCode);
-			});
-		}
+    if (gcodes.length > 0) {
+      gcodes.forEach((codeId) => {
+        let giftCode = new GiftCode();
+        giftCode.id = codeId;
+        giftCodesArr.push(giftCode);
+      });
+    }
 
-		transactionInDb.giftCodes = giftCodesArr;
+    transactionInDb.giftCodes = giftCodesArr;
 
-		/**
-		 * @TODOD auto generate a payment ref
-		 */
-		return await db.getRepository("Transaction").save(transactionInDb);
-	}
+    /**
+     * @TODOD auto generate a payment ref
+     */
+    return await db.getRepository('Transaction').save(transactionInDb);
+  }
 
-	public async setCodeToUsed(codeId: number): Promise<void> {
-		const db = await DatabaseProvider.getConnection();
-		const gcRepo = await db.getRepository(GiftCode);
-		// console.log(codeId);
+  public async setCodeToUsed(codeId: number): Promise<void> {
+    const db = await DatabaseProvider.getConnection();
+    const gcRepo = await db.getRepository(GiftCode);
+    // console.log(codeId);
 
-		let gcInDb = await gcRepo.findOne({
-			where: { id: codeId }
-		});
-		// console.log(gcInDb);
+    let gcInDb = await gcRepo.findOne({
+      where: { id: codeId },
+    });
+    // console.log(gcInDb);
 
-		if (gcInDb) gcInDb.isUsed = true;
+    if (gcInDb) gcInDb.isUsed = true;
 
-		await gcRepo.save(gcInDb);
-	}
+    await gcRepo.save(gcInDb);
+  }
 
-	public async getTransactionById(transactionId: number): Promise<any> {
-		let db = await DatabaseProvider.getConnection();
-		return await db.getRepository(Transaction).findOne(transactionId);
-	}
+  public async getTransactionById(transactionId: number): Promise<any> {
+    let db = await DatabaseProvider.getConnection();
+    return await db.getRepository(Transaction).findOne(transactionId);
+  }
 
-	public async getUserTransactions(userid: number): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
-			.where({ user: userid })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
-		// console.log(transactions);
-		return transactions;
-	}
+  public async getUserTransactions(userid: number): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
+      .where({ user: userid })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
+    // console.log(transactions);
+    return transactions;
+  }
 
-	public async getUserTransactionsAlone(userid: number): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where({ user: userid })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
-		// console.log(transactions);
-		return transactions;
-	}
+  public async getUserTransactionsAlone(userid: number): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ user: userid })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
+    // console.log(transactions);
+    return transactions;
+  }
 
-	public async getUserCodesByTransaction(
-		userid: number,
-		tid: number
-	): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transaction = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where({ user: userid })
-			.andWhere("transaction.id = :transactionId")
-			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
-			.setParameters({ transactionId: tid })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async getUserCodesByTransactionRef(
+    userid: number,
+    tref: any
+  ): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transaction = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ user: userid })
+      .andWhere('transaction.paymentRef = :transactionRef')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
+      .setParameters({ transactionRef: tref })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		return transaction;
-	}
+    return transaction;
+  }
 
-	public async getAllCodesByTransaction(): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transaction = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-			.innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async getUserCodesByTransaction(
+    userid: number,
+    tid: number
+  ): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transaction = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ user: userid })
+      .andWhere('transaction.id = :transactionId')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
+      .setParameters({ transactionId: tid })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		return transaction;
-	}
+    return transaction;
+  }
 
-	public async getAllTransaction(): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async getAllCodesByTransaction(): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transaction = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		return transactions;
-	}
+    return transaction;
+  }
 
-	public async getSalesTransaction(): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where({ type: "1" })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async getAllTransaction(): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		return transactions;
-	}
+    return transactions;
+  }
 
-	public async getPurchaseTransaction(): Promise<any[]> {
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where({ type: "0" })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async getSalesTransaction(): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ type: '1' })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		return transactions;
-	}
+    return transactions;
+  }
 
-	public async approveTransaction(tid: number): Promise<any> {
-		let db = await DatabaseProvider.getConnection();
+  public async getPurchaseTransaction(): Promise<any[]> {
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ type: '0' })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		await createQueryBuilder("Transaction")
-			.update(Transaction)
-			.set({ status: 0 })
-			.where("id = :id", { id: tid })
-			.execute();
+    return transactions;
+  }
 
-		let newTransaction = await db.getRepository("transaction").findOne({
-			relations: ["user"],
-			where: { id: tid }
-		});
+  public async approveTransaction(tid: number): Promise<any> {
+    let db = await DatabaseProvider.getConnection();
 
-		return newTransaction;
-	}
+    await createQueryBuilder('Transaction')
+      .update(Transaction)
+      .set({ status: 0 })
+      .where('id = :id', { id: tid })
+      .execute();
 
-	public async declineTransaction(tid: number): Promise<any> {
-		let db = await DatabaseProvider.getConnection();
+    let newTransaction = await db.getRepository('transaction').findOne({
+      relations: ['user'],
+      where: { id: tid },
+    });
 
-		await createQueryBuilder("Transaction")
-			.update(Transaction)
-			.set({ status: 1 })
-			.where("id = :id", { id: tid })
-			.execute();
+    return newTransaction;
+  }
 
-		let newTransaction = await db.getRepository("transaction").findOne({
-			relations: ["user"],
-			where: { id: tid }
-		});
-		console.log(newTransaction);
-		return newTransaction;
-	}
+  public async declineTransaction(tid: number): Promise<any> {
+    let db = await DatabaseProvider.getConnection();
 
-	public async setTransactionStatusToSuccess(tid: number): Promise<any> {
-		let db = await DatabaseProvider.getConnection();
+    await createQueryBuilder('Transaction')
+      .update(Transaction)
+      .set({ status: 1 })
+      .where('id = :id', { id: tid })
+      .execute();
 
-		await createQueryBuilder("Transaction")
-			.update(Transaction)
-			.set({ status: 0 })
-			.where("id = :id", { id: tid })
-			.execute();
+    let newTransaction = await db.getRepository('transaction').findOne({
+      relations: ['user'],
+      where: { id: tid },
+    });
+    console.log(newTransaction);
+    return newTransaction;
+  }
 
-		let newTransaction = await db.getRepository("transaction").findOne({
-			where: { id: tid }
-		});
+  public async setTransactionStatusToSuccess(tid: number): Promise<any> {
+    let db = await DatabaseProvider.getConnection();
 
-		return newTransaction;
-	}
+    await createQueryBuilder('Transaction')
+      .update(Transaction)
+      .set({ status: 0 })
+      .where('id = :id', { id: tid })
+      .execute();
 
-	public async canUserTransact(userId: number): Promise<any> {}
+    let newTransaction = await db.getRepository('transaction').findOne({
+      where: { id: tid },
+    });
 
-	public async getAllTransactionForUser(userId: number): Promise<any> {
-		let db = await DatabaseProvider.getConnection();
+    return newTransaction;
+  }
 
-		let userTransactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where("transaction.user.id = :uid", { uid: userId })
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+  public async canUserTransact(userId: number): Promise<any> {}
 
-		return userTransactions;
-	}
+  public async getAllTransactionForUser(userId: number): Promise<any> {
+    let db = await DatabaseProvider.getConnection();
 
-	public async getUserTransactionsWithinLast24Hours(
-		userId: number
-	): Promise<any> {
-		let last24HoursDate = this.returnLast24HoursDate();
+    let userTransactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where('transaction.user.id = :uid', { uid: userId })
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-		let db = await DatabaseProvider.getConnection();
-		let transactions = await db
-			.getRepository("transaction")
-			.createQueryBuilder("transaction")
-			.innerJoinAndSelect("transaction.user", "user")
-			.where(
-				`transaction.createdAt >= :startDate AND transaction.createdAt <= :endDate AND transaction.user.id = :userId`,
-				{ startDate: last24HoursDate, endDate: new Date(), userId }
-			)
-			.orderBy({
-				"transaction.id": "DESC"
-			})
-			.getMany();
+    return userTransactions;
+  }
 
-		return transactions;
-	}
+  public async getUserTransactionsWithinLast24Hours(
+    userId: number
+  ): Promise<any> {
+    let last24HoursDate = this.returnLast24HoursDate();
 
-	public async canMakeTransaction(
-		userId: number,
-		currentTransactionAmount: number
-	): Promise<Boolean> {
-		// console.log(currentTransactionAmount);
-		let transactions = await this.getUserTransactionsWithinLast24Hours(userId);
-		// console.log(transactions)
-		let totalTransactionAmount = this.totalAmountInTransactions(transactions);
-		// console.log(totalTransactionAmount)
-		let currentTransactionAmountInNaira = await this._rService.convertDollarToNaira(
-			currentTransactionAmount
-		);
-		let supposedTransactionTotal =
-			totalTransactionAmount + currentTransactionAmountInNaira;
-		// console.log(supposedTransactionTotal);
-		let maxAmount = await this.getDollar(this.MAXIMUM_TRANSACTION_AMOUNT);
-		// console.log(maxAmount)
-		if (supposedTransactionTotal > maxAmount) return false;
-		else return true;
-	}
+    let db = await DatabaseProvider.getConnection();
+    let transactions = await db
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where(
+        `transaction.createdAt >= :startDate AND transaction.createdAt <= :endDate AND transaction.user.id = :userId`,
+        { startDate: last24HoursDate, endDate: new Date(), userId }
+      )
+      .orderBy({
+        'transaction.id': 'DESC',
+      })
+      .getMany();
 
-	/**
-	 * Helper methods
-	 */
-	private async getDollar(amount: number) {
-		return await this._rService.convertDollarToNaira(amount);
-	}
-	public totalAmountInTransactions(transactions: [Transaction]): number {
-		let total = 0;
-		transactions.forEach(transaction => {
-			total += transaction.amount;
-		});
+    return transactions;
+  }
 
-		return total;
-	}
-	private returnLast24HoursDate = function() {
-		let today = new Date();
+  public async canMakeTransaction(
+    userId: number,
+    currentTransactionAmount: number
+  ): Promise<Boolean> {
+    // console.log(currentTransactionAmount);
+    let transactions = await this.getUserTransactionsWithinLast24Hours(userId);
+    // console.log(transactions)
+    let totalTransactionAmount = this.totalAmountInTransactions(transactions);
+    // console.log(totalTransactionAmount)
+    let currentTransactionAmountInNaira = await this._rService.convertDollarToNaira(
+      currentTransactionAmount
+    );
+    let supposedTransactionTotal =
+      totalTransactionAmount + currentTransactionAmountInNaira;
+    // console.log(supposedTransactionTotal);
+    let maxAmount = await this.getDollar(this.MAXIMUM_TRANSACTION_AMOUNT);
+    // console.log(maxAmount)
+    if (supposedTransactionTotal > maxAmount) return false;
+    else return true;
+  }
 
-		let dayBeforeTimestamp = today.setDate(today.getDate() - 1);
+  /**
+   * Helper methods
+   */
+  private async getDollar(amount: number) {
+    return await this._rService.convertDollarToNaira(amount);
+  }
+  public totalAmountInTransactions(transactions: [Transaction]): number {
+    let total = 0;
+    transactions.forEach((transaction) => {
+      total += transaction.amount;
+    });
 
-		let dayBefore = new Date(dayBeforeTimestamp);
+    return total;
+  }
+  private returnLast24HoursDate = function () {
+    let today = new Date();
 
-		return dayBefore;
-	};
-	private daysBetween = function(date1, date2) {
-		//Get 1 day in milliseconds
-		var one_day = 1000 * 60 * 60 * 24;
+    let dayBeforeTimestamp = today.setDate(today.getDate() - 1);
 
-		// Convert both dates to milliseconds
-		var date1_ms = date1.getTime();
-		var date2_ms = date2.getTime();
+    let dayBefore = new Date(dayBeforeTimestamp);
 
-		// Calculate the difference in milliseconds
-		var difference_ms = date2_ms - date1_ms;
+    return dayBefore;
+  };
+  private daysBetween = function (date1, date2) {
+    //Get 1 day in milliseconds
+    var one_day = 1000 * 60 * 60 * 24;
 
-		// Convert back to days and return
-		return Math.round(difference_ms / one_day);
-	};
+    // Convert both dates to milliseconds
+    var date1_ms = date1.getTime();
+    var date2_ms = date2.getTime();
 
-	private isWithin24Hours = function(lastTransactionDate: Date) {
-		var today = new Date();
-		var day = this.daysBetween(lastTransactionDate, today);
+    // Calculate the difference in milliseconds
+    var difference_ms = date2_ms - date1_ms;
 
-		if (day > 0) {
-			return false;
-		}
+    // Convert back to days and return
+    return Math.round(difference_ms / one_day);
+  };
 
-		return true;
-	};
+  private isWithin24Hours = function (lastTransactionDate: Date) {
+    var today = new Date();
+    var day = this.daysBetween(lastTransactionDate, today);
 
-	/**
-	 * asynchronous version for .forEach methos
-	 */
-	asyncForEach = async (array, callback) => {
-		for (let index = 0; index < array.length; index++) {
-			await callback(array[index], index, array);
-		}
-	};
+    if (day > 0) {
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * asynchronous version for .forEach methos
+   */
+  asyncForEach = async (array, callback) => {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  };
 }
