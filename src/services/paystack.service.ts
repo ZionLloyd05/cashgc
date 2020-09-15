@@ -1,11 +1,11 @@
-import { RateService } from './rate.service';
-import { TransactionService } from './transaction.service';
-import { UserService } from './user.service';
-import { injectable } from 'inversify';
-import config from '../config';
-import axios from 'axios';
-import * as _ from 'underscore';
-import DIContainer from '../container/DIContainer';
+import { RateService } from "./rate.service";
+import { TransactionService } from "./transaction.service";
+import { UserService } from "./user.service";
+import { injectable } from "inversify";
+import config from "../config";
+import axios from "axios";
+import * as _ from "underscore";
+import DIContainer from "../container/DIContainer";
 
 @injectable()
 export class PaystackService {
@@ -25,7 +25,7 @@ export class PaystackService {
   private errors;
 
   constructor() {
-    this.baseUrl = 'https://api.paystack.co';
+    this.baseUrl = "https://api.paystack.co";
     this.errors = [];
   }
 
@@ -62,29 +62,29 @@ export class PaystackService {
   ): Promise<any> {
     // console.log(config.secret_key);
     // console.log(accnumber + " " + bankcode);
-    let res_error = '';
+    let res_error = "";
     const res = await axios({
-      method: 'GET',
-      responseType: 'json',
+      method: "GET",
+      responseType: "json",
       url: `${this.baseUrl}/bank/resolve?account_number=${accnumber}&bank_code=${bankcode}`,
       headers: {
-        Authorization: 'Bearer ' + config.secret_key,
+        Authorization: "Bearer " + config.secret_key,
       },
     }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
         console.log(error.response.status);
-        res_error = 'Incorrect account credentials';
+        res_error = "Incorrect account credentials";
       } else if (error.request) {
-        res_error = 'No internet connection';
+        res_error = "No internet connection";
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
+        console.log("Error", error.message);
         res_error = error.message;
       }
     });
     res_error && console.log(res_error);
-    if (res_error == '') return res;
+    if (res_error == "") return res;
     else return res_error;
   }
 
@@ -101,7 +101,7 @@ export class PaystackService {
       `${this.baseUrl}/transferrecipient`,
       accPayload,
       {
-        headers: { Authorization: 'Bearer ' + config.secret_key },
+        headers: { Authorization: "Bearer " + config.secret_key },
       }
     );
 
@@ -110,26 +110,26 @@ export class PaystackService {
 
   // {"source": "balance", "reason": "Holiday Flexing", "amount":3794800, "recipient": "RCP_gx2wn530m0i3w3m"}'
   public async initiateTransfer(transferPayload: any): Promise<any> {
-    let res_error = '';
+    let res_error = "";
     const res = await axios
       .post(`${this.baseUrl}/transfer`, transferPayload, {
-        headers: { Authorization: 'Bearer ' + config.secret_key },
+        headers: { Authorization: "Bearer " + config.secret_key },
       })
       .catch(function (error) {
         if (error.response) {
           console.log(error.response);
-          res_error = 'Your balance is not enough to fulfil this request';
+          res_error = "Your balance is not enough to fulfil this request";
         } else if (error.request) {
-          res_error = 'No internet connection';
+          res_error = "No internet connection";
           console.log(error.request);
           return error.request;
         } else {
           // Somethingaskjdkj happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          console.log("Error", error.message);
         }
       });
     res_error && console.log(res_error);
-    if (res_error == '') return res.data;
+    if (res_error == "") return res.data;
     else return res_error;
   }
 
@@ -146,7 +146,7 @@ export class PaystackService {
     amountToTransfer: number,
     codesToSell: any
   ): Promise<any> {
-    let error = '';
+    let error = "";
     // collect user account details
     let userAccount = await this._userService.getAccount(user.id);
 
@@ -164,9 +164,9 @@ export class PaystackService {
         bankcode
       );
 
-      if (typeof resolveResponse == 'string') {
-        error = 'Incorrect account credentials';
-        return { status: 'failed', data: error };
+      if (typeof resolveResponse == "string") {
+        error = "Incorrect account credentials";
+        return { status: "failed", data: error };
       }
 
       // this.log(resolveResponse);
@@ -176,11 +176,11 @@ export class PaystackService {
 
         // create a transfer reciept
         let recieptPayload = {
-          type: 'nuban',
+          type: "nuban",
           name: account_name,
           account_number: account_number,
           bank_code: bankcode,
-          currency: 'NGN',
+          currency: "NGN",
         };
 
         let recieptResponse = await this.createReceipt(recieptPayload);
@@ -195,19 +195,19 @@ export class PaystackService {
           let amountInKobo = this.nairaToKobo(amountToTransferInNaira);
 
           let transferPayload = {
-            source: 'balance',
+            source: "balance",
             amount: amountInKobo,
             recipient: recieptResponse.data.recipient_code,
           };
-          console.log('about to initiate transfer');
+          console.log("about to initiate transfer");
           let transferResponse = await this.initiateTransfer(transferPayload);
 
-          if (typeof transferResponse == 'string') {
-            error = 'Kindly contact the admin';
-            return { status: 'failed', data: error };
+          if (typeof transferResponse == "string") {
+            error = "Kindly contact the admin";
+            return { status: "failed", data: error };
           }
 
-          console.log('Transfer initiated');
+          console.log("Transfer initiated");
           if (transferResponse.status && transferResponse.status == true) {
             let amountInNaira = await this._rService.convertDollarToNaira(
               amountToTransfer
@@ -226,19 +226,19 @@ export class PaystackService {
 
             await this._tService.createTransaction(transactionPayload);
 
-            return { status: 'success', data: transferResponse };
+            return { status: "success", data: transferResponse };
           }
         } else {
-          error = 'Unable to create transfer reciept';
-          return { status: 'failed', data: error };
+          error = "Unable to create transfer reciept";
+          return { status: "failed", data: error };
         }
       } else {
-        error = 'Incorrect account credentials';
-        return { status: 'failed', data: error };
+        error = "Incorrect account credentials";
+        return { status: "failed", data: error };
       }
     } else {
-      error = 'No account for user';
-      return { status: 'failed', data: error };
+      error = "No account for user";
+      return { status: "failed", data: error };
     }
   }
 }

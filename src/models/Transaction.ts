@@ -1,69 +1,70 @@
 import { User } from "./User";
 import {
-	Entity,
-	Column,
-	PrimaryGeneratedColumn,
-	CreateDateColumn,
-	Generated,
-	ManyToOne,
-	ManyToMany,
-	JoinTable
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Generated,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { GiftCode } from "./GiftCode";
 
 enum Status {
-	Success,
-	Failed,
-	Pending
+  Success,
+  Failed,
+  Pending,
 }
 
 enum Type {
-	Buy,
-	Sell
+  Buy,
+  Sell,
 }
 
 enum Payment {
-	Paypal,
-	Paystack,
-	Bitcoin,
-	Bank,
-	Manual
+  Paypal,
+  Paystack,
+  Bitcoin,
+  Bank,
+  Manual,
+  FlutterWave,
 }
 
 @Entity()
 export class Transaction {
-	@PrimaryGeneratedColumn()
-	public id?: number;
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
-	@Column()
-	@Generated("uuid")
-	public reference?: number;
+  @Column()
+  @Generated("uuid")
+  public reference?: number;
 
-	@Column("enum", { enum: Status })
-	public status: Status;
+  @Column("enum", { enum: Status })
+  public status: Status;
 
-	@Column("enum", { enum: Payment })
-	public payment: Payment;
+  @Column("enum", { enum: Payment })
+  public payment: Payment;
 
-	@ManyToOne(
-		type => User,
-		user => user.transactions
-	)
-	public user: User;
+  @ManyToOne((type) => User, (user) => user.transactions)
+  public user: User;
 
-	@Column("enum", { enum: Type })
-	public type: Type;
+  @Column("enum", { enum: Type })
+  public type: Type;
 
-	@Column({ default: "nil" })
-	public paymentRef?: String;
+  @Column({ default: "nil" })
+  public paymentRef?: String;
 
-	@Column()
-	public amount?: number;
+  @Column({ default: "nil" })
+  public message?: String;
 
-	@ManyToMany(type => GiftCode)
-	@JoinTable()
-	public giftCodes?: GiftCode[];
+  @Column()
+  public amount?: number;
 
-	@CreateDateColumn()
-	createdAt?: Date;
+  @ManyToMany((type) => GiftCode)
+  @JoinTable()
+  public giftCodes?: GiftCode[];
+
+  @CreateDateColumn()
+  createdAt?: Date;
 }

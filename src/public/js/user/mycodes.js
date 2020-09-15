@@ -1,25 +1,25 @@
-'use strict';
+"use strict";
 $(document).ready(function () {
   loadCodeTable();
-  $('#kt_toast_1').toast({
+  $("#kt_toast_1").toast({
     delay: 4e3,
   });
-  var transactionRef = GetURLParameter('transref');
+  var transactionRef = GetURLParameter("transref");
   if (transactionRef != undefined) {
     initiateCodeGeneration(transactionRef);
   }
 });
 
-var csrfToken = $('#_csrf').val();
-var spinner = $('#spinner');
+var csrfToken = $("#_csrf").val();
+var spinner = $("#spinner");
 
 var loadCodeTable = function () {
   $.ajax({
-    url: '/user/transaction',
-    method: 'GET',
-    dataType: 'json',
+    url: "/user/transaction",
+    method: "GET",
+    dataType: "json",
     header: {
-      'X-CSRF-TOKEN': csrfToken,
+      "X-CSRF-TOKEN": csrfToken,
     },
     success: function (response) {
       var data = response.data;
@@ -29,25 +29,25 @@ var loadCodeTable = function () {
   });
 };
 
-var spinner2 = $('#spinner2');
-var headTitle = $('#head_title');
+var spinner2 = $("#spinner2");
+var headTitle = $("#head_title");
 
 var codeTbl;
 var bindTableToData = function (response) {
-  codeTbl = $('#codeTbl').DataTable({
+  codeTbl = $("#codeTbl").DataTable({
     aaData: response,
     aoColumns: [
       {
-        data: 'id',
+        data: "id",
         render: function (id, type, row, meta) {
           return meta.row + 1;
         },
       },
       {
-        data: 'title',
+        data: "title",
       },
       {
-        data: 'code',
+        data: "code",
         render: function (code, type, row, meta) {
           return `
                 <div class="input-group input-group-sm">
@@ -60,31 +60,33 @@ var bindTableToData = function (response) {
         },
       },
       {
-        data: 'isActivated',
+        data: "isActivated",
         render: function (isActivated, type, row, meta) {
-          if (isActivated == true)
+          if (row.type == "Sales") {
+            return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Sold</span>`;
+          } else if (isActivated == true)
             return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">Active</span>`;
           else
             return `<span class="kt-badge  kt-badge--danger kt-badge--inline kt-badge--pill">Inactive</span>`;
         },
       },
       {
-        data: 'date',
+        data: "date",
         render: function (date, type, row, meta) {
-          return moment(date).format('LLL');
+          return moment(date).format("LLL");
         },
       },
       {
-        data: 'status',
+        data: "status",
         render: function (data, type, row, meta) {
-          if (data == 'Used')
+          if (data == "Used")
             return `<span class="kt-badge  kt-badge--danger kt-badge--inline kt-badge--pill">${data}</span>`;
           else
             return `<span class="kt-badge  kt-badge--primary kt-badge--inline kt-badge--pill">${data}</span>`;
         },
       },
       {
-        data: 'type',
+        data: "type",
       },
     ],
   });
@@ -98,10 +100,10 @@ var initiateCodeGeneration = function (tid) {
 var loadCodeTableForTransaction = function (tid) {
   $.ajax({
     url: `/user/transaction?tid=${tid}`,
-    method: 'GET',
-    dataType: 'json',
+    method: "GET",
+    dataType: "json",
     header: {
-      'X-CSRF-TOKEN': csrfToken,
+      "X-CSRF-TOKEN": csrfToken,
     },
     success: function (response) {
       var data = response.data;
@@ -115,16 +117,16 @@ var formatData = function (data) {
   var obj = [];
 
   data.forEach((transaction) => {
-    var transactType = '';
+    var transactType = "";
     transaction.type == 0
-      ? (transactType = 'Purchase')
-      : (transactType = 'Sales');
+      ? (transactType = "Purchase")
+      : (transactType = "Sales");
     transaction.giftCodes.forEach((code) => {
       var payload = {
         title: code.giftCodeCategory.title,
         code: code.code,
         date: code.createdAt,
-        status: code.isUsed == true ? 'Used' : 'Not Used',
+        status: code.isUsed == true ? "Used" : "Not Used",
         type: transactType,
         isActivated: code.isActivated,
       };
@@ -135,20 +137,20 @@ var formatData = function (data) {
 };
 
 var bindToCodeTable = function (response) {
-  codeTbl = $('#codeTblForPurchase').DataTable({
+  codeTbl = $("#codeTblForPurchase").DataTable({
     aaData: response,
     aoColumns: [
       {
-        data: 'id',
+        data: "id",
         render: function (id, type, row, meta) {
           return meta.row + 1;
         },
       },
       {
-        data: 'title',
+        data: "title",
       },
       {
-        data: 'code',
+        data: "code",
         render: function (code, type, row, meta) {
           return `
                   <div class="input-group input-group-sm">
@@ -161,35 +163,35 @@ var bindToCodeTable = function (response) {
         },
       },
       {
-        data: 'date',
+        data: "date",
         render: function (date, type, row, meta) {
-          return moment(date).format('LLL');
+          return moment(date).format("LLL");
         },
       },
     ],
   });
   spinner2.hide();
-  headTitle.text('Gift Codes');
-  $('#codeForPurchaseModal').modal('show');
+  headTitle.text("Gift Codes");
+  $("#codeForPurchaseModal").modal("show");
 };
 
-var clipboard = new ClipboardJS('.btnCopy');
+var clipboard = new ClipboardJS(".btnCopy");
 
-clipboard.on('success', function (e) {
-  swal('Code Copied', '', 'success');
+clipboard.on("success", function (e) {
+  swal("Code Copied", "", "success");
   e.clearSelection();
 });
 
-clipboard.on('error', function (e) {});
+clipboard.on("error", function (e) {});
 
 //=========== private util method ==============================
 function GetURLParameter(sParam) {
   var sPageURL = window.location.search.substring(1);
 
-  var sURLVariables = sPageURL.split('?');
+  var sURLVariables = sPageURL.split("?");
 
   for (var i = 0; i < sURLVariables.length; i++) {
-    var sParameterName = sURLVariables[i].split('=');
+    var sParameterName = sURLVariables[i].split("=");
 
     if (sParameterName[0] == sParam) {
       return sParameterName[1];

@@ -1,12 +1,13 @@
-import { injectable } from 'inversify';
+import { injectable } from "inversify";
 
-import * as _ from 'underscore';
-import axios from 'axios';
-import config from '../config';
-import DIContainer from '../container/DIContainer';
-import { GiftCodeService } from './../services/gc.service';
-import { UserService } from './user.service';
-import { RateService } from './rate.service';
+import * as _ from "underscore";
+import axios from "axios";
+import config from "../config";
+import DIContainer from "../container/DIContainer";
+import { GiftCodeService } from "./../services/gc.service";
+import { UserService } from "./user.service";
+import { RateService } from "./rate.service";
+import { TransactionService } from "./transaction.service";
 
 @injectable()
 export class PaymentService {
@@ -21,23 +22,28 @@ export class PaymentService {
   private _rService: RateService = DIContainer.resolve<RateService>(
     RateService
   );
+
+  private _tService: TransactionService = DIContainer.resolve<
+    TransactionService
+  >(TransactionService);
+
   private baseUrl;
 
   private errors;
 
   constructor() {
-    this.baseUrl = 'https://api.flutterwave.com/v3';
+    this.baseUrl = "https://api.flutterwave.com/v3";
     this.errors = [];
   }
 
   public async handleUserOrder(user: any, transactionReference: any) {
-    console.log('handling request');
+    console.log("handling request");
     console.log(transactionReference);
     try {
       return await this._gcService.scaffoldUserCode(user, transactionReference);
     } catch (error) {
       console.error(error);
-      return 'error';
+      return "error";
     }
   }
 
@@ -46,8 +52,8 @@ export class PaymentService {
     amountToTransfer: number,
     codesToSell: any
   ): Promise<any> {
-    let error = '';
-    console.log('making transfer initiated');
+    let error = "";
+    console.log("making transfer initiated");
 
     // collect user account details
     let userAccount = await this._userService.getAccount(user.id);
@@ -55,93 +61,135 @@ export class PaymentService {
     console.log(userAccount);
 
     if (userAccount && Object.keys(userAccount).length > 0) {
-      console.log('trying to fetch data');
+      console.log("trying to fetch data");
 
       // get bank code
       let bankcode = await this.fetchBankCode(userAccount.name);
 
-      console.log(bankcode);
+      let amountToTransferInNaira = await this._rService.convertDollarToNaira(
+        amountToTransfer
+      );
 
-      console.log('in maketransfer');
+      console.log("in maketransfer");
 
-      const { v4: uuidv4 } = require('uuid');
+      const { v4: uuidv4 } = require("uuid");
 
       var transactionRef = uuidv4();
-      // //
-      //       var transferPayload = {
-      //         // account_bank: bankcode,
-      //         account_number: userAccount.number,
-      //         amount: amountToTransfer,
-      //         narration: 'Payment for codes',
-      //         currency: 'NGN',
-      //         reference: transactionRef,
-      //         callback_url: 'https://b03cd26184d5.ngrok.io/user/pay-callback',
-      //         debit_currency: 'NGN',
-      //       };
+
+      var transferPayload = {
+        account_bank: bankcode,
+        //account_bank: "044",
+        account_number: userAccount.number,
+        //account_number: "0690000040",
+        amount: amountToTransferInNaira,
+        narration: "Payment for codes",
+        currency: "NGN",
+        beneficiary_name: `${user.firstname} ${user.lastname}`,
+        callback_url: "https://cashgiftcode.com/user/transfer-callback",
+      };
+
+      console.log(transferPayload);
 
       axios({
-        method: 'post',
+        method: "post",
         url: `${this.baseUrl}/transfers`,
-        data: {
-          // account_bank: bankcode,
-          account_bank: '044',
-          // account_number: userAccount.number,
-          account_number: '0690000040',
-          amount: amountToTransfer,
-          narration: 'Payment for codes',
-          currency: 'NGN',
-          beneficiary_name: `${user.firstname} ${user.lastname}`,
-        },
+        data: transferPayload,
         headers: {
           Authorization: `Bearer ${config.secret_key}`,
         },
       })
-        .then((res) => {
-          console.log('got here');
-          console.log(res);
+        .then(async (res) => {
+          console.log("got here");
+          var response = res.data;
+          console.log(response);
+
+          if (response.status == "success") {
+            // save transaction
+            let transactionPayload = {
+              status: 2,
+              type: 1,
+              payment: 5,
+              user,
+              paymentRef: response.data.reference,
+              amount: response.data.amount,
+              gcodes: codesToSell,
+            };
+
+            await this._tService.createTransaction(transactionPayload);
+
+            return { status: "success", data: response };
+          }
         })
         .catch(function (error) {
-          console.error(error);
+          return { status: "failed", data: error };
         });
     } else {
-      error = 'Incorrect account credentials';
-      return { status: 'failed', data: error };
+      error = "Incorrect account credentials";
+      return { status: "failed", data: error };
     }
+  }
+
+  public async handleTransferCallback(payload: any): Promise<any> {
+    console.log("holla");
+    console.log(payload.reference);
+
+    //get transaction by reference
+    let transactionInDb = await this._tService.getTransactionByReference(
+      payload.reference
+    );
+
+    console.log(transactionInDb);
+
+    if (payload.status == "FAILED") {
+      //get transaction
+      transactionInDb.message = payload.complete_message;
+
+      console.log(transactionInDb);
+      //update transaction status
+      await this._tService.updateTransfer(transactionInDb);
+    } else if (payload.status == "SUCCESS") {
+      transactionInDb.status = 0;
+
+      console.log(transactionInDb);
+      await this._tService.updateTransfer(transactionInDb);
+    }
+
+    return;
   }
 
   public async resolveAccount(
     accnumber: string,
     bankcode: string
   ): Promise<any> {
-    console.log('resolving account');
-    let res_error = '';
+    console.log("resolving account");
+    let res_error = "";
     const res = await axios({
-      method: 'GET',
-      responseType: 'json',
+      method: "GET",
+      responseType: "json",
       url: `${this.baseUrl}/bank/resolve?account_number=${accnumber}&bank_code=${bankcode}`,
       headers: {
-        Authorization: 'Bearer ' + config.secret_key,
+        Authorization: "Bearer " + config.secret_key,
       },
     }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
         console.log(error.response.status);
-        res_error = 'Incorrect account credentials';
+        res_error = "Incorrect account credentials";
       } else if (error.request) {
-        res_error = 'No internet connection';
+        res_error = "No internet connection";
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
+        console.log("Error", error.message);
         res_error = error.message;
       }
     });
     res_error && console.log(res_error);
-    if (res_error == '') return res;
+    if (res_error == "") return res;
     else return res_error;
   }
 
   public async fetchBankCode(bankname: string): Promise<any> {
-    console.log('fetching bank codes');
+    console.log("fetching bank codes");
 
     console.log(config.secret_key);
 
@@ -150,7 +198,7 @@ export class PaymentService {
     let response = await axios.get(`${this.baseUrl}/banks/NG`, {
       headers: {
         Authorization: `Bearer ${config.secret_key}`,
-        'Access-Control-Allow-Origin': '*',
+        "Access-Control-Allow-Origin": "*",
       },
     });
     banks = response.data.data;
