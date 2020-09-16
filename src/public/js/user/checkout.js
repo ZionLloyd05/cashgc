@@ -629,14 +629,14 @@ var initiateOnlinePayment = function () {
   var rate = $("#rate").val();
   var totalAmount = $("#cartTotalAmount").text();
 
-  totalAmount = parseInt(totalAmount) * parseInt(rate);
+  totalAmount = parseInt(totalAmount);
   console.log(rate);
   console.log(totalAmount);
 
   var payload = {
     tx_ref: uuidv4(),
     amount: `${totalAmount}`,
-    currency: "NGN",
+    currency: "USD",
     redirect_url: "https://cashgiftcode.com/user/pay-callback",
     payment_options: "card",
     meta: {
