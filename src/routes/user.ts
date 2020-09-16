@@ -380,7 +380,7 @@ export class UserRoute implements IRoute {
       url: "https://api.flutterwave.com/v3/payments",
       data: req.body,
       headers: {
-        Authorization: "Bearer FLWSECK_TEST-e5d1a3f62c03823d6df2ef808b0029bb-X",
+        Authorization: "Bearer FLWSECK-5a16ca2fc0c13a1325c9fe423466e85c-X",
       },
     })
       .then((data) => {
