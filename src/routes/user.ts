@@ -1,20 +1,20 @@
-import { TransactionService } from "./../services/transaction.service";
-import { Order } from "./../models/Order";
-import { UserController } from "./../controllers/user.ctrl";
-import { GccController } from "./../controllers/gcc.ctrl";
-import { AuthService } from "./../services/auth.service";
-import { Router, Request, Response, NextFunction } from "express";
-import { IRoute } from "./IRoute";
-import * as paypal from "paypal-rest-sdk";
-import DIContainer from "../container/DIContainer";
-import * as multer from "multer";
+import { TransactionService } from './../services/transaction.service';
+import { Order } from './../models/Order';
+import { UserController } from './../controllers/user.ctrl';
+import { GccController } from './../controllers/gcc.ctrl';
+import { AuthService } from './../services/auth.service';
+import { Router, Request, Response, NextFunction } from 'express';
+import { IRoute } from './IRoute';
+import * as paypal from 'paypal-rest-sdk';
+import DIContainer from '../container/DIContainer';
+import * as multer from 'multer';
 
-import * as csurf from "csurf";
-import { PaystackService } from "../services/paystack.service";
-import { PayPalService } from "../services/paypal.service";
-import config from "../config";
-import axios from "axios";
-import { PaymentService } from "./../services/payment.service";
+import * as csurf from 'csurf';
+import { PaystackService } from '../services/paystack.service';
+import { PayPalService } from '../services/paypal.service';
+import config from '../config';
+import axios from 'axios';
+import { PaymentService } from './../services/payment.service';
 
 export class UserRoute implements IRoute {
   private upload: any;
@@ -31,11 +31,11 @@ export class UserRoute implements IRoute {
     this.upload = multer({
       storage: this.storage,
       fileFilter(req, file, next) {
-        const isPhoto = file.mimetype.startsWith("image/");
+        const isPhoto = file.mimetype.startsWith('image/');
         if (isPhoto) {
           next(null, true);
         } else {
-          next(new Error("File not supported"), false);
+          next(new Error('File not supported'), false);
         }
       },
     });
@@ -69,97 +69,97 @@ export class UserRoute implements IRoute {
   );
 
   initialize(router: Router): void {
-    router.post("/user/isemailexist", this.isEmailUnique.bind(this));
-    router.post("/user/isphoneexist", this.isPhoneUnique.bind(this));
+    router.post('/user/isemailexist', this.isEmailUnique.bind(this));
+    router.post('/user/isphoneexist', this.isPhoneUnique.bind(this));
     router.get(
-      "/user/pay-callback",
+      '/user/pay-callback',
       this.handlePaymentVendorCallback.bind(this)
     );
     router.post(
-      "/user/transfer-callback",
+      '/user/transfer-callback',
       this.handleTransferCallback.bind(this)
     );
     router.get(
-      "/user/pay-failed-callback",
+      '/user/pay-failed-callback',
       this.handlePaymentFailure.bind(this)
     );
 
     const csrfProtection = csurf();
     router.use(csrfProtection);
 
-    router.all("/user/*", this._authService.mustBeLoggedIn);
-    router.all("/user/*", this._authService.routeGaurd);
+    router.all('/user/*', this._authService.mustBeLoggedIn);
+    router.all('/user/*', this._authService.routeGaurd);
 
     router.get(
-      "/user",
+      '/user',
       this._authService.mustBeLoggedIn,
       this._authService.routeGaurd,
       this.serveDashboardView.bind(this)
     );
 
-    router.get("/user/store", this.serveStoreView.bind(this));
+    router.get('/user/store', this.serveStoreView.bind(this));
 
-    router.get("/user/cart", this.serveCartView.bind(this));
-    router.get("/user/profile", this.serveProfileView.bind(this));
-    router.post("/user/account", this.saveProfile.bind(this));
+    router.get('/user/cart', this.serveCartView.bind(this));
+    router.get('/user/profile', this.serveProfileView.bind(this));
+    router.post('/user/account', this.saveProfile.bind(this));
 
     /**
      * Gift Category routes
      */
-    router.get("/user/category", this.getActiveCategories.bind(this));
+    router.get('/user/category', this.getActiveCategories.bind(this));
 
     /**
      * Cart Item routes
      */
-    router.get("/user/cartitem", this.cartItemOperation.bind(this));
-    router.post("/user/cartitem", this.addItemToCart.bind(this));
-    router.delete("/user/cartitem", this.clearCart.bind(this));
-    router.get("/user/cartitem/:id", this.removeFromCart.bind(this));
+    router.get('/user/cartitem', this.cartItemOperation.bind(this));
+    router.post('/user/cartitem', this.addItemToCart.bind(this));
+    router.delete('/user/cartitem', this.clearCart.bind(this));
+    router.get('/user/cartitem/:id', this.removeFromCart.bind(this));
 
     /**
      * Invoice route
      */
-    router.get("/user/invoice", this.serveInvoiceView.bind(this));
+    router.get('/user/invoice', this.serveInvoiceView.bind(this));
 
     /**
      * GiftCode routes
      */
-    router.post("/user/giftcode", this.scaffoldcodes.bind(this));
-    router.get("/user/my-codes", this.serveCodeView.bind(this));
-    router.get("/user/sales", this.serveSalesView.bind(this));
-    router.get("/user/verify/:code", this.verifyCode.bind(this));
+    router.post('/user/giftcode', this.scaffoldcodes.bind(this));
+    router.get('/user/my-codes', this.serveCodeView.bind(this));
+    router.get('/user/sales', this.serveSalesView.bind(this));
+    router.get('/user/verify/:code', this.verifyCode.bind(this));
 
     /**
      * Transaction routes
      */
-    router.get("/user/transactions", this.serveTransactionView.bind(this));
-    router.post("/user/transaction", this.postTransaction.bind(this));
-    router.get("/user/transaction", this.transactOperation.bind(this));
-    router.get("/user/utransaction", this.getTransaction.bind(this));
+    router.get('/user/transactions', this.serveTransactionView.bind(this));
+    router.post('/user/transaction', this.postTransaction.bind(this));
+    router.get('/user/transaction', this.transactOperation.bind(this));
+    router.get('/user/utransaction', this.getTransaction.bind(this));
     router.post(
-      "/user/verify-paypal-transaction",
+      '/user/verify-paypal-transaction',
       this.handlePayment.bind(this)
     );
 
     /**
      * Bank Account Route
      */
-    router.get("/user/bkaccount", this.getAccount.bind(this));
-    router.post("/user/bkaccount", this.saveAccount.bind(this));
+    router.get('/user/bkaccount', this.getAccount.bind(this));
+    router.post('/user/bkaccount', this.saveAccount.bind(this));
 
     /**
      * Bitcoin Wallet Route
      */
-    router.get("/user/wallet", this.getWallet.bind(this));
-    router.post("/user/wallet", this.saveWallet.bind(this));
+    router.get('/user/wallet', this.getWallet.bind(this));
+    router.post('/user/wallet', this.saveWallet.bind(this));
 
     /**
      * Payments Route
      */
     // router.get("/user/payment-success", this.executePayment.bind(this));
-    router.post("/user/initialize-payment", this.initiatePayment.bind(this));
+    router.post('/user/initialize-payment', this.initiatePayment.bind(this));
 
-    router.get("/user/payment-cancel", this.cancelPayment.bind(this));
+    router.get('/user/payment-cancel', this.cancelPayment.bind(this));
 
     // router.get("/user/successpage", this.serveSuccessView.bind(this));
 
@@ -167,8 +167,8 @@ export class UserRoute implements IRoute {
      * Order Routes
      */
     router.post(
-      "/user/order",
-      this.upload.single("image"),
+      '/user/order',
+      this.upload.single('image'),
       this.createOrder.bind(this)
     );
     // router.get("/user/order", this.getOrderOperation.bind(this));
@@ -177,17 +177,17 @@ export class UserRoute implements IRoute {
     /**
      * Miscellenous Route
      */
-    router.get("/user/banks", this.fetchBanks.bind(this));
-    router.get("/user/bankcode", this.fetchBankCode.bind(this));
-    router.get("/user/resolve-account", this.resolveAccount.bind(this));
-    router.get("/user/rate", this.getCurrentRate.bind(this));
-    router.post("/user/transfer", this.makeTransfer.bind(this));
-    router.post("/user/updatepassword", this.updatePassword.bind(this));
-    router.post("/user/canmaketransaction", this.canMakeTransaction.bind(this));
-    router.get("/user/isbtcset", this.isBitCoinSet.bind(this));
-    router.get("/user/isbankaccountset", this.isBankAccountSet.bind(this));
-    router.get("/user/authcheck", this.isUserVerified.bind(this));
-    router.get("/user/paymentvendors", this.getPaymentVendors.bind(this));
+    router.get('/user/banks', this.fetchBanks.bind(this));
+    router.get('/user/bankcode', this.fetchBankCode.bind(this));
+    router.get('/user/resolve-account', this.resolveAccount.bind(this));
+    router.get('/user/rate', this.getCurrentRate.bind(this));
+    router.post('/user/transfer', this.makeTransfer.bind(this));
+    router.post('/user/updatepassword', this.updatePassword.bind(this));
+    router.post('/user/canmaketransaction', this.canMakeTransaction.bind(this));
+    router.get('/user/isbtcset', this.isBitCoinSet.bind(this));
+    router.get('/user/isbankaccountset', this.isBankAccountSet.bind(this));
+    router.get('/user/authcheck', this.isUserVerified.bind(this));
+    router.get('/user/paymentvendors', this.getPaymentVendors.bind(this));
     // router.post(
     //   '/user/payment-verify',
     //   this.handlePaymentVendorCallback.bind(this)
@@ -195,18 +195,18 @@ export class UserRoute implements IRoute {
   }
 
   private serveDashboardView(req: Request, res: Response) {
-    res.render("user/store", {
-      title: "Store",
-      layout: "userLayout",
+    res.render('user/store', {
+      title: 'Store',
+      layout: 'userLayout',
       isStore: true,
       csrfToken: req.csrfToken(),
     });
   }
 
   private serveStoreView(req: Request, res: Response) {
-    res.render("user/store", {
-      title: "Store",
-      layout: "userLayout",
+    res.render('user/store', {
+      title: 'Store',
+      layout: 'userLayout',
       isStore: true,
       csrfToken: req.csrfToken(),
     });
@@ -215,45 +215,45 @@ export class UserRoute implements IRoute {
   private serveCartView(req: Request, res: Response) {
     console.log(req.user);
     this.user = req.user;
-    res.render("user/cart", {
-      title: "Cart",
-      layout: "userLayout",
+    res.render('user/cart', {
+      title: 'Cart',
+      layout: 'userLayout',
       isStore: true,
       csrfToken: req.csrfToken(),
     });
   }
 
   private serveCodeView(req: Request, res: Response) {
-    console.log("redirected to me");
-    res.render("user/codes", {
-      title: "My Codes",
-      layout: "userLayout",
+    console.log('redirected to me');
+    res.render('user/codes', {
+      title: 'My Codes',
+      layout: 'userLayout',
       isCode: true,
       csrfToken: req.csrfToken(),
     });
   }
 
   private serveInvoiceView(req: Request, res: Response) {
-    res.render("user/invoice", {
-      title: "Invoice",
-      layout: "userLayout",
+    res.render('user/invoice', {
+      title: 'Invoice',
+      layout: 'userLayout',
       isStore: true,
       csrfToken: req.csrfToken(),
     });
   }
   private serveSalesView(req: Request, res: Response) {
-    res.render("user/sales", {
-      title: "Sales",
-      layout: "userLayout",
+    res.render('user/sales', {
+      title: 'Sales',
+      layout: 'userLayout',
       isSales: true,
       csrfToken: req.csrfToken(),
     });
   }
 
   private serveProfileView(req: Request, res: Response) {
-    res.render("user/profile", {
-      title: "Profile",
-      layout: "userLayout",
+    res.render('user/profile', {
+      title: 'Profile',
+      layout: 'userLayout',
       isProfile: true,
       csrfToken: req.csrfToken(),
     });
@@ -262,7 +262,7 @@ export class UserRoute implements IRoute {
   private async getActiveCategories(req: Request, res: Response) {
     const activeGccs = await this._gcController.getActiveGccs();
     return res.send({
-      status: "read",
+      status: 'read',
       data: activeGccs,
     });
   }
@@ -271,7 +271,7 @@ export class UserRoute implements IRoute {
     let itemBundle = await this._userController.getCartItems(req.user);
     // console.log(itemBundle);
     res.send({
-      status: "read",
+      status: 'read',
       data: itemBundle,
     });
   }
@@ -280,7 +280,7 @@ export class UserRoute implements IRoute {
     const { gcId, qty } = req.body;
     let saved = await this._userController.addToCart(gcId, req.user.id, qty);
     res.send({
-      status: "added",
+      status: 'added',
       data: saved,
     });
   }
@@ -289,7 +289,7 @@ export class UserRoute implements IRoute {
     const userId = req.user.id;
     await this._userController.clearCart(userId);
     res.send({
-      status: "removed",
+      status: 'removed',
       data: true,
     });
   }
@@ -298,7 +298,7 @@ export class UserRoute implements IRoute {
     let codeItems = req.body;
     let codes = await this._userController.scaffoldCodes(codeItems);
     res.send({
-      status: "created",
+      status: 'created',
       data: codes,
     });
   }
@@ -308,7 +308,7 @@ export class UserRoute implements IRoute {
     payload.user = req.user;
     let transaction = await this._userController.createTransaction(payload);
     res.send({
-      status: "created",
+      status: 'created',
       data: transaction,
     });
   }
@@ -322,13 +322,13 @@ export class UserRoute implements IRoute {
         tid
       );
       res.send({
-        status: "read",
+        status: 'read',
         data: transaction,
       });
     } else {
       let transactions = await this._userController.getUserTransactions(userid);
       res.send({
-        status: "read",
+        status: 'read',
         data: transactions,
       });
     }
@@ -340,15 +340,15 @@ export class UserRoute implements IRoute {
       userid
     );
     res.send({
-      status: "read",
+      status: 'read',
       data: transactions,
     });
   }
 
   private async serveTransactionView(req: Request, res: Response) {
-    res.render("user/transaction", {
-      title: "Transactions",
-      layout: "userLayout",
+    res.render('user/transaction', {
+      title: 'Transactions',
+      layout: 'userLayout',
       csrfToken: req.csrfToken(),
       isTransaction: true,
     });
@@ -366,21 +366,21 @@ export class UserRoute implements IRoute {
       totalAmount
     );
 
-    if (typeof transaction == "string") {
-      res.send({ status: "failed", data: transaction });
+    if (typeof transaction == 'string') {
+      res.send({ status: 'failed', data: transaction });
     }
 
-    res.send({ status: "success", data: transaction });
+    res.send({ status: 'success', data: transaction });
   }
 
   private async initiatePayment(req: Request, res: Response) {
     console.log(req.body);
     axios({
-      method: "post",
-      url: "https://api.flutterwave.com/v3/payments",
+      method: 'post',
+      url: 'https://api.flutterwave.com/v3/payments',
       data: req.body,
       headers: {
-        Authorization: "Bearer FLWSECK-5a16ca2fc0c13a1325c9fe423466e85c-X",
+        Authorization: `Bearer ${config.secret_key}`,
       },
     })
       .then((data) => {
@@ -394,7 +394,7 @@ export class UserRoute implements IRoute {
   }
 
   private async handleTransferCallback(req: Request, res: Response) {
-    console.log("called transfer callback");
+    console.log('called transfer callback');
 
     let response = req.body.transfer;
     console.log(response);
@@ -412,21 +412,21 @@ export class UserRoute implements IRoute {
 
     //console.log(transaction);
 
-    if (typeof transaction == "string") {
-      res.send({ status: "failed", data: transaction });
+    if (typeof transaction == 'string') {
+      res.send({ status: 'failed', data: transaction });
     }
 
     res.redirect(`/user/my-codes?transref=${transaction.id}`);
   }
 
   private async handlePaymentFailure(req: Request, res: Response) {
-    res.redirect("/user/store?paymentstatus=failed");
+    res.redirect('/user/store?paymentstatus=failed');
   }
 
   private cancelPayment(req: Request, res: Response) {
-    res.render("user/payment-confirmation", {
-      title: "Payment",
-      layout: "userLayout",
+    res.render('user/payment-confirmation', {
+      title: 'Payment',
+      layout: 'userLayout',
       isStore: true,
       isPaymentSuccessful: false,
     });
@@ -438,11 +438,11 @@ export class UserRoute implements IRoute {
     // console.log(gcInDb)
     if (gcInDb === undefined) {
       return res.send({
-        status: "invalid",
+        status: 'invalid',
       });
     } else if (gcInDb && gcInDb.isUsed == true) {
       return res.send({
-        status: "used",
+        status: 'used',
       });
     } else if (
       gcInDb &&
@@ -450,11 +450,11 @@ export class UserRoute implements IRoute {
       gcInDb.isActivated == false
     ) {
       return res.send({
-        status: "not activated",
+        status: 'not activated',
       });
     }
     return res.send({
-      status: "valid",
+      status: 'valid',
       data: gcInDb,
     });
   }
@@ -483,7 +483,7 @@ export class UserRoute implements IRoute {
     let updatedUser = await this._userController.saveUser(userPayload);
 
     return res.send({
-      status: "update",
+      status: 'update',
       data: updatedUser,
     });
   }
@@ -496,7 +496,7 @@ export class UserRoute implements IRoute {
     let newBankacc = await this._userController.saveAccount(account);
 
     return res.send({
-      status: "save",
+      status: 'save',
       data: newBankacc,
     });
   }
@@ -505,7 +505,7 @@ export class UserRoute implements IRoute {
     const uacc = await this._userController.getAccount(req.user.id);
 
     return res.send({
-      status: "read",
+      status: 'read',
       data: uacc,
     });
   }
@@ -518,7 +518,7 @@ export class UserRoute implements IRoute {
     let newWallet = await this._userController.saveWallet(wallet);
 
     return res.send({
-      status: "save",
+      status: 'save',
       data: newWallet,
     });
   }
@@ -527,7 +527,7 @@ export class UserRoute implements IRoute {
     const uwallet = await this._userController.getWallet(req.user.id);
 
     return res.send({
-      status: "read",
+      status: 'read',
       data: uwallet,
     });
   }
@@ -535,7 +535,7 @@ export class UserRoute implements IRoute {
   private async fetchBanks(req: Request, res: Response) {
     const banks = await this._paystackService.fetchBanks();
     return res.send({
-      status: "read",
+      status: 'read',
       data: banks,
     });
   }
@@ -545,7 +545,7 @@ export class UserRoute implements IRoute {
     const code = await this._paystackService.fetchBankCode(bankname);
 
     return res.send({
-      status: "read",
+      status: 'read',
       data: code,
     });
   }
@@ -560,7 +560,7 @@ export class UserRoute implements IRoute {
     );
 
     return res.send({
-      status: "read",
+      status: 'read',
       data: response,
     });
   }
@@ -576,7 +576,7 @@ export class UserRoute implements IRoute {
     );
 
     return res.send({
-      status: "transfer",
+      status: 'transfer',
       data: response,
     });
   }
@@ -585,7 +585,7 @@ export class UserRoute implements IRoute {
     let response = await this._userController.getActiveRate();
 
     return res.send({
-      status: "read",
+      status: 'read',
       data: response,
     });
   }
@@ -601,13 +601,13 @@ export class UserRoute implements IRoute {
 
       let newOrder = await this._userController.createOrder(payload);
       return res.send({
-        status: "true",
+        status: 'true',
         data: newOrder,
       });
     } else {
       return res.send({
-        status: "false",
-        data: "Receipt is needed as proof of payment",
+        status: 'false',
+        data: 'Receipt is needed as proof of payment',
       });
     }
   }
@@ -617,7 +617,7 @@ export class UserRoute implements IRoute {
     // console.log(response);
 
     return res.send({
-      status: "update",
+      status: 'update',
       data: response,
     });
   }
@@ -633,7 +633,7 @@ export class UserRoute implements IRoute {
     );
     // console.log(response)
     res.send({
-      status: "read",
+      status: 'read',
       data: response,
     });
   }
@@ -643,7 +643,7 @@ export class UserRoute implements IRoute {
     let wallet = await this._userController.getWallet(userId);
 
     res.send({
-      status: "read",
+      status: 'read',
       data: wallet,
     });
   }
@@ -653,7 +653,7 @@ export class UserRoute implements IRoute {
     let account = await this._userController.getAccount(userId);
 
     res.send({
-      status: "read",
+      status: 'read',
       data: account,
     });
   }
