@@ -1,44 +1,46 @@
+//const { config } = require('chai');
+
 var authField;
 $(document).ready(function () {
-  authField = $("#authverv");
-  if (authField.val() != "0123") confirmVerificationStatus();
+  authField = $('#authverv');
+  if (authField.val() != '0123') confirmVerificationStatus();
   loadUserCartItem();
   loadVendors();
   getExchangeRate();
 });
 
-var csrfToken = $("#_csrf").val();
-var spinner = $("#tblLoader");
-var cartQuantitySpan = $("#cartTotalQuantity");
-var cartTotalAmountSpan = $("#cartTotalAmount");
-var gcHeader = $("#gcHeader");
-var gcHeaderText = $("#gcHeaderText");
-var clearCartBtn = $("#clearCart");
+var csrfToken = $('#_csrf').val();
+var spinner = $('#tblLoader');
+var cartQuantitySpan = $('#cartTotalQuantity');
+var cartTotalAmountSpan = $('#cartTotalAmount');
+var gcHeader = $('#gcHeader');
+var gcHeaderText = $('#gcHeaderText');
+var clearCartBtn = $('#clearCart');
 
 var currentCartItem = [];
 
 var isTouched = false;
-var cartResponse = "";
+var cartResponse = '';
 
 function uuidv4() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
 var getExchangeRate = function () {
   $.ajax({
-    url: "/user/rate",
-    method: "GET",
-    dataType: "json",
+    url: '/user/rate',
+    method: 'GET',
+    dataType: 'json',
     header: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
-      if (response.status === "read") {
-        $("#rate").val(response.data.localrate);
+      if (response.status === 'read') {
+        $('#rate').val(response.data.localrate);
       }
     },
   });
@@ -46,11 +48,11 @@ var getExchangeRate = function () {
 
 function loadVendors() {
   $.ajax({
-    url: "/user/paymentvendors",
-    method: "get",
-    dataType: "json",
+    url: '/user/paymentvendors',
+    method: 'get',
+    dataType: 'json',
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
       if (response.data != null) {
@@ -61,9 +63,9 @@ function loadVendors() {
 }
 
 function buildVendors(payload) {
-  var vendors = document.getElementById("vendor_section");
+  var vendors = document.getElementById('vendor_section');
 
-  var template = "";
+  var template = '';
   payload.forEach((vendor) => {
     template += `
             <h6 class="kt-widget-13__title" href="#">${vendor.name} Payment Information</h6>
@@ -81,24 +83,24 @@ function buildVendors(payload) {
 
 function confirmVerificationStatus() {
   $.ajax({
-    url: "/user/authcheck",
-    method: "get",
-    dataType: "json",
+    url: '/user/authcheck',
+    method: 'get',
+    dataType: 'json',
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
       console.log(response.status);
       if (response.status != true) {
         swal(
-          "Account not verified",
-          "Your account has to be verified to make transactions, click ok to verify now.",
-          "info"
+          'Account not verified',
+          'Your account has to be verified to make transactions, click ok to verify now.',
+          'info'
         ).then((val) => {
-          window.location = "/user/profile";
+          window.location = '/user/profile';
         });
       }
-      authField.val("0123");
+      authField.val('0123');
     },
   });
 }
@@ -106,20 +108,20 @@ function confirmVerificationStatus() {
 var loadUserCartItem = function () {
   spinner.show();
   $.ajax({
-    url: "/user/cartitem/",
-    method: "GET",
-    dataType: "json",
+    url: '/user/cartitem/',
+    method: 'GET',
+    dataType: 'json',
     header: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
       cartResponse = response.data.items;
 
       cartQuantitySpan.text(response.data.totalQuantity);
-      cartQuantitySpan.attr("data-qty", response.data.totalQuantity);
+      cartQuantitySpan.attr('data-qty', response.data.totalQuantity);
 
       cartTotalAmountSpan.text(response.data.totalPrice.toLocaleString());
-      cartTotalAmountSpan.attr("data-pr", response.data.totalPrice);
+      cartTotalAmountSpan.attr('data-pr', response.data.totalPrice);
 
       currentCartItem = response.data.items;
       bindTableToData(response.data.items);
@@ -129,35 +131,35 @@ var loadUserCartItem = function () {
 
 var cartTbl;
 var bindTableToData = function (response) {
-  cartTbl = $("#cartTbl").DataTable({
+  cartTbl = $('#cartTbl').DataTable({
     aaData: response,
     aoColumns: [
       {
-        data: "id",
+        data: 'id',
         render: function (id, type, row, meta) {
           return meta.row + 1;
         },
       },
       {
-        data: "id",
+        data: 'id',
         render: function (giftCodeCategory, type, row, meta) {
           return `${row.giftCodeCategory.title} gift code`;
         },
       },
       {
-        data: "id",
+        data: 'id',
         render: function (giftCodeCategory, type, row, meta) {
           return `${row.giftCodeCategory.sellingPrice}`;
         },
       },
       {
-        data: "quantity",
+        data: 'quantity',
       },
       {
-        data: "total",
+        data: 'total',
       },
       {
-        data: "id",
+        data: 'id',
         render: function (id, type, row, meta) {
           return `
                 <i data-idx='${meta.row}' data-pr="${row.giftCodeCategory.sellingPrice}" data-gcc="${row.giftCodeCategory.id}" style="cursor:pointer" class="fa fa-minus-circle" id="minus"></i>&nbsp;
@@ -170,38 +172,38 @@ var bindTableToData = function (response) {
   spinner.hide();
 };
 
-$(document).on("click", "#add", function () {
+$(document).on('click', '#add', function () {
   const MAX_TRANSACTION_LIMIT = 500;
 
-  var currentQuantity = Number(cartQuantitySpan.attr("data-qty"));
-  var currentTotalPrice = Number(cartTotalAmountSpan.attr("data-pr"));
+  var currentQuantity = Number(cartQuantitySpan.attr('data-qty'));
+  var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'));
 
-  var supposedNewPrice = currentTotalPrice + Number($(this).attr("data-pr"));
+  var supposedNewPrice = currentTotalPrice + Number($(this).attr('data-pr'));
 
   if (supposedNewPrice > MAX_TRANSACTION_LIMIT) {
     // console.log("cannot");
     swal(
-      "Maximum transaction limit is $500",
-      "Single transaction cannot exceed $500",
-      "error"
+      'Maximum transaction limit is $500',
+      'Single transaction cannot exceed $500',
+      'error'
     );
     return false;
   }
 
   isTouched = true;
-  var gcId = $(this).attr("data-gcc");
+  var gcId = $(this).attr('data-gcc');
 
   let payload = {
     gcId,
     qty: 1,
   };
 
-  fetch("/user/cartitem", {
-    method: "POST",
+  fetch('/user/cartitem', {
+    method: 'POST',
     body: JSON.stringify(payload),
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-TOKEN": csrfToken,
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken,
     },
   })
     .then((res) => res.json())
@@ -213,26 +215,26 @@ $(document).on("click", "#add", function () {
        */
 
       var newQuantity = currentQuantity + 1;
-      var newPrice = currentTotalPrice + Number($(this).attr("data-pr"));
+      var newPrice = currentTotalPrice + Number($(this).attr('data-pr'));
       cartQuantitySpan.text(newQuantity);
       cartTotalAmountSpan.text(newPrice);
 
-      cartQuantitySpan.attr("data-qty", newQuantity);
-      cartTotalAmountSpan.attr("data-pr", newPrice);
+      cartQuantitySpan.attr('data-qty', newQuantity);
+      cartTotalAmountSpan.attr('data-pr', newPrice);
       // console.log(data)
 
-      var rwIdx = $(this).attr("data-idx");
-      let table = $("#cartTbl").DataTable();
+      var rwIdx = $(this).attr('data-idx');
+      let table = $('#cartTbl').DataTable();
       // console.log(rwIdx)
       let tempData = cartTbl.row(parseInt(rwIdx));
 
       var currentRow = table.row(rwIdx).node();
       table.cell(currentRow, 0).data(rwIdx + 1);
 
-      tempData["id"] = data.data.id;
-      tempData["giftCodeCategory"] = data.data.giftCodeCategory;
-      tempData["quantity"] = data.data.quantity;
-      tempData["total"] = data.data.total;
+      tempData['id'] = data.data.id;
+      tempData['giftCodeCategory'] = data.data.giftCodeCategory;
+      tempData['quantity'] = data.data.quantity;
+      tempData['total'] = data.data.total;
 
       // console.log(tempData)
       table.row(parseInt(rwIdx)).data(tempData); //this is to update the data in the row cells
@@ -245,10 +247,10 @@ $(document).on("click", "#add", function () {
 function reloadCartItem() {
   // console.log("reload cart item")
   // debugger
-  fetch("/user/cartitem/", {
-    method: "GET",
+  fetch('/user/cartitem/', {
+    method: 'GET',
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
   })
     .then((res) => res.json())
@@ -263,7 +265,7 @@ function prepareCartInStore(data) {
   let { items, totalQuantity, totalPrice } = data;
 
   cart.text(totalQuantity);
-  let itemString = "";
+  let itemString = '';
 
   totalQuantity > 1
     ? (itemString = `${totalQuantity} cart items`)
@@ -272,7 +274,7 @@ function prepareCartInStore(data) {
   cartItemTotal.text(itemString);
   // total && total.text(totalPrice)
 
-  let citemMarkupBundle = "";
+  let citemMarkupBundle = '';
   cartItemBody.empty();
   // console.log(items.length)
   if (items.length > 0) {
@@ -327,14 +329,14 @@ function prepareCartInStore(data) {
   cartItemBody.html(citemMarkupBundle);
 }
 
-$(document).on("click", "#minus", function () {
+$(document).on('click', '#minus', function () {
   isTouched = true;
-  var gccId = $(this).attr("data-gcc");
+  var gccId = $(this).attr('data-gcc');
 
-  fetch("/user/cartitem/" + gccId, {
-    method: "GET",
+  fetch('/user/cartitem/' + gccId, {
+    method: 'GET',
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
   })
     .then((res) => res.json())
@@ -348,33 +350,33 @@ $(document).on("click", "#minus", function () {
        * Re-calculate total qty and price
        */
 
-      var currentQuantity = Number(cartQuantitySpan.attr("data-qty"));
-      var currentTotalPrice = Number(cartTotalAmountSpan.attr("data-pr"));
+      var currentQuantity = Number(cartQuantitySpan.attr('data-qty'));
+      var currentTotalPrice = Number(cartTotalAmountSpan.attr('data-pr'));
 
       var newQuantity = currentQuantity - 1;
-      var newPrice = currentTotalPrice - Number($(this).attr("data-pr"));
+      var newPrice = currentTotalPrice - Number($(this).attr('data-pr'));
       cartQuantitySpan.text(newQuantity);
       cartTotalAmountSpan.text(newPrice);
 
-      cartQuantitySpan.attr("data-qty", newQuantity);
-      cartTotalAmountSpan.attr("data-pr", newPrice);
+      cartQuantitySpan.attr('data-qty', newQuantity);
+      cartTotalAmountSpan.attr('data-pr', newPrice);
 
       /**
        * Manipulate table dom realtime
        */
       if (data.status && data.status !== null) {
-        var rwIdx = $(this).attr("data-idx");
-        let table = $("#cartTbl").DataTable();
+        var rwIdx = $(this).attr('data-idx');
+        let table = $('#cartTbl').DataTable();
         // console.log(rwIdx)
         let tempData = cartTbl.row(parseInt(rwIdx));
 
         var currentRow = table.row(rwIdx).node();
         table.cell(currentRow, 0).data(rwIdx + 1);
 
-        tempData["id"] = data.status.id;
-        tempData["giftCodeCategory"] = data.status.giftCodeCategory;
-        tempData["quantity"] = data.status.quantity;
-        tempData["total"] = data.status.total;
+        tempData['id'] = data.status.id;
+        tempData['giftCodeCategory'] = data.status.giftCodeCategory;
+        tempData['quantity'] = data.status.quantity;
+        tempData['total'] = data.status.total;
 
         // console.log(tempData)
         table.row(parseInt(rwIdx)).data(tempData); //this is to update the data in the row cells
@@ -383,38 +385,38 @@ $(document).on("click", "#minus", function () {
         table.draw(false);
       } else if (data.status === null) {
         // console.log("yea")
-        var rwIdx = $(this).attr("data-idx");
+        var rwIdx = $(this).attr('data-idx');
         // console.log(rwIdx)
-        let table = $("#cartTbl").DataTable();
+        let table = $('#cartTbl').DataTable();
         table.row(rwIdx).remove().draw(false);
       }
     });
 });
 
-$(document).on("click", "#proceedBtn", function () {
+$(document).on('click', '#proceedBtn', function () {
   var btn = $(this);
   btn.addClass(
-    "kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark"
+    'kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark'
   );
-  var totalAmount = Number($("#cartTotalAmount").attr("data-pr"));
+  var totalAmount = Number($('#cartTotalAmount').attr('data-pr'));
 
   var payload = {
     totalAmount,
   };
 
   $.ajax({
-    url: "/user/canmaketransaction",
-    method: "POST",
-    dataType: "json",
+    url: '/user/canmaketransaction',
+    method: 'POST',
+    dataType: 'json',
     data: payload,
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
       //console.log(response.data);
       displayTransactionBox(response.data);
       btn.removeClass(
-        "kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark"
+        'kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark'
       );
     },
   });
@@ -424,21 +426,21 @@ $(document).on("click", "#proceedBtn", function () {
 
 var displayTransactionBox = function (canProceedWithTransaction) {
   if (canProceedWithTransaction) {
-    console.log("should open transaction");
-    $("#optionModal").modal("show");
+    console.log('should open transaction');
+    $('#optionModal').modal('show');
   } else {
     // console.log("error")
     swal(
-      "Transacion quota reached for today",
-      "Cannot go beyond $1000 transaction per day",
-      "error"
+      'Transacion quota reached for today',
+      'Cannot go beyond $1000 transaction per day',
+      'error'
     );
     return false;
   }
 };
 
 var initiatePayPalPayment = function () {
-  var totalAmount = $("#cartTotalAmount").attr("data-pr");
+  var totalAmount = $('#cartTotalAmount').attr('data-pr');
 
   var items = [];
 
@@ -447,9 +449,9 @@ var initiatePayPalPayment = function () {
     var { id, quantity, total, createdAt } = item;
     var newItemForm = {
       name: item.giftCodeCategory.title,
-      sku: "gcode",
+      sku: 'gcode',
       price: item.giftCodeCategory.sellingPrice,
-      currency: "USD",
+      currency: 'USD',
       quantity: quantity,
     };
     items.push(newItemForm);
@@ -460,12 +462,12 @@ var initiatePayPalPayment = function () {
     totalAmount,
   };
 
-  fetch("/user/pay", {
-    method: "POST",
+  fetch('/user/pay', {
+    method: 'POST',
     body: JSON.stringify(payload),
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-TOKEN": csrfToken,
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken,
     },
   })
     .then((res) => res.json())
@@ -475,45 +477,45 @@ var initiatePayPalPayment = function () {
 };
 
 var initiateBankDepositProcessing = function () {
-  var totalAmount = $("#cartTotalAmount").attr("data-pr");
-  $("#totalAmount").val(totalAmount);
+  var totalAmount = $('#cartTotalAmount').attr('data-pr');
+  $('#totalAmount').val(totalAmount);
 
-  let orderFrm = document.getElementById("orderForm");
+  let orderFrm = document.getElementById('orderForm');
   let formData = new FormData(orderFrm);
 
-  if (document.getElementById("customFile").files.length == 0) {
+  if (document.getElementById('customFile').files.length == 0) {
     swal(
-      "Incomplete Transaction",
-      "Receipt is needed as proof of payment",
-      "error"
+      'Incomplete Transaction',
+      'Receipt is needed as proof of payment',
+      'error'
     );
     return false;
   }
 
-  $("#statusModal").modal("show");
+  $('#statusModal').modal('show');
 
-  fetch("/user/order", {
-    method: "POST",
+  fetch('/user/order', {
+    method: 'POST',
     body: formData,
     headers: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
   })
     .then((res) => res.json())
     .then((response) => {
-      if (response.status === "false") {
-        $("#statusModal").modal("hide");
-        swal(response.data, "", "error").then((val) => {
-          $("#optionModal").modal("show");
+      if (response.status === 'false') {
+        $('#statusModal').modal('hide');
+        swal(response.data, '', 'error').then((val) => {
+          $('#optionModal').modal('show');
         });
-      } else if (response.status === "true") {
-        $("#statusModal").modal("hide");
+      } else if (response.status === 'true') {
+        $('#statusModal').modal('hide');
         swal(
-          "Transaction has been posted",
-          "Transaction will be reviewed and processed",
-          "success"
+          'Transaction has been posted',
+          'Transaction will be reviewed and processed',
+          'success'
         ).then((val) => {
-          window.location.href = "/user/store";
+          window.location.href = '/user/store';
         });
       }
     });
@@ -521,20 +523,20 @@ var initiateBankDepositProcessing = function () {
 
 // =========================== Code Generation Methods =====================
 
-var spinner2 = $("#spinner2");
-var headTitle = $("#head_title");
+var spinner2 = $('#spinner2');
+var headTitle = $('#head_title');
 
 var initiateCodeGeneration = function (res) {
-  if (res.status == "success") {
+  if (res.status == 'success') {
     let transaction = res.data;
     loadCodeTable(transaction.id);
-  } else if (res.status === "false") {
+  } else if (res.status === 'false') {
     swal(
-      "Payment Failed",
-      "Kindly try again or reach the admin.",
-      "error"
+      'Payment Failed',
+      'Kindly try again or reach the admin.',
+      'error'
     ).then((val) => {
-      window.location.href = "/user/store";
+      window.location.href = '/user/store';
     });
   }
 };
@@ -542,10 +544,10 @@ var initiateCodeGeneration = function (res) {
 var loadCodeTable = function (tid) {
   $.ajax({
     url: `/user/transaction?tid=${tid}`,
-    method: "GET",
-    dataType: "json",
+    method: 'GET',
+    dataType: 'json',
     header: {
-      "X-CSRF-TOKEN": csrfToken,
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
       var data = response.data;
@@ -559,16 +561,16 @@ var formatData = function (data) {
   var obj = [];
 
   data.forEach((transaction) => {
-    var transactType = "";
+    var transactType = '';
     transaction.type == 0
-      ? (transactType = "Purchase")
-      : (transactType = "Sales");
+      ? (transactType = 'Purchase')
+      : (transactType = 'Sales');
     transaction.giftCodes.forEach((code) => {
       var payload = {
         title: code.giftCodeCategory.title,
         code: code.code,
         date: code.createdAt,
-        status: code.isUsed == true ? "Used" : "Not Used",
+        status: code.isUsed == true ? 'Used' : 'Not Used',
         type: transactType,
       };
       obj.push(payload);
@@ -580,20 +582,20 @@ var formatData = function (data) {
 
 var codeTbl;
 var bindToCodeTable = function (response) {
-  codeTbl = $("#codeTbl").DataTable({
+  codeTbl = $('#codeTbl').DataTable({
     aaData: response,
     aoColumns: [
       {
-        data: "id",
+        data: 'id',
         render: function (id, type, row, meta) {
           return meta.row + 1;
         },
       },
       {
-        data: "title",
+        data: 'title',
       },
       {
-        data: "code",
+        data: 'code',
         render: function (code, type, row, meta) {
           return `
                 <div class="input-group input-group-sm">
@@ -606,28 +608,28 @@ var bindToCodeTable = function (response) {
         },
       },
       {
-        data: "date",
+        data: 'date',
         render: function (date, type, row, meta) {
-          return moment(date).format("LLL");
+          return moment(date).format('LLL');
         },
       },
     ],
   });
   spinner2.hide();
-  headTitle.text("Gift Codes");
-  $("#optionModal").modal("hide");
-  $("#codeModal").modal("show");
+  headTitle.text('Gift Codes');
+  $('#optionModal').modal('hide');
+  $('#codeModal').modal('show');
 };
 // =========================== / Code Generation Methods =====================
 
 var initiateCreditCardPayment = function () {};
 
 var initiateOnlinePayment = function () {
-  var userFullname = $("#fname").val();
-  var phone = $("#phone").val();
-  var email = $("#email").val();
-  var rate = $("#rate").val();
-  var totalAmount = $("#cartTotalAmount").text();
+  var userFullname = $('#fname').val();
+  var phone = $('#phone').val();
+  var email = $('#email').val();
+  var rate = $('#rate').val();
+  var totalAmount = $('#cartTotalAmount').text();
 
   totalAmount = parseInt(totalAmount);
   console.log(rate);
@@ -636,12 +638,12 @@ var initiateOnlinePayment = function () {
   var payload = {
     tx_ref: uuidv4(),
     amount: `${totalAmount}`,
-    currency: "USD",
-    redirect_url: "https://cashgiftcode.com/user/pay-callback",
-    payment_options: "card",
+    currency: 'USD',
+    redirect_url: `https://www.cashgiftcode.com/user/pay-callback`,
+    payment_options: 'card',
     meta: {
       consumer_id: uuidv4(),
-      consumer_mac: "92a3-912ba-1192a",
+      consumer_mac: '92a3-912ba-1192a',
     },
     customer: {
       email: `${email}`,
@@ -649,101 +651,101 @@ var initiateOnlinePayment = function () {
       name: `${userFullname}`,
     },
     customizations: {
-      title: "Payment for Cash GC",
-      description: "Payments",
-      logo: "https://assets.piedpiper.com/logo.png",
+      title: 'Payment for Cash GC',
+      description: 'Payments',
+      logo: 'https://assets.piedpiper.com/logo.png',
     },
   };
 
   $.ajax({
-    url: "/user/initialize-payment",
-    method: "POST",
-    dataType: "json",
+    url: '/user/initialize-payment',
+    method: 'POST',
+    dataType: 'json',
     data: JSON.stringify(payload),
     headers: {
-      "content-type": "application/json",
-      "X-CSRF-TOKEN": csrfToken,
+      'content-type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken,
     },
     success: function (response) {
-      if (response.status == "success") {
+      if (response.status == 'success') {
         window.location.href = response.data.link;
       } else {
         swal(
-          "Kindly Re-Try",
-          "We could not reach our payment gateway",
-          "error"
+          'Kindly Re-Try',
+          'We could not reach our payment gateway',
+          'error'
         );
       }
     },
   });
 };
 
-$("input[name='m_option_1']").on("click", function () {
+$("input[name='m_option_1']").on('click', function () {
   var paymentOption = $("input[name='m_option_1']:checked").val();
-  var paymentInfoSpan = $("#paymentInfoSpan");
-  var cardPaymentSpan = $("#cardPaymentSpan");
+  var paymentInfoSpan = $('#paymentInfoSpan');
+  var cardPaymentSpan = $('#cardPaymentSpan');
 
-  if (paymentOption === "bank") {
-    paymentInfoSpan.show("slideIn");
-    cardPaymentSpan.hide("fadeOut");
-  } else if (paymentOption === "paypal") {
+  if (paymentOption === 'bank') {
+    paymentInfoSpan.show('slideIn');
+    cardPaymentSpan.hide('fadeOut');
+  } else if (paymentOption === 'paypal') {
     swal(
-      "Service not available",
-      "We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.",
-      "error"
+      'Service not available',
+      'We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.',
+      'error'
     );
-  } else if (paymentOption === "paypalcard") {
+  } else if (paymentOption === 'paypalcard') {
     swal(
-      "Service not available",
-      "We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.",
-      "error"
+      'Service not available',
+      'We are sorry to bring to your notice that payment through paypal is currently not available. Kindly pay through the alternative means.',
+      'error'
     );
-  } else if (paymentOption == "onlinepay") {
+  } else if (paymentOption == 'onlinepay') {
   }
 });
 
-$("#triggerPay").on("click", function () {
+$('#triggerPay').on('click', function () {
   var btn = $(this);
   console.log(btn);
 
   btn.addClass(
-    "kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark"
+    'kt-spinner kt-spinner--v2 kt-spinner--right kt-spinner--sm kt-spinner--dark'
   );
-  btn.attr("disabled", true);
-  var totalAmount = Number($("#cartTotalAmount").attr("data-pr"));
+  btn.attr('disabled', true);
+  var totalAmount = Number($('#cartTotalAmount').attr('data-pr'));
 
   if (totalAmount <= 0) {
-    swal("Your cart is empty", "", "error");
+    swal('Your cart is empty', '', 'error');
     return false;
   }
   var paymentOption = $("input[name='m_option_1']:checked").val();
 
-  if (paymentOption === "onlinepay") {
+  if (paymentOption === 'onlinepay') {
     // initiatePayPalPayment();
     initiateOnlinePayment();
-  } else if (paymentOption === "bank") {
+  } else if (paymentOption === 'bank') {
     initiateBankDepositProcessing();
   }
 });
 
-$("#closeCodeModal").on("click", function () {
-  window.location.href = "/user/my-codes";
+$('#closeCodeModal').on('click', function () {
+  window.location.href = '/user/my-codes';
 });
 
 // ============Private Util method====================================================
-async function postData(url = "", data = {}) {
+async function postData(url = '', data = {}) {
   // Default options are marked with *
   const response = await fetch(url, {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    mode: "cors", // no-cors, *cors, same-origin
-    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: "same-origin", // include, *same-origin, omit
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: "follow", // manual, *follow, error
-    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   });
   return response.json(); // parses JSON response into native JavaScript objects
