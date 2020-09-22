@@ -90,42 +90,47 @@ export class PaymentService {
 
       console.log(transferPayload);
 
-      axios({
+      const res = await axios({
         method: 'post',
         url: `${this.baseUrl}/transfers`,
         data: transferPayload,
         headers: {
           Authorization: `Bearer ${config.secret_key}`,
         },
-      })
-        .then(async (res) => {
-          console.log('got here');
-          var response = res.data;
-          console.log(response);
+      }).catch(function (error) {
+        let toReturn = { status: 'failed', data: error };
 
-          if (response.status == 'success') {
-            // save transaction
-            let transactionPayload = {
-              status: 2,
-              type: 1,
-              payment: 5,
-              user,
-              paymentRef: response.data.reference,
-              amount: response.data.amount,
-              gcodes: codesToSell,
-            };
+        return toReturn;
+      });
 
-            await this._tService.createTransaction(transactionPayload);
+      console.log('got here');
+      var response = res.data;
+      console.log(response);
 
-            return { status: 'success', data: response };
-          }
-        })
-        .catch(function (error) {
-          return { status: 'failed', data: error };
-        });
+      if (response.status == 'success') {
+        // save transaction
+        let transactionPayload = {
+          status: 2,
+          type: 1,
+          payment: 5,
+          user,
+          paymentRef: response.data.reference,
+          amount: response.data.amount,
+          gcodes: codesToSell,
+        };
+
+        await this._tService.createTransaction(transactionPayload);
+
+        let toReturn = { status: 'success', data: response };
+
+        console.log(toReturn);
+
+        return toReturn;
+      }
     } else {
       error = 'Incorrect account credentials';
-      return { status: 'failed', data: error };
+      let toReturn = { status: 'failed', data: error };
+      return toReturn;
     }
   }
 

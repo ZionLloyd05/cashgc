@@ -575,6 +575,8 @@ export class UserRoute implements IRoute {
       gcodes
     );
 
+    console.log(response);
+
     return res.send({
       status: 'transfer',
       data: response,
