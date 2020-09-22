@@ -78,9 +78,7 @@ export class PaymentService {
 
       var transferPayload = {
         account_bank: bankcode,
-        //account_bank: "044",
         account_number: userAccount.number,
-        //account_number: "0690000040",
         amount: amountToTransferInNaira,
         narration: 'Payment for codes',
         currency: 'NGN',
@@ -136,7 +134,11 @@ export class PaymentService {
 
   public async handleTransferCallback(payload: any): Promise<any> {
     console.log('holla');
-    console.log(payload.reference);
+    console.log(payload);
+
+    if (payload == null) {
+      return;
+    }
 
     //get transaction by reference
     let transactionInDb = await this._tService.getTransactionByReference(
