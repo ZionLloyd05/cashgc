@@ -133,11 +133,11 @@ export class PaymentService {
   }
 
   public async handleTransferCallback(payload: any): Promise<any> {
-    console.log('holla');
+    //console.log('holla');
     console.log(payload);
 
     if (payload == null) {
-      return;
+      return false;
     }
 
     //get transaction by reference
