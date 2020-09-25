@@ -4,7 +4,6 @@ import { promisify } from 'promisify';
 import * as tp from 'typed-promisify';
 import config from '../config';
 import * as postmark from 'postmark';
-import * as nodemailer from 'nodemailer';
 
 export class Mail {
   public static SENDGRID_API_KEY;
@@ -17,18 +16,9 @@ export class Mail {
 
   constructor() {
     // console.log(config.postmark_token);
-    this.transporter = nodemailer.createTransport({
-      Host: 'smtp.elasticemail.com',
-      Port: 2525,
-      auth: {
-        Username: 'admin@topratetransfer.com.au',
-        Password: '91A58B2D6D5E8BDFE809350B192FCF087111',
-      },
-      secure: false,
-      logger: true,
-      debug: true,
-      ignoreTLS: true,
-    });
+    this.client = new postmark.ServerClient(
+      '4181dd98-f429-448e-9be6-a419a64eafa3'
+    );
     // this.transporter = nodemailer.createTransport({
   }
 
@@ -41,8 +31,8 @@ export class Mail {
       TextBody: options.textContent,
     };
 
-    return this.transporter.sendMail(mailOptions);
-    //console.log(mailOptions);
-    //return this.client.sendEmail(mailOptions);
+    // return this.transporter.sendMail(mailOptions);
+    console.log(mailOptions);
+    return this.client.sendEmail(mailOptions);
   }
 }
