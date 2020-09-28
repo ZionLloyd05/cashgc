@@ -404,19 +404,29 @@ export class UserRoute implements IRoute {
   }
 
   private async handlePaymentVendorCallback(req: Request, res: Response) {
-    let tx_ref = req.params.tx_ref;
-    console.log(tx_ref);
+    let status = req.query.status;
+    let tx_ref = req.query.tx_ref;
+    let transactionId = req.query.transaction_id;
+    console.log(`${tx_ref}-${status}-${transactionId}`);
+
     let user = this.user;
 
-    let transaction = await this._paymentService.handleUserOrder(user, tx_ref);
+    if (status == 'successful') {
+      let transaction = await this._paymentService.handleUserOrder(
+        user,
+        tx_ref
+      );
 
-    //console.log(transaction);
+      if (typeof transaction == 'string') {
+        res.send({ status: 'failed', data: transaction });
+      }
 
-    if (typeof transaction == 'string') {
-      res.send({ status: 'failed', data: transaction });
+      res.redirect(`/user/my-codes?status=success&transref=${transaction.id}`);
+    } else {
+      res.redirect(`/user/cart?paymentstatus=unknown`);
     }
 
-    res.redirect(`/user/my-codes?transref=${transaction.id}`);
+    //console.log(transaction);
   }
 
   private async handlePaymentFailure(req: Request, res: Response) {

@@ -1,52 +1,48 @@
-"use strict"
+'use strict';
 
 var cart = $('#cart_no');
-var csrfToken = $("#_csrf").val();
+var csrfToken = $('#_csrf').val();
 var total = $('#totalPrice');
 var cartItemTotal = $('#cartItemTotal');
 var cartItemBody = $('#cartItemBody');
 
 $(document).ready(function () {
-    fetch("/user/cartitem/", {
-            method: 'GET',
-            headers: {
-                "X-CSRF-TOKEN": csrfToken
-            }
-        })
-        .then(res => res.json())
-        .then(res => {
-
-            prepareCart(res.data)
-
-        })
-        .catch(err => console.log(err))
-})
+  fetch('/user/cartitem/', {
+    method: 'GET',
+    headers: {
+      'X-CSRF-TOKEN': csrfToken,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      prepareCart(res.data);
+    })
+    .catch((err) => console.log(err));
+});
 
 function prepareCart(data) {
-    let {
-        items,
-        totalQuantity,
-        totalPrice
-    } = data;
+  let { items, totalQuantity, totalPrice } = data;
 
-    cart.text(totalQuantity)
-    let itemString = '';
+  cart.text(totalQuantity);
+  let itemString = '';
 
-    (totalQuantity > 1) ? itemString = `${totalQuantity} cart items`: itemString = `${totalQuantity} cart item`
+  totalQuantity > 1
+    ? (itemString = `${totalQuantity} cart items`)
+    : (itemString = `${totalQuantity} cart item`);
 
-    cartItemTotal.text(itemString);
+  cartItemTotal.text(itemString);
 
-    total && total.text(totalPrice.toLocaleString()) && total.attr("data-pr", totalPrice);
+  total &&
+    total.text(totalPrice.toLocaleString()) &&
+    total.attr('data-pr', totalPrice);
 
-    let citemMarkupBundle = '';
-    // console.log(items.length)
+  let citemMarkupBundle = '';
+  // console.log(items.length)
 
-    if (items.length > 0) {
-        items.forEach(item => {
-            let {
-                giftCodeCategory
-            } = item;
-            citemMarkupBundle += `
+  if (items.length > 0) {
+    items.forEach((item) => {
+      let { giftCodeCategory } = item;
+      citemMarkupBundle += `
                     <a href="#" class="kt-notification__item">
                         <div class="kt-notification__item-icon">
                             <i class="flaticon2-line-chart kt-font-success"></i>
@@ -64,19 +60,19 @@ function prepareCart(data) {
                         </div>
                     </a>
 
-            `
-        });
+            `;
+    });
 
-        citemMarkupBundle += `
+    citemMarkupBundle += `
             <div class="kt-notification__item">
                 <a href="/user/cart" class="btn btn-block btn-brand">
                     <i class="flaticon2-shopping-cart-1"></i>
                     <span class="kt-hidden-mobile">Checkout</span>
                 </a>
             </div>
-        `
-    } else {
-        citemMarkupBundle = `
+        `;
+  } else {
+    citemMarkupBundle = `
             <div class="kt-notification__item">
             <div class="kt-notification__item-icon">
             <i class="far fa-frown"></i>
@@ -87,8 +83,8 @@ function prepareCart(data) {
             </div>
         </div>
             </div>
-        `
-    }
-    // console.log(citemMarkupBundle);
-    cartItemBody.html(citemMarkupBundle);
+        `;
+  }
+  // console.log(citemMarkupBundle);
+  cartItemBody.html(citemMarkupBundle);
 }

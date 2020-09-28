@@ -7,6 +7,14 @@ $(document).ready(function () {
   loadUserCartItem();
   loadVendors();
   getExchangeRate();
+  var status = GetURLParameter('paymentstatus');
+  if (status == 'unknown') {
+    swal(
+      'Payment was not successfull',
+      'Kindly try again or reach the admin for support',
+      'error'
+    );
+  }
 });
 
 var csrfToken = $('#_csrf').val();
@@ -749,4 +757,12 @@ async function postData(url = '', data = {}) {
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   });
   return response.json(); // parses JSON response into native JavaScript objects
+}
+
+//=========== private util method ==============================
+function GetURLParameter(sParam) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  return urlParams.get(sParam);
 }
