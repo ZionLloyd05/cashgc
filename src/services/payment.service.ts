@@ -83,7 +83,7 @@ export class PaymentService {
         narration: 'Payment for codes',
         currency: 'NGN',
         beneficiary_name: `${user.firstname} ${user.lastname}`,
-        callback_url: 'https://www.cashgiftcode.com/user/transfer-callback',
+        callback_url: 'https://a4f6480f2bf9.ngrok.io/user/transfer-callback',
       };
 
       console.log(transferPayload);

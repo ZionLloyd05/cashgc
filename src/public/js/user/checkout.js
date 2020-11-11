@@ -647,7 +647,7 @@ var initiateOnlinePayment = function () {
     tx_ref: uuidv4(),
     amount: `${totalAmount}`,
     currency: 'USD',
-    redirect_url: `https://www.cashgiftcode.com/user/pay-callback`,
+    redirect_url: `https://a4f6480f2bf9.ngrok.io/user/pay-callback`,
     payment_options: 'card',
     meta: {
       consumer_id: uuidv4(),
