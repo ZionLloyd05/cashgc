@@ -104,6 +104,7 @@ export class AdminRoute implements IRoute {
 		 */
 		router.get("/admin/users", this.serveUserView.bind(this));
 		router.get("/admin/user", this.getUsers.bind(this));
+		router.put("/admin/user/partner", this.togglePartnership.bind(this));
 
 		/**
 		 * Rates Routes
@@ -305,6 +306,17 @@ export class AdminRoute implements IRoute {
 			status: "read",
 			data: gccs
 		});
+	}
+
+	private async togglePartnership(req: Request, res: Response) {
+		let userId = req.body.id;
+		
+		let response = await this._userController.togglePartnership(userId);
+
+		return res.send({
+			status: "success",
+			data: response
+		})
 	}
 
 	private async getTransaction(req: Request, res: Response) {

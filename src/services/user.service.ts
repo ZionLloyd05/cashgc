@@ -84,6 +84,23 @@ export class UserService {
 		return false;
 	}
 
+	public async togglePartnership(id: number): Promise<any> {
+		const db = await DatabaseProvider.getConnection();
+
+		const userRepository = await db.getRepository(User);
+
+		const user = await userRepository.findOne(id);
+
+		if(user.isPartner === true) {
+			user.isPartner = false;
+		}
+		else if(user.isPartner === false){
+			user.isPartner = true;
+		}
+
+		return await userRepository.save(user);
+	}
+
 	public async isPhoneExist(phone: string): Promise<boolean> {
 		const user = await this.getByPhone(phone);
 		if (user) return true;

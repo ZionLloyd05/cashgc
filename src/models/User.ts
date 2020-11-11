@@ -29,6 +29,7 @@ export interface IUserDTO {
 	country: string;
 
 	isVerified?: boolean;
+	isPartner?: boolean;
 }
 
 @Entity()
@@ -61,6 +62,9 @@ export class User implements IUserDTO {
 
 	@Column({ default: false })
 	public isVerified?: boolean;
+
+	@Column({ default: false })
+	public isPartner?: boolean;
 
 	@Column()
 	public password?: string;

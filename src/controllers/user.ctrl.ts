@@ -79,6 +79,10 @@ export class UserController {
     );
   }
 
+  public async togglePartnership(id: number): Promise<any> {
+    return await this._userService.togglePartnership(id);
+  }
+
   /**
    * Cart Methods
    */

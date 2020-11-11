@@ -443,9 +443,16 @@ export class UserRoute implements IRoute {
   }
 
   private async verifyCode(req: Request, res: Response) {
+    let isPartner = req.user.isPartner;
+
     let code = req.params.code;
     let gcInDb = await this._userController.getGCbyCode(code);
-    // console.log(gcInDb)
+    
+    if(isPartner === false){
+      return res.send({
+        status: 'partner'
+      });
+    }
     if (gcInDb === undefined) {
       return res.send({
         status: 'invalid',

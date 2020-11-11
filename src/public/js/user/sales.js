@@ -59,9 +59,11 @@ $(document).ready(function () {
         btn.removeClass(
           'kt-spinner kt-spinner--v2 kt-spinner--sm kt-spinner--primary'
         );
-
         if (res.status == 'invalid') {
           span.text('The gift code is invalid');
+          span.show();
+        }else if(res.status === 'partner'){
+          span.text('Become a partner to redeem codes');
           span.show();
         } else if (res.status == 'not activated') {
           span.text('Valid, but Inactive Code');
