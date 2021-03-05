@@ -87,7 +87,7 @@ export default async ({ app }: { app: express.Application }) => {
 
 	// pass variables to our templates + all requests
 	app.use((req, res, next) => {
-		// res.locals.flashes = req.flash();
+		res.locals.flashes = req.flash();
 		res.locals.user = req.user || null;
 		res.locals.isLoggedIn = req.isAuthenticated();
 		next();

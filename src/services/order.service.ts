@@ -124,12 +124,11 @@ export class OrderService {
 
 			await this._oItemService.create(orderItemPayload);
 
-			// clear cart items
-			await this._userService.clearCart(payload.user.id);
 		});
 
-		// clear user cart item
-
+		// clear cart items
+		await this._userService.clearCart(payload.user.id);
+		
 		return "true";
 	}
 

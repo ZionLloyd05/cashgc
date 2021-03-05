@@ -19,12 +19,12 @@ function startServer() {
          * Database configuration
          */
         database_1.DatabaseProvider.configure({
-            type: "mysql",
+            type: 'mysql',
             database: config_1.default.database,
             username: config_1.default.username,
             password: config_1.default.password,
             host: config_1.default.host,
-            port: config_1.default.dbport
+            port: config_1.default.dbport,
         });
         /**
          * PayPal configuration
@@ -32,38 +32,38 @@ function startServer() {
         paypal.configure({
             mode: config_1.default.mode,
             client_id: config_1.default.client_id,
-            client_secret: config_1.default.client_secret
+            client_secret: config_1.default.client_secret,
         });
-        const app = require("./config/viewsetup").default();
-        yield require("./server").default({ app });
-        app.listen(config_1.default.port, err => {
+        const app = require('./config/viewsetup').default();
+        yield require('./server').default({ app });
+        app.listen(config_1.default.port, (err) => {
             if (err) {
-                console.log("got an error");
+                console.log('got an error');
                 console.log(err);
                 process.exit(1);
                 return;
             }
-            console.log("-------------------------------------------------------");
-            console.log(" ( :  Server listening on port: ", config_1.default.port, " : ) ");
-            console.log("-------------------------------------------------------");
+            console.log('-------------------------------------------------------');
+            console.log(' ( :  Server listening on port: ', config_1.default.port, ' : ) ');
+            console.log('-------------------------------------------------------');
         });
         try {
             yield database_1.DatabaseProvider.getConnection();
-            console.log("Database connected");
+            console.log('Database connected');
         }
         catch (error) {
-            console.log("error");
+            console.log('error');
             console.log(error);
         }
         internetAvailable({
             timeout: 4000,
-            retries: 10
+            retries: 10,
         })
             .then(() => {
-            console.log("Internet available");
+            console.log('Internet available');
         })
             .catch(() => {
-            console.log("No internet");
+            console.log('No internet');
         });
     });
 }

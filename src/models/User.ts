@@ -1,13 +1,7 @@
 import { CartItem } from "./CartItem";
 import { Transaction } from "./Transaction";
 import {
-	validate,
-	Contains,
-	IsInt,
-	Length,
 	IsEmail,
-	IsFQDN,
-	IsDate,
 	Min,
 	Max
 } from "class-validator";
@@ -76,13 +70,13 @@ export class User implements IUserDTO {
 	public uTokenExpiryDate?: Date;
 
 	@OneToMany(
-		type => CartItem,
+		() => CartItem,
 		cartItem => cartItem.user
 	)
 	public cartItems?: CartItem[];
 
 	@OneToMany(
-		type => Transaction,
+		() => Transaction,
 		transaction => transaction.user
 	)
 	public transactions?: Transaction[];

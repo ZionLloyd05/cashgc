@@ -1,10 +1,10 @@
-import { RateService } from "./rate.service";
-import { GiftCode } from "./../models/GiftCode";
-import { DatabaseProvider } from "./../database/index";
-import { Transaction } from "./../models/Transaction";
-import { injectable } from "inversify";
-import { createQueryBuilder } from "typeorm";
-import DIContainer from "../container/DIContainer";
+import { RateService } from './rate.service';
+import { GiftCode } from './../models/GiftCode';
+import { DatabaseProvider } from './../database/index';
+import { Transaction } from './../models/Transaction';
+import { injectable } from 'inversify';
+import { createQueryBuilder } from 'typeorm';
+import DIContainer from '../container/DIContainer';
 
 @injectable()
 export class TransactionService {
@@ -21,7 +21,7 @@ export class TransactionService {
   }
 
   public async updateTransfer(transferPayload): Promise<any> {
-    console.log("updating transfer");
+    console.log('updating transfer');
 
     console.log(transferPayload);
 
@@ -37,7 +37,7 @@ export class TransactionService {
     let giftCodesArr: GiftCode[] = [];
 
     let { payment, type } = payload;
-    console.log("from creation in transaction service");
+    console.log('from creation in transaction service');
 
     console.log(payment);
     console.log(type);
@@ -50,7 +50,7 @@ export class TransactionService {
 
       //sales and payment with bitcoin
       // payload.gcodes.forEach(codeId =>)
-      console.log("sales and payment with bitcoin");
+      console.log('sales and payment with bitcoin');
 
       // set all coin to is used
       payload.gcodes &&
@@ -104,7 +104,7 @@ export class TransactionService {
     };
 
     transaction = { ...newPayload };
-    return await db.getRepository("Transaction").save(transaction);
+    return await db.getRepository('Transaction').save(transaction);
   }
 
   public async updateTransactionWithGcodes(gcodes: any, transactionId: number) {
@@ -127,7 +127,7 @@ export class TransactionService {
     /**
      * @TODOD auto generate a payment ref
      */
-    return await db.getRepository("Transaction").save(transactionInDb);
+    return await db.getRepository('Transaction').save(transactionInDb);
   }
 
   public async setCodeToUsed(codeId: number): Promise<void> {
@@ -153,14 +153,14 @@ export class TransactionService {
   public async getUserTransactions(userid: number): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
-      .innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-      .innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
       .where({ user: userid })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
     // console.log(transactions);
@@ -170,12 +170,12 @@ export class TransactionService {
   public async getUserTransactionsAlone(userid: number): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
       .where({ user: userid })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
     // console.log(transactions);
@@ -188,16 +188,16 @@ export class TransactionService {
   ): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transaction = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
       .where({ user: userid })
-      .andWhere("transaction.paymentRef = :transactionRef")
-      .innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-      .innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+      .andWhere('transaction.paymentRef = :transactionRef')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
       .setParameters({ transactionRef: tref })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -206,7 +206,7 @@ export class TransactionService {
 
   public async getTransactionByReference(tref: any): Promise<any> {
     let db = await DatabaseProvider.getConnection();
-    let transactionInDb = await db.getRepository("transaction").findOne({
+    let transactionInDb = await db.getRepository('transaction').findOne({
       where: { paymentRef: tref },
     });
 
@@ -219,16 +219,16 @@ export class TransactionService {
   ): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transaction = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
       .where({ user: userid })
-      .andWhere("transaction.id = :transactionId")
-      .innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-      .innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+      .andWhere('transaction.id = :transactionId')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
       .setParameters({ transactionId: tid })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -238,13 +238,13 @@ export class TransactionService {
   public async getAllCodesByTransaction(): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transaction = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
-      .innerJoinAndSelect("transaction.giftCodes", "giftCodes")
-      .innerJoinAndSelect("giftCodes.giftCodeCategory", "giftCodeCategory")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .innerJoinAndSelect('transaction.giftCodes', 'giftCodes')
+      .innerJoinAndSelect('giftCodes.giftCodeCategory', 'giftCodeCategory')
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -254,11 +254,11 @@ export class TransactionService {
   public async getAllTransaction(): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -268,12 +268,12 @@ export class TransactionService {
   public async getSalesTransaction(): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
-      .where({ type: "1" })
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ type: '1' })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -283,12 +283,12 @@ export class TransactionService {
   public async getPurchaseTransaction(): Promise<any[]> {
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
-      .where({ type: "0" })
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where({ type: '0' })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -298,14 +298,14 @@ export class TransactionService {
   public async approveTransaction(tid: number): Promise<any> {
     let db = await DatabaseProvider.getConnection();
 
-    await createQueryBuilder("Transaction")
+    await createQueryBuilder('Transaction')
       .update(Transaction)
       .set({ status: 0 })
-      .where("id = :id", { id: tid })
+      .where('id = :id', { id: tid })
       .execute();
 
-    let newTransaction = await db.getRepository("transaction").findOne({
-      relations: ["user"],
+    let newTransaction = await db.getRepository('transaction').findOne({
+      relations: ['user'],
       where: { id: tid },
     });
 
@@ -315,14 +315,14 @@ export class TransactionService {
   public async declineTransaction(tid: number): Promise<any> {
     let db = await DatabaseProvider.getConnection();
 
-    await createQueryBuilder("Transaction")
+    await createQueryBuilder('Transaction')
       .update(Transaction)
       .set({ status: 1 })
-      .where("id = :id", { id: tid })
+      .where('id = :id', { id: tid })
       .execute();
 
-    let newTransaction = await db.getRepository("transaction").findOne({
-      relations: ["user"],
+    let newTransaction = await db.getRepository('transaction').findOne({
+      relations: ['user'],
       where: { id: tid },
     });
     console.log(newTransaction);
@@ -332,13 +332,13 @@ export class TransactionService {
   public async setTransactionStatusToSuccess(tid: number): Promise<any> {
     let db = await DatabaseProvider.getConnection();
 
-    await createQueryBuilder("Transaction")
+    await createQueryBuilder('Transaction')
       .update(Transaction)
       .set({ status: 0 })
-      .where("id = :id", { id: tid })
+      .where('id = :id', { id: tid })
       .execute();
 
-    let newTransaction = await db.getRepository("transaction").findOne({
+    let newTransaction = await db.getRepository('transaction').findOne({
       where: { id: tid },
     });
 
@@ -351,12 +351,12 @@ export class TransactionService {
     let db = await DatabaseProvider.getConnection();
 
     let userTransactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
-      .where("transaction.user.id = :uid", { uid: userId })
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
+      .where('transaction.user.id = :uid', { uid: userId })
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
@@ -370,15 +370,15 @@ export class TransactionService {
 
     let db = await DatabaseProvider.getConnection();
     let transactions = await db
-      .getRepository("transaction")
-      .createQueryBuilder("transaction")
-      .innerJoinAndSelect("transaction.user", "user")
+      .getRepository('transaction')
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.user', 'user')
       .where(
         `transaction.createdAt >= :startDate AND transaction.createdAt <= :endDate AND transaction.user.id = :userId`,
         { startDate: last24HoursDate, endDate: new Date(), userId }
       )
       .orderBy({
-        "transaction.id": "DESC",
+        'transaction.id': 'DESC',
       })
       .getMany();
 
