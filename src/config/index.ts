@@ -11,60 +11,66 @@ export default {
   /**
    * Database port number
    */
-  dbport: parseInt('3306', 10),
+  dbport: parseInt(process.env.DBPORT, 10),
+
   /**
    * Database port number
    */
-  port: parseInt('4000', 10),
+  port: parseInt(process.env.PORT, 10),
+
   /**
    * YDatabase type
    */
-  type: 'mysql',
+  type: process.env.TYPE,
+
   /**
    * Database host
    */
-  host: 'MYSQL5035.site4now.net',
+  host: process.env.HOST,
+
   /**
    * Database username
    */
-  username: 'db_9d9472_cash',
+  username: process.env.UNAME,
+
   /**
    * Database password
    */
-  password: 'gccode123**',
+  password: process.env.PASSWORD,
+
   /**
    * Database title
    */
-  database: 'db_9d9472_gccode',
+  database: process.env.DATABASE,
+
   /**
    * Cipher Key
    */
-  key: 'connect_dd',
+  key: process.env.KEY,
+
   /**
    * Secret Key
    */
-  secret: 'dksjwerweii090wekrnjksdoijisjd09skkml',
+  secret: process.env.SECRET,
+
   /**
    * Environment
    */
-  environment: 'production',
-  /**
-   * Routes Config
-   */
+  environment: process.env.ENVIR,
   route: {
     prefix: '/',
   },
   /**
    * Cloudinary Configs
    */
-  cloudName: 'zionlloyd',
-  apiKey: '432858741981615',
-  apiSecret: '7anDqebobntOE90W1n5oQm0qJ5s',
+  cloudName: process.env.CLOUD_NAME,
+  apiKey: process.env.API_KEY,
+  apiSecret: process.env.API_SECRET,
 
   /**
    * Payment Vendor Config
    */
-  secret_key: 'FLWSECK-5a16ca2fc0c13a1325c9fe423466e85c-X',
-  server_host: 'cashgiftcode.23ems.com',
-  mode: 'live',
+  secret_key: process.env.SECRET_KEY,
+
+  server_host: process.env.SERVER_HOST,
 };
