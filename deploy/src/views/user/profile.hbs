@@ -1,0 +1,634 @@
+<link href="/assets/css/profile-v1.css" rel="stylesheet" type="text/css" />
+{{!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+    <!-- begin:: Subheader -->
+    <div class="kt-subheader   kt-grid__item" id="kt_subheader">
+        <div class="kt-subheader__main">
+            <h3 class="kt-subheader__title">Profile</h3>
+
+            <span class="kt-subheader__separator kt-hidden"></span>
+            <div class="kt-subheader__breadcrumbs">
+                <a href="#" class="kt-subheader__breadcrumbs-home"><i class="flaticon-shopping-basket"></i></a>
+                <span class="kt-subheader__breadcrumbs-separator"></span>
+                <a href="" class="kt-subheader__breadcrumbs-link">
+                    My Profile </a>
+                <span class="kt-subheader__breadcrumbs-separator"></span>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt-content">
+        <div class="kt-portlet kt-profile">
+            <div class="kt-profile__content">
+                <div class="row">
+                    <div class="col-md-12 col-lg-5 col-xl-4">
+                        <div class="kt-profile__main">
+                            <div class="kt-profile__main-pic">
+                                <img src="assets/media/users/300_21.jpg" alt="">
+                                <label class="kt-profile__main-pic-upload">
+                                    <i class="fa fa-user"></i>
+                                </label>
+                            </div>
+                            <div class="kt-profile__main-info">
+                                <div class="kt-profile__main-info-name">{{user.firstname}} {{user.lastname}}</div>
+                                <div class="kt-profile__main-info-position">{{user.email}}</div>
+                            </div>
+                        </div>			
+                    </div>
+                    <div class="col-md-12 col-lg-4 col-xl-4">
+                        <div class="kt-profile__contact">
+                            <a href="#" class="kt-profile__contact-item">
+                                <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-whatsup"><i class="flaticon-whatsapp"></i></span>
+                                <span class="kt-profile__contact-item-text">{{user.phone}}</span>
+                            </a>
+                            <a href="#" class="kt-profile__contact-item">
+                                <span class="kt-profile__contact-item-icon"><i class="flaticon-email-black-circular-button kt-font-danger"></i></span>
+                                <span class="kt-profile__contact-item-text">{{user.email}}</span>
+                            </a>
+                            <a href="#" class="kt-profile__contact-item">
+                                <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="fa fa-university"></i></span>
+                                <span class="kt-profile__contact-item-text">{{user.country}}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-3 col-xl-4">
+                        <div class="kt-profile__stats">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+			<div class="col-lg-4 col-xl-3">			
+				<div class="kt-portlet">
+					<div class="kt-portlet__body kt-portlet__body--fit">
+						<ul class="kt-nav kt-nav--bold kt-nav--md-space kt-nav--v3 kt-margin-t-20 kt-margin-b-20 nav nav-tabs" role="tablist">
+                            <li class="kt-nav__item">
+                                <a class="kt-nav__link active" data-toggle="tab" href="#kt_profile_tab_personal_information" role="tab" aria-selected="false">
+                                    <span class="kt-nav__link-icon"><i class="flaticon2-user-outline-symbol"></i></span>
+                                    <span class="kt-nav__link-text">Personal Information</span>
+                                </a>
+                            </li>
+							<li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_bank_information" role="tab" aria-selected="false">
+                                    <span class="kt-nav__link-icon"><i class="flaticon2-user-outline-symbol"></i></span>
+                                    <span class="kt-nav__link-text">Bank Information</span>
+                                </a>
+                            </li>
+							<li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_bitcoin_information" role="tab" aria-selected="false">
+                                    <span class="kt-nav__link-icon"><i class="flaticon-coins"></i></span>
+                                    <span class="kt-nav__link-text">Bitcoin Wallet</span>
+                                </a>
+                            </li>
+                            <li class="kt-nav__separator"></li>
+                            <li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_tab_verify_email" role="tab" aria-selected="false">
+                                	<span class="kt-nav__link-icon"><i class="flaticon2-soft-icons-1"></i></span>
+                                    <span class="kt-nav__link-text">Verify My Account</span>
+                                </a>                                                 
+                            </li>
+                            <li class="kt-nav__item">
+                                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_change_password" role="tab" aria-selected="true">
+									<span class="kt-nav__link-icon"><i class="flaticon2-lock"></i></span>
+                                    <span class="kt-nav__link-text">Change Password</span>
+                                </a>                                                 
+                            </li>
+                            
+                		</ul>    
+                	</div>
+                </div>  
+                
+			</div>
+			<div class="col-lg-8 col-xl-9">
+				<div class="tab-content">
+					<!--begin: Personal Information-->
+					<div class="tab-pane fade active show" id="kt_profile_tab_personal_information" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Personal Information <small>update your personal informaiton</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                       
+                                    </div>		
+                                </div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="updateInfoForm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Customer Info:</h3>
+												</div>
+											</div>
+					
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">First Name</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="firstname" name="firstname" type="text" value="{{user.firstname}}">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Last Name</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="lastname" name="lastname" type="text" value="{{user.lastname}}">
+												</div>
+											</div>
+											
+										</div>
+									</div>
+
+									<div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
+
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Contact Details:</h3>
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Email Address</label>
+												<div class="col-lg-9 col-xl-6">
+													<div class="input-group">
+														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
+														<input type="text" id="email" name="email" class="form-control" value="{{user.email}}" placeholder="Email">
+													</div>
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Contact Phone</label>
+												<div class="col-lg-9 col-xl-6">
+													<div class="input-group">
+														<div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
+														<input type="text" id="phone" name="phone" class="form-control" value="{{user.phone}}" placeholder="Phone">
+													</div>
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Country</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" type="text" id="country" name="country" value="{{user.country}}">
+												</div>
+											</div>
+											
+								    	</div>
+									</div>
+
+                                    <div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
+                                    <div class="form-group row">
+                                 		<label class="col-xl-3 col-lg-3 col-form-label"></label>
+                                        <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" readonly class="form-control" id="num11" class="form-control" value="">
+                                            </div>
+                                        </div>
+                                         <div class="col-lg-1">
+                                            <span>+</span>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" readonly class="form-control" id="num12" class="form-control" value="">
+                                            </div>
+                                        </div>
+                                        {{!-- <div class="col-lg-3">
+                                            <div class="input-group">
+                                                <input type="number" id="total1" name="total1" class="form-control" value="">
+                                            </div>
+                                        </div> --}}
+                                        <input type="hidden" name="_csrf" id="_csrf" value="{{ csrfToken }}">
+                                        <input type="hidden" name="id" id="author" value="{{user.id}}">
+                                    </div>
+                                    <div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">=</label>
+												<div class="col-lg-7">
+                                                <input type="number" id="total1" name="total1" class="form-control" value="">
+												</div>
+											</div>
+
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="updateBtn" class="btn btn-brand">Save Changes</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Personal Information-->
+					
+					<!--begin: Account Information-->
+					<div class="tab-pane fade" id="kt_profile_tab_bank_information" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Bank Information <small>manage your bank details</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="bankAccountFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Bank Account:</h3>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Bank Name</label>
+												<div class="col-lg-9 col-xl-6">
+													<select class="form-control" id="bankname">
+														<option value="Access Bank">Access Bank</option>
+													
+														<option value="Access Bank (Diamond)">Access Bank (Diamond)</option>
+													
+														<option value="ALAT by WEMA">ALAT by WEMA</option>
+													
+														<option value="ASO Savings and Loans">ASO Savings and Loans</option>
+													
+														<option value="Citibank Nigeria">Citibank Nigeria</option>
+													
+														<option value="Ecobank Nigeria">Ecobank Nigeria</option>
+													
+														<option value="Ekondo Microfinance Bank">Ekondo Microfinance Bank</option>
+													
+														<option value="Enterprise Bank">Enterprise Bank</option>
+													
+														<option value="Fidelity Bank">Fidelity Bank</option>
+													
+														<option value="First Bank of Nigeria">First Bank of Nigeria</option>
+													
+														<option value="First City Monument Bank">First City Monument Bank</option>
+													
+														<option value="Guaranty Trust Bank">Guaranty Trust Bank</option>
+													
+														<option value="Heritage Bank">Heritage Bank</option>
+													
+														<option value="Jaiz Bank">Jaiz Bank</option>
+													
+														<option value="Keystone Bank">Keystone Bank</option>
+													
+														<option value="MainStreet Bank">MainStreet Bank</option>
+													
+														<option value="Parallex Bank">Parallex Bank</option>
+													
+														<option value="Polaris Bank">Polaris Bank</option>
+													
+														<option value="Providus Bank">Providus Bank</option>
+													
+														<option value="Stanbic IBTC Bank">Stanbic IBTC Bank</option>
+													
+														<option value="Standard Chartered Bank">Standard Chartered Bank</option>
+													
+														<option value="Sterling Bank">Sterling Bank</option>
+													
+														<option value="Suntrust Bank">Suntrust Bank</option>
+													
+														<option value="Union Bank of Nigeria">Union Bank of Nigeria</option>
+													
+														<option value="United Bank For Africa">United Bank For Africa</option>
+													
+														<option value="Unity Bank">Unity Bank</option>
+													
+														<option value="Wema Bank">Wema Bank</option>
+													
+														<option value="Zenith Bank">Zenith Bank</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Account Number</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="accnumber" name="accnumber" type="text" value="">
+												</div>
+											</div>
+											
+                                        	<input type="hidden" name="bkid" id="bkid" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="saveaccBtn" class="btn btn-brand">Save Changes</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Account Information-->
+
+					<!--begin: Bitcoin Information-->
+					<div class="tab-pane fade" id="kt_profile_tab_bitcoin_information" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Wallet Information<small>manage your bitcoin wallet</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="walletFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Bitcoin Wallet:</h3>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Wallet ID</label>
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" id="wallet" name="wallet" type="text" value="">
+												</div>
+											</div>
+											
+                                        	<input type="hidden" name="w_id" id="w_id" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="saveWalletBtn" class="btn btn-brand">Save Changes</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Bitcoin Information-->
+
+					<!--begin: Verify Email-->
+					<div class="tab-pane fade" id="kt_profile_tab_verify_email" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Verify Email<small>Click on the Send Verification Code button</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-wrapper">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="la la-sellsy"></i>
+                                            </button>
+                                        </div>
+                                    </div>					
+                                  </div>
+							</div>
+
+							<div style="display: none;" class="kt-portlet__body" id="verifiedAcc">
+								<div class="kt-section kt-section--first">
+									<div class="kt-section__body">
+										<h4>Your account is verified!</h4>
+									</div>
+								</div>									
+							</div>
+							
+							<div class="kt-portlet__body" id="getCodeDiv">
+								<div class="kt-section kt-section--first">
+									<div class="kt-section__body">
+										<button type="submit" id="sendVerificationBtn" class="btn btn-brand">
+											<span id="verificationBtnSpinner" class="" role="status" aria-hidden="true"></span>
+											Send Verification Code
+										</button>
+										<input type="hidden" name="w_id" id="w_id" value="null">
+									</div>
+								</div>									
+							</div>
+
+
+							<form style="display: none;" class="kt-form kt-form--label-right" id="codeverifyFrm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="form-group row">
+												{{!-- <label class="col-xl-3 col-lg-3 col-form-label">Enter verification</label> --}}
+												<div class="col-lg-9 col-xl-6">
+													<input class="form-control" name="" type="text" value="" placeholder="Enter Verification Code" id="token">
+												</div>
+											</div>
+											<a href="#" id="resendLinkBtn" class="kt-brand">Re-send Link</a>
+                                        	<input type="hidden" name="" value="null">
+								    	</div>
+									</div>									
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="submit" id="verifyCodeBtn" class="btn btn-brand">
+													<span id="verifyAccBtn" class="" role="status" aria-hidden="true"></span>
+													Verify My Account
+												</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Bitcoin Information-->
+
+
+					<!--begin: Change Password -->
+					<div class="tab-pane fade" id="kt_profile_change_password" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Change Password<small>change or reset your account password</small></h3>
+								</div>
+								<div class="kt-portlet__head-toolbar">
+									<div class="kt-portlet__head-toolbar">
+									</div>
+								</div>
+							</div>
+
+							<form class="kt-form kt-form--label-right" id="changePwdForm">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+										
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													{{!-- <h3 class="kt-section__title kt-section__title-sm">Change:</h3> --}}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Email</label>
+												<div class="col-lg-9 col-xl-6">
+													<input type="email" id="emailupd" name="emailupd" class="form-control" value="" placeholder="Email">
+													{{!-- <a href="#" class="kt-link kt-font-sm kt-font-bold kt-margin-t-5">Forgot password ?</a> --}}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Current Password</label>
+												<div class="col-lg-9 col-xl-6">
+													<input type="password" class="form-control" id="currentPwd" name="currentPwd" value="" placeholder="Current password">
+													{{!-- <a href="#" class="kt-link kt-font-sm kt-font-bold kt-margin-t-5">Forgot password ?</a> --}}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label">New Password</label>
+												<div class="col-lg-9 col-xl-6">
+													<input type="password" class="form-control" id="newPwd" name="newPwd" value="" placeholder="New password">
+												</div>
+											</div>
+											<div class="form-group form-group-last row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Verify Password</label>
+												<div class="col-lg-9 col-xl-6">
+													<input type="password" class="form-control" id="verifyPwd" name="verifyPwd" value="" placeholder="Verify password">
+												</div>
+											</div>									
+										</div>
+									</div>								
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button id="btnChangePwd" type="submit" class="btn btn-danger">
+													<span class="" id="spinner" role="status" aria-hidden="true"></span>
+													Change Password
+												</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Change Password -->
+
+					<!--begin: Email Settings -->
+					<div class="tab-pane fade" id="kt_profile_email_settings" role="tabpanel">
+						<div class="kt-portlet">
+							<div class="kt-portlet__head">
+								<div class="kt-portlet__head-label">
+									<h3 class="kt-portlet__head-title">Email Notifications <small>control when and how often Keen sends emails to you</small></h3>
+								</div>
+							</div>
+							<form class="kt-form kt-form--label-right">
+								<div class="kt-portlet__body">
+									<div class="kt-section kt-section--first">
+										<div class="kt-section__body">
+											<div class="row">
+												<label class="col-xl-3"></label>
+												<div class="col-lg-9 col-xl-6">
+													<h3 class="kt-section__title kt-section__title-sm">Setup Email Notification:</h3>
+												</div>
+											</div>
+											<div class="form-group form-group-sm row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Email Notification</label>
+												<div class="col-lg-9 col-xl-6">
+													<span class="kt-switch">
+														<label>
+															<input type="checkbox" checked="checked" name="email_notification_1">
+															<span></span>
+														</label>
+													</span>
+												</div>
+											</div>
+											<div class="form-group form-group-last row">
+												<label class="col-xl-3 col-lg-3 col-form-label">Send Copy To Personal Email</label>
+												<div class="col-lg-9 col-xl-6">
+													<span class="kt-switch">
+														<label>
+															<input type="checkbox" name="email_notification_2">
+															<span></span>
+														</label>
+													</span>
+												</div>
+											</div>								
+										</div>
+									</div>	
+
+									<div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
+							
+								</div>
+								<div class="kt-portlet__foot">
+									<div class="kt-form__actions">
+										<div class="row">
+											<div class="col-lg-3 col-xl-3">
+											</div>
+											<div class="col-lg-9 col-xl-9">
+												<button type="reset" class="btn btn-danger">Change Password</button>&nbsp;
+												<button type="reset" class="btn btn-secondary">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</form>
+						</div>
+					</div>
+					<!--end: Email Settings -->
+				</div>				                                 
+			</div>
+		</div>
+    </div>
+</div>
+<script src="/dist/js/user/profile.js"></script>
+{{!-- <script src="/js/user/profile.js"></script> --}}

@@ -1,0 +1,183 @@
+<div class="modal fade" id="optionModal" tabindex="-1" role="dialog" aria-labelledby="optionModalLabel"
+    aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="optionModalLabel">How would you like to get paid ?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label class="kt-option">
+                            <span class="kt-option__control">
+                                <span class="kt-radio kt-radio--bold kt-radio--brand kt-radio--check-bold" checked="">
+                                    <input type="radio" name="m_option_1" value="bitcoin">
+                                    <span></span>
+                                </span>
+                            </span>
+                            <span class="kt-option__label">
+                                <span class="kt-option__head">
+                                    <span class="kt-option__title">
+                                        Bitcoin
+                                    </span>
+                                </span>
+                                <span class="kt-option__body">
+                                    Ensure that your bitcoin wallet id is set in your profile
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-lg-6">
+                        <label class="kt-option">
+                            <span class="kt-option__control">
+                                <span class="kt-radio kt-radio--bold kt-radio--brand">
+                                    <input type="radio" name="m_option_1" value="bank">
+                                    <span></span>
+                                </span>
+                            </span>
+                            <span class="kt-option__label">
+                                <span class="kt-option__head">
+                                    <span class="kt-option__title">
+                                        Bank Credit
+                                    </span>
+                                </span>
+                                <span class="kt-option__body">
+                                    A payment gateway will be used to credit you immediately.
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="kt-option">
+                            <span class="kt-option__control">
+                                <span class="kt-radio kt-radio--bold kt-radio--brand">
+                                    <input type="radio" name="m_option_1" value="manual">
+                                    <span></span>
+                                </span>
+                            </span>
+                            <span class="kt-option__label">
+                                <span class="kt-option__head">
+                                    <span class="kt-option__title">
+                                        Manual Cash Transfer
+                                    </span>
+                                </span>
+                                <span class="kt-option__body">
+                                    We'll manually make a cash transfer to your set bank account
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="proceedBtn" class="btn btn-brand">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+    <!-- begin:: Subheader -->
+    <div class="kt-subheader mb-3 mt-3 kt-grid__item" id="kt_subheader">
+        <div class="kt-subheader__main">
+            <h3 class="kt-subheader__title">GiftCode Sales</h3>
+
+            <span class="kt-subheader__separator kt-hidden"></span>
+            <div class="kt-subheader__breadcrumbs">
+                <a href="#" class="kt-subheader__breadcrumbs-home"><i class="flaticon-shopping-basket"></i></a>
+                <span class="kt-subheader__breadcrumbs-separator"></span>
+                <!-- <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">Active link</span> -->
+            </div>
+
+        </div>
+    </div>
+
+    <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt-content">
+        <div class="kt-section__content kt-section__content--border">
+            {{!-- <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-brand" data-toggle="modal" data-target="#optionModal">
+                Launch demo modal
+            </button> --}}
+
+        </div>
+        {{!-- Toast Notification --}}
+        <div class="toast toast-custom toast-fill fade hide" role="alert" aria-live="assertive" aria-atomic="true"
+            id="kt_toast_1">
+            <div class="toast-header">
+                <i class="toast-icon flaticon2-success kt-font-success"></i>
+                <span class="toast-title" id="toastTitle">Code Category Created</span>
+                <small class="toast-time">Just now!</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody">
+                The code category was successfully created.
+            </div>
+        </div>
+        {{!-- End Toast Notification --}}
+
+        <div class="row">
+            <div class="col-lg-12">
+                <!--begin::Portlet-->
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">Total amount to be credited: $ <span id="totalPrice2"
+                                    data-pr2="0">0</span>&nbsp;&nbsp; | &nbsp;&nbsp;#<span data-rate=""
+                                    id="nairaAmount">0</span>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <button id="toCart" type="button" class="btn btn-brand" data-toggle="modal"
+                                data-target="#optionModal">
+                                <i class="la la-money"></i>
+                                <span class="kt-hidden-mobile">Get Paid</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div class="row" id="storeBody">
+                            <div class="col-7" id="body">
+                                <div id="inputBody" class="form-group">
+                                    <div id="wrapper" class="input-group">
+                                        <input type="text" id="code" class="form-control" name="code"
+                                            placeholder="Enter Gift Code" data-status="saint">
+                                        <div class="input-group-append">
+                                            {{!-- <button class="btn btn-secondary" id="verify" type="button">Verify</button> --}}
+                                            <button class="btn btn-secondary" id="verify" type="button"><i
+                                                    class="fa fa-plus kt-hidden-mobile"></i><span class="">Redeem</span>
+                                            </button>
+                                            <button class="btn btn-secondary" data-code-pr="" data-code-id=""
+                                                id="remove" type="button"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+                                    <span id="infoSpan" class="form-text text-danger" style="display:none;"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <button id="addMore" type="button" class="btn btn-metal">
+                                    <i class="fa fa-plus"></i>
+                                    <span class="kt-hidden-mobile">Add More</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Portlet-->
+            </div>
+
+        </div>
+
+    </div>
+    <input type="hidden" id="hasBitcoinSet" value="">
+    <input type="hidden" id="hasAccountSet" value="">
+    <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+</div>
+{{!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> --}}
+{{!-- <script src="/js/user/sales.js"></script> --}}
+<script src="/dist/js/user/sales.js"></script>

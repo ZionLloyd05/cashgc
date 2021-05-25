@@ -1,38 +1,25 @@
-import * as path from 'path';
-import * as bluebird from 'bluebird';
-import { promisify } from 'promisify';
-import * as tp from 'typed-promisify';
-import config from '../config';
-import * as postmark from 'postmark';
+const axios = require('axios');
 
 export class Mail {
-  public static SENDGRID_API_KEY;
-  /**
-   *
-   */
-  public transporter;
-  public client;
-  // // public EmailTemplate = EmailTemp.EmailTemplate;
+  public apiKey;
 
   constructor() {
-    // console.log(config.postmark_token);
-    this.client = new postmark.ServerClient(
-      '4181dd98-f429-448e-9be6-a419a64eafa3'
-    );
-    // this.transporter = nodemailer.createTransport({
+    this.apiKey =
+      '2763A8E885EB551BA0119A3A96FE1F40D760BC9807419611319DA1D3E56A4577C9BCD5D6EEB45E89963D018B82753766';
   }
 
   public async send(options: any): Promise<any> {
-    const mailOptions: any = {
-      From: 'support@cashgiftcode.com',
-      To: options.user.email,
-      Subject: options.subject,
-      HtmlBody: options.htmlContent,
-      TextBody: options.textContent,
-    };
-
-    // return this.transporter.sendMail(mailOptions);
-    console.log(mailOptions);
-    return this.client.sendEmail(mailOptions);
+    let url = `https://api.elasticemail.com/v2/email/send?apikey=${this.apiKey}&subject=${options.subject}&from=${options.from}&fromName=${options.fromName}&sender=${options.from}&to=${options.to}&bodyHtml=${options.bodyHtml}&bodyText=${options.bodyText}`;
+    axios({
+      url,
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 }

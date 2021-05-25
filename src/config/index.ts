@@ -11,83 +11,60 @@ export default {
   /**
    * Database port number
    */
-  dbport: parseInt(process.env.DBPORT, 10),
-
+  dbport: parseInt('3306', 10),
   /**
    * Database port number
    */
-  port: parseInt(process.env.PORT, 10),
-
+  port: parseInt('4000', 10),
   /**
    * YDatabase type
    */
-  type: process.env.TYPE,
-
+  type: 'mysql',
   /**
    * Database host
    */
-  host: process.env.HOST,
-
+  host: 'MYSQL5035.site4now.net',
   /**
    * Database username
    */
-  username: process.env.UNAME,
-
+  username: 'db_9d9472_cash',
   /**
    * Database password
    */
-  password: process.env.PASSWORD,
-
+  password: 'gccode123**',
   /**
    * Database title
    */
-  database: process.env.DATABASE,
-
+  database: 'db_9d9472_gccode',
   /**
    * Cipher Key
    */
-  key: process.env.KEY,
-
+  key: 'connect_dd',
   /**
    * Secret Key
    */
-  secret: process.env.SECRET,
-
+  secret: 'dksjwerweii090wekrnjksdoijisjd09skkml',
   /**
    * Environment
    */
-  environment: process.env.ENVIR,
-
+  environment: 'production',
   /**
    * Routes Config
    */
   route: {
     prefix: '/',
   },
-
   /**
    * Cloudinary Configs
    */
-  cloudName: process.env.CLOUD_NAME,
-  apiKey: process.env.API_KEY,
-  apiSecret: process.env.API_SECRET,
-
-  /**
-   * Paypal Config
-   */
-  mode: process.env.MODE,
-  client_id: process.env.CLIENT_ID,
-  client_secret: process.env.CLIENT_SECRET,
+  cloudName: 'zionlloyd',
+  apiKey: '432858741981615',
+  apiSecret: '7anDqebobntOE90W1n5oQm0qJ5s',
 
   /**
    * Payment Vendor Config
    */
-  secret_key: process.env.SECRET_KEY,
-
-  server_host: process.env.SERVER_HOST,
-
-  /**
-   * Postmark token
-   */
-  postmark_token: process.env.POSTMARKTOKEN,
+  secret_key: 'FLWSECK-5a16ca2fc0c13a1325c9fe423466e85c-X',
+  server_host: 'cashgiftcode.23ems.com',
+  mode: 'live',
 };

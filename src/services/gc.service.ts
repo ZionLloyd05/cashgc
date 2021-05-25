@@ -17,9 +17,9 @@ export class GiftCodeService {
   private _userService: UserService = DIContainer.resolve<UserService>(
     UserService
   );
-  private _tService: TransactionService = DIContainer.resolve<
+  private _tService: TransactionService = DIContainer.resolve<TransactionService>(
     TransactionService
-  >(TransactionService);
+  );
 
   private _sharedService: SharedService = DIContainer.resolve<SharedService>(
     SharedService

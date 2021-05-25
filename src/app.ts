@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { DatabaseProvider } from './database';
 import config from './config';
-import * as paypal from 'paypal-rest-sdk';
 import * as internetAvailable from 'internet-available';
 
 async function startServer() {
@@ -17,14 +16,14 @@ async function startServer() {
     port: config.dbport,
   });
 
-  /**
-   * PayPal configuration
-   */
-  paypal.configure({
-    mode: config.mode, //sandbox or live
-    client_id: config.client_id,
-    client_secret: config.client_secret,
-  });
+  // /**
+  //  * PayPal configuration
+  //  */
+  // paypal.configure({
+  //   mode: config.mode, //sandbox or live
+  //   client_id: config.client_id,
+  //   client_secret: config.client_secret,
+  // });
 
   const app = require('./config/viewsetup').default();
   await require('./server').default({ app });

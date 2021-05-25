@@ -1,0 +1,160 @@
+<script src="/assets/vendors/clipboard.min.js"></script>
+<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+    <!-- begin:: Subheader -->
+    <div class="kt-subheader mb-3 mt-3 kt-grid__item" id="kt_subheader">
+        <div class="kt-subheader__main">
+            <h3 class="kt-subheader__title">My Codes</h3>
+
+            <span class="kt-subheader__separator kt-hidden"></span>
+            <div class="kt-subheader__breadcrumbs">
+                <a href="#" class="kt-subheader__breadcrumbs-home"><i class="flaticon-shopping-basket"></i></a>
+                <span class="kt-subheader__breadcrumbs-separator"></span>
+                <!-- <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">Active link</span> -->
+            </div>
+
+        </div>
+    </div>
+
+    <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt-content">
+        <div class="kt-section__content kt-section__content--border">
+            {{!-- <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-brand" data-toggle="modal" data-target="#exampleModal">
+                Launch demo modal
+            </button> --}}
+
+        </div>
+        {{!-- Toast Notification --}}
+        <div class="toast toast-custom toast-fill fade hide" role="alert" aria-live="assertive" aria-atomic="true"
+            id="kt_toast_1">
+            <div class="toast-header">
+                <i class="toast-icon flaticon2-success kt-font-success"></i>
+                <span class="toast-title" id="toastTitle">Cash GiftCode</span>
+                <small class="toast-time">Just now!</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody">
+                Code Copied Successfully
+            </div>
+        </div>
+        {{!-- End Toast Notification --}}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <span id="spinner" class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="kt-portlet__body">
+                        <div class="kt-portlet__content">
+
+                            <table class="table table-striped- table-bordered table-hover" id="codeTbl">
+                                <thead>
+                                    <tr class="">
+                                        <th>S/N</th>
+                                        <th>Code Title</th>
+                                        <th>Code</th>
+                                        <th>State</th>
+                                        <th>Date Created</th>
+                                        <th>Status</th>
+                                        <th>Transact Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="row align-items-center">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+
+    {{!-- code modal --}}
+    <div class="modal fade bd-example-modal-xl" data-backdrop="static" id="codeForPurchaseModal" tabindex="-1"
+        role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thank You! Your Payment was Successfull</h5>
+                    {{!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                </div>
+                <div class="modal-body">
+                    <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt-content">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="kt-portlet">
+                                    <div class="kt-portlet__head" id="tblLoader">
+                                        <div class="kt-portlet__head-label">
+                                            <div class="col-sm mr-4">
+                                                <div id="spinner2" class="spinner-grow text-primary" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </div>
+                                            <h3 class="kt-portlet__head-title" id="head_title">
+                                                Generating gift codes...
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                            <div class="kt-portlet__head-group">
+                                                {{!-- <a href="#" class="btn btn-default btn-bold btn-upper btn-font-sm">
+                                                        <i class="flaticon-download"></i>
+                                                        Preview Invoice
+                                                    </a> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+
+                                        <div class="kt-portlet__content table-responsive">
+
+                                            <table id="codeTblForPurchase"
+                                                class="table table-striped table-bordered table-hover" id="cartTbl">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S/N</th>
+                                                        <th>Item Title</th>
+                                                        <th>Gift Code</th>
+                                                        <th>Date Created</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        id="closeCodeModalForPurchase">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+{{!-- <script src="/js/user/mycodes.js"></script> --}}
+<script src="/dist/js/user/mycodes.js"></script>
