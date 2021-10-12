@@ -7,6 +7,11 @@ if (!envFound) {
   throw new Error("Couldn't find .env file");
 }
 
+// import environmental variables from our variables.env file
+require('dotenv').config({
+  path: 'variables.env',
+});
+
 export default {
   /**
    * Database port number
